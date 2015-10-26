@@ -34,18 +34,17 @@ page, go to the topmost "Sofware links: files" link
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
 Teem is overdue for a release, but in the mean time you build from source with CMake.
 
-Even if you already have a version of Teem installed, its best if you build a new one
-for Diderot, with *none* of the optional libraries (PNG, zlib, etc) enabled: experience
+Even if you already have a version of Teem installed, it is best if you build a new Teem
+for Diderot, with *none* of the optional libraries (PNG, zlib, etc) enabled. Experience
 has shown that additional dependencies from Teem will complicate the linking that
 the Diderot compiler does.
 
 To get the Teem source and set the
-<code>TEEM</code> variable that will be later.
-These and all later commands assume sh/bash:
+<code>TEEM</code> variable needed, run (these and all later commands assume sh/bash):
 
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
-	mkdir teem-install
-	cd teem-install; TEEM=`pwd`; cd -
+	mkdir teem-ddro
+	cd teem-ddro; TEEM=`pwd`; cd -
 To build Teem:
 
 	mkdir teem-build
@@ -61,14 +60,13 @@ To build Teem:
 	cd ..
 To make sure your build works, try:
 
-	teem-build/bin/unu --version
+	teem-ddro/bin/unu --version
 
-Note that <code>unu dnorm</code> is a useful command for
-normalizing the orientation and meta-data in a Nrrd arrays into the consistent
-representation that the Diderot run-time assumes.
+Note that we do **not** recommend adding this <code>teem-ddro/bin</code> to your path;
+its not very useful.
 
-Post-processing of Diderot output often generates PNG images, which means you'll
-unfortunately also need a **separate** Teem build that includes PNG and zlib.
+Instead, post-processing of Diderot output often generates PNG images, which means you'll
+want a **separate** Teem build that includes PNG and zlib.
 If you don't already have such a Teem build in your path, you can:
 
 	mkdir teem-util
@@ -96,6 +94,10 @@ To add these Teem utilities to your path:
 	cd teem-util/bin
 	export PATH=${PATH}:`pwd`
 	cd -
+
+Finally, note that <code>unu dnorm</code> is a useful command for
+normalizing the orientation and meta-data in a Nrrd arrays into the consistent
+representation that the Diderot run-time assumes.
 
 #### (3) Getting Diderot (the various branches)
 
