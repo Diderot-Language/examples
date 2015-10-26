@@ -30,13 +30,10 @@ the Diderot compiler does.
 To get the Teem source and set the
 <code>TEEM</code> variable that will be used for Diderot configuration later
 (these and all commands assume sh/bash):
-
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-install
 	cd teem-install; TEEM=`pwd`; cd -
-
 To build Teem:
-
 	mkdir teem-build
 	cd teem-build
 	cmake \
@@ -48,5 +45,5 @@ To build Teem:
 	  ../teem-src
 	make install
 	cd ..
+bingo bingo
 
-bingo
