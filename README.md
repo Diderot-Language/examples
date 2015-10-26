@@ -24,7 +24,7 @@ Teem is overdue for a release, but in the mean time you build from source
 with [Cmake](https://cmake.org) (install CMake if you haven't already).  To get
 the and build Teem source (assuming sh, bash, or similar shell):
 
-    svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
-    mkdir teem-install
+	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src mkdir
+	teem-install
 
 bingo bingo
