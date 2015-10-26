@@ -1,6 +1,6 @@
 # ddro-examples
 
-These examples demonstrate the various features of the Diderot language.
+These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu)
 As a Diderot user, these examples are useful starting points for adapting and modifying for your
 own purposes. You can help by fixing issues that arise, and contributing new example programs.
 
@@ -26,9 +26,9 @@ to contain all the other software directories below:
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  On the [Downloads](http://smlnj.org/dist/working/index.html)
-page, go to the topmost [Sofware links: files](http://smlnj.org/dist/working/110.79/index.html)
-link (currently version 110.79) to get files needed to install SML/NJ on different platforms.
+need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
+page, go to the topmost "Sofware links: files" link
+(currently 110.79) to get files needed to install SML/NJ on your platform.
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
