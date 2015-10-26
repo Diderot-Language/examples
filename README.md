@@ -4,11 +4,13 @@ These examples demonstrate the various features of the Diderot language.
 As a Diderot user, these examples are useful starting points for adapting and modifying for your
 own purposes. You can help by fixing issues that arise, and contributing new example programs.
 
-As Diderot is a fairly new language, the best practices for packaging up these examples and their
-associated files is still evolving.  Patience and/or fearless engagement is appreciated.
-
 The [diderot-language](https://goo.gl/kXpxhV) google group is the place to
 discuss the language and its use.
+
+The instructions below end with cloning these examples, and compiling them with Diderot.
+
+As Diderot is a fairly new language, the best practices for packaging up these examples and their
+associated files is still evolving.  Patience and/or constructive engagement is very much appreciated!
 
 ## Building Diderot and these examples
 
@@ -21,10 +23,6 @@ to contain all the other software directories below:
 
 	mkdir ddro
 	cd ddro
-
-#### (0) Get the examples:
-
-	git clone https://github.com/kindlmann/ddro-examples.git
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
@@ -109,4 +107,12 @@ As long as there are multiple branches in play, "make local-install" makes more 
 From within one of the branch directories, you can check that the build worked by trying:
 
 	bin/diderotc --help
+
+#### (4) Get the examples:
+
+	git clone https://github.com/kindlmann/ddro-examples.git
+
+#### (5) Try running the "hello world" example
+
+	cd ddro-examples/hello
 
