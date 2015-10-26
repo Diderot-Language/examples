@@ -105,6 +105,7 @@ representation that the Diderot run-time assumes.
 
 At this point there are different branches with different functionalities;
 work on merging them is ongoing.
+For all of the "svn co" commands below, the password is also "anonsvn".
 
 The **vis12** branch was created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
@@ -126,7 +127,7 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
-For all of the given "svn co" commands, the password is also "anonsvn".  To then configure and build
+To then configure and build
 any of these branches, the following commands can be run inside any of the per-branch directories
 (such as <code>vis12/</code>).
 Note the use of the <code>TEEMDDRO</code> variable set above.
