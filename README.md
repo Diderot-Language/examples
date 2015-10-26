@@ -118,8 +118,13 @@ From within one of the branch directories, you can check that the build worked b
 	../../vis12/bin/diderotc --exec hello.diderot
 	./hello --help
 	./hello
-	unu save -f text -i out.nrrd
 
 Running <code>hello</code> should print "hello, world".  All Diderot programs,
-even this out, produces an output file; this one created <tt>out.nrrd</tt>
+even this out, produces an output file; this one created <code>out.nrrd</code>,
+a container for a single int.  We can check its contents with:
+
+	unu save -f text -i out.nrrd
+
+which should show "42".
+
 
