@@ -60,9 +60,16 @@ To build Teem:
 	make install
 	cd ..
 
-#### (2) Getting Diderot (the various branches)
+#### (3) Getting Diderot (the various branches)
 
 **As Diderot branches are merged, the names and URLs for these may change**
 
-The "vis12" branch was created with a [VIS 12](http://ieeevis.org/year/2012/info/call-participation/welcome) submission in mind (it never happeed, and the [VIS 12](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected).
+The **vis12** branch was created with a
+[VIS 12](http://ieeevis.org/year/2012/info/call-participation/welcome)
+submission in mind. It never happened, and the
+[VIS 12](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected.
+The branch has become the most mature of the branches, but it currently lacks
+important new features.
+
+
 
