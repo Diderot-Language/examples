@@ -27,8 +27,9 @@ for Diderot, with *none* of the optional libraries (PNG, zlib) enabled: experien
 has shown that additional dependencies from Teem will complicate the linking that
 the Diderot compiler does.
 
-To get the Teem source (assuming sh, bash, or similar shell) and set the
-<code>TEEM</code> variable that will be used for Diderot configuration later:
+To get the Teem source and set the
+<code>TEEM</code> variable that will be used for Diderot configuration later
+(these and all commands assume sh/bash):
 
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-install
