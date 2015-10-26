@@ -45,7 +45,7 @@ To get the Teem source and set the
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-ddro
 	cd teem-ddro; TEEMDDRO=`pwd`; cd -
-To build Teem:
+To build Teem and install into <code>teem-ddro</code>:
 
 	mkdir teem-ddro-build
 	cd teem-ddro-build
