@@ -115,4 +115,11 @@ From within one of the branch directories, you can check that the build worked b
 #### (5) Try running the "hello world" example
 
 	cd ddro-examples/hello
+	../../vis12/bin/diderotc --exec hello.diderot
+	./hello --help
+	./hello
+	unu save -f text -i out.nrrd
+
+Running <code>hello</code> should print "hello, world".  All Diderot programs,
+even this out, produces an output file; this one created <tt>out.nrrd</tt>
 
