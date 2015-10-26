@@ -8,3 +8,7 @@ own purposes. You can help by fixing issues that arise, and contributing new exa
 
 As Diderot is a fairly new language, the best practices for packaging up these examples and their
 associated files is still evolving.  Patience and/or fearless engagement is appreciated.
+
+The [diderot-language](https://goo.gl/kXpxhV) google group is the place to
+discuss the language and its use.
+
