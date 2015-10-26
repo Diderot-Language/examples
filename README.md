@@ -27,21 +27,21 @@ to contain all the other software directories below:
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  On the [Downloads](http://smlnj.org/dist/working/index.html)
-page, go to the top-most [Sofware links: files](http://smlnj.org/dist/working/110.79/index.html)
- (currently version 110.79) to get files needed to install SML/NJ on different platforms.
+page, go to the topmost [Sofware links: files](http://smlnj.org/dist/working/110.79/index.html)
+link (currently version 110.79) to get files needed to install SML/NJ on different platforms.
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
 Teem is overdue for a release, but in the mean time you build from source
 with CMake.  Even if
 you already have a version of Teem installed, its best if you build a new one
-for Diderot, with *none* of the optional libraries (PNG, zlib) enabled: experience
+for Diderot, with *none* of the optional libraries (PNG, zlib, etc) enabled: experience
 has shown that additional dependencies from Teem will complicate the linking that
 the Diderot compiler does.
 
 To get the Teem source and set the
-<code>TEEM</code> variable that will be used for Diderot configuration later
-(these and all commands assume sh/bash):
+<code>TEEM</code> variable that will be later.
+These and all later commands assume sh/bash:
 
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-install
@@ -59,6 +59,12 @@ To build Teem:
 	  ../teem-src
 	make install
 	cd ..
+To make sure your build works, try:
+
+	teem-build/bin/unu --version
+You may want to keep in mind that <code>unu dnorm</code> is a useful command for
+normalizing the orientation and meta-data in a Nrrd arrays into the consistent
+representation that the Diderot run-time assumes.
 
 #### (3) Getting Diderot (the various branches)
 
@@ -88,7 +94,8 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
 For all of the given "svn co" commands, the password is also "anonsvn".  To then configure and build
-any of these branches, the following commands can be run inside any of the per-branch directories.
+any of these branches, the following commands can be run inside any of the per-branch directories
+(such as <code>vis12/</code>). 
 Note the use of the <code>TEEM</code> variable set above.
 
 	autoheader -Iconfig
@@ -97,13 +104,3 @@ Note the use of the <code>TEEM</code> variable set above.
 	make local-install
 
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
-
-
-
-
-
-
-
-
-
-
