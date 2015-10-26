@@ -1,7 +1,5 @@
 # ddro-examples
 
-## Example programs in the Diderot language
-
 These examples demonstrate the various features of the Diderot language.
 As a Diderot user, these examples are useful starting points for adapting and modifying for your
 own purposes. You can help by fixing issues that arise, and contributing new example programs.
@@ -99,7 +97,7 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 
 For all of the given "svn co" commands, the password is also "anonsvn".  To then configure and build
 any of these branches, the following commands can be run inside any of the per-branch directories
-(such as <code>vis12/</code>). 
+(such as <code>vis12/</code>).
 Note the use of the <code>TEEM</code> variable set above.
 
 	autoheader -Iconfig
@@ -108,3 +106,7 @@ Note the use of the <code>TEEM</code> variable set above.
 	make local-install
 
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
+From within one of the branch directories, you can check that the build worked by trying:
+
+	bin/diderotc --help
+
