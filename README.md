@@ -1,16 +1,17 @@
 # ddro-examples
 
 These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu)
+
 As a Diderot user, these examples are useful starting points for adapting and modifying for your
 own purposes. You can help by fixing issues that arise, and contributing new example programs.
 
-The [diderot-language](https://goo.gl/kXpxhV) google group is the place to
+As Diderot is a fairly new language, the best practices for packaging up these examples and their
+associated files is still evolving.  Patience and/or constructive engagement is appreciated.
+
+The [diderot-language](https://goo.gl/kXpxhV) Google group is the place to
 discuss the language and its use.
 
 The instructions below end with cloning these examples, and compiling them with Diderot.
-
-As Diderot is a fairly new language, the best practices for packaging up these examples and their
-associated files is still evolving.  Patience and/or constructive engagement is very much appreciated!
 
 ## Building Diderot and these examples
 
@@ -29,6 +30,7 @@ The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
 (currently 110.79) to get files needed to install SML/NJ on your platform.
+You need at least version 110.75 to build Diderot.
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
@@ -158,8 +160,5 @@ a container for a single int.  We can check its contents with:
 
 	unu save -f text -i out.nrrd
 
-which should show "42".  If you've gotten this far you've successfully
-built Diderot, and compiled a Diderot program!
-
-
-
+which should show "42".  If you've gotten this far, you have successfully
+built Diderot, and compiled and run a Diderot program!
