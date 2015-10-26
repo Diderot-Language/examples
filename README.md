@@ -14,17 +14,15 @@ discuss the language and its use.
 
 ## Building Diderot
 
-1. The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
+(1) The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  On the [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the top-most [Sofware links: files](http://smlnj.org/dist/working/110.79/index.html)
  (currently version 110.79) to get files needed to install SML/NJ on different platforms.
 
-2. The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
+(2) The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
 Teem is overdue for a release, but in the mean time you build from source
 with [Cmake](https://cmake.org) (install CMake if you haven't already).  To get
 the and build Teem source (assuming sh, bash, or similar shell):
-
-bingo
 
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src mkdir
 	teem-install
