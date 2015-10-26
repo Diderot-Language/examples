@@ -32,9 +32,9 @@ link (currently version 110.79) to get files needed to install SML/NJ on differe
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
-Teem is overdue for a release, but in the mean time you build from source
-with CMake.  Even if
-you already have a version of Teem installed, its best if you build a new one
+Teem is overdue for a release, but in the mean time you build from source with CMake.
+
+Even if you already have a version of Teem installed, its best if you build a new one
 for Diderot, with *none* of the optional libraries (PNG, zlib, etc) enabled: experience
 has shown that additional dependencies from Teem will complicate the linking that
 the Diderot compiler does.
@@ -65,6 +65,30 @@ To make sure your build works, try:
 You may want to keep in mind that <code>unu dnorm</code> is a useful command for
 normalizing the orientation and meta-data in a Nrrd arrays into the consistent
 representation that the Diderot run-time assumes.
+
+Post-processing of Diderot output often generates PNG images , which means you'll
+unfortunately also need a **separate** Teem build that includes PNG and zlib.
+If you don't already have such a Teem build in your path, you can:
+
+	mkdir teem-util
+	cd teem-util; TEEMUTIL=`pwd`; cd -
+	mkdir teem-build-util
+	cd teem-build-util
+	cmake \
+	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
+	  -D BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE=Release \
+	  -D Teem_BZIP2=OFF -D Teem_FFTW3=OFF -D Teem_LEVMAR=OFF -D Teem_PTHREAD=OFF \
+	  -D Teem_PNG=ON -D Teem_ZLIB=ON \
+	  -D CMAKE_INSTALL_PREFIX:PATH=$TEEMUTIL \
+	  ../teem-src
+	make install
+	cd ..
+To make sure this build includes the useful libraries, try:
+
+	teem-util/bin/unu about | tail -n 4
+
+The "Formats available" should include "png", and the
+"Nrrd data encodings available" should include "gz".
 
 #### (3) Getting Diderot (the various branches)
 
@@ -116,7 +140,6 @@ From within one of the branch directories, you can check that the build worked b
 
 	cd ddro-examples/hello
 	../../vis12/bin/diderotc --exec hello.diderot
-	./hello --help
 	./hello
 
 Running <code>hello</code> should print "hello, world".  All Diderot programs,
@@ -125,6 +148,8 @@ a container for a single int.  We can check its contents with:
 
 	unu save -f text -i out.nrrd
 
-which should show "42".
+which should show "42".  If you've gotten this far you've successfully
+built Diderot, and compiled a Diderot program!
+
 
 
