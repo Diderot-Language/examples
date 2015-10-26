@@ -1,5 +1,12 @@
 /*
 ** The usual greeting, in Diderot
+**
+** Assuming the directions at https://github.com/kindlmann/ddro-examples
+** this program can be compiled and run with:
+
+../../vis12/bin/diderotc --exec hello.diderot
+./hello
+
 */
 strand hello (int ii) {
   output int out = 42;
