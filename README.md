@@ -71,8 +71,8 @@ If you don't already have such a Teem build in your path, you can:
 
 	mkdir teem-util
 	cd teem-util; TEEMUTIL=`pwd`; cd -
-	mkdir teem-build-util
-	cd teem-build-util
+	mkdir teem-util-build
+	cd teem-util-build
 	cmake \
 	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
 	  -D BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE=Release \
