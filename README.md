@@ -77,9 +77,33 @@ Still, this has become the most mature branch, though it lacks some features fro
 
 The **vis12-cl** branch includes the OpenCL backend.
 
+	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
+
 The **lamont** branch includes the implementation of strand communication.
 
+	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/lamont
+
 The **charisee** branch includes field "lifting", based on the EIN internal representation.
+
+	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
+
+For all of the given "svn co" commands, the password is also "anonsvn".  To then configure and build
+any of these branches, the following commands can be run inside any of the per-branch directories.
+Note the use of the <code>TEEM</code> variable set above.
+
+	autoheader -Iconfig
+	autoconf -Iconfig
+	./configure --with-teem=$TEEM
+	make local-install
+
+As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
+
+
+
+
+
+
+
 
 
 
