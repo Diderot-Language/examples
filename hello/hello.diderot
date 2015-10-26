@@ -1,0 +1,12 @@
+/*
+** The usual greeting, in Diderot
+*/
+strand hello (int ii) {
+  output int out = 42;
+
+  update {
+    print("hello, world\n");
+    stabilize;
+  }
+}
+initially [ hello(ii) | ii in 0..0 ];  // only one strand
