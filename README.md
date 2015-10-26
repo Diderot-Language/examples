@@ -47,8 +47,8 @@ To get the Teem source and set the
 	cd teem-ddro; TEEMDDRO=`pwd`; cd -
 To build Teem:
 
-	mkdir teem-build
-	cd teem-build
+	mkdir teem-ddro-build
+	cd teem-ddro-build
 	cmake \
 	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
 	  -D BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE=Release \
