@@ -62,11 +62,12 @@ To build Teem:
 To make sure your build works, try:
 
 	teem-build/bin/unu --version
-You may want to keep in mind that <code>unu dnorm</code> is a useful command for
+
+Note that <code>unu dnorm</code> is a useful command for
 normalizing the orientation and meta-data in a Nrrd arrays into the consistent
 representation that the Diderot run-time assumes.
 
-Post-processing of Diderot output often generates PNG images , which means you'll
+Post-processing of Diderot output often generates PNG images, which means you'll
 unfortunately also need a **separate** Teem build that includes PNG and zlib.
 If you don't already have such a Teem build in your path, you can:
 
@@ -89,6 +90,11 @@ To make sure this build includes the useful libraries, try:
 
 The "Formats available" should include "png", and the
 "Nrrd data encodings available" should include "gz".
+
+To add these Teem utilities to your path:
+
+	cd teem-util/bin
+	export PATH=${PATH}:`pwd`
 
 #### (3) Getting Diderot (the various branches)
 
