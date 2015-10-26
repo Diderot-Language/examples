@@ -40,11 +40,11 @@ has shown that additional dependencies from Teem will complicate the linking tha
 the Diderot compiler does.
 
 To get the Teem source and set the
-<code>TEEM</code> variable needed, run (these and all later commands assume sh/bash):
+<code>TEEMDDRO</code> variable needed, run (these and all later commands assume sh/bash):
 
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-ddro
-	cd teem-ddro; TEEM=`pwd`; cd -
+	cd teem-ddro; TEEMDDRO=`pwd`; cd -
 To build Teem:
 
 	mkdir teem-build
@@ -54,7 +54,7 @@ To build Teem:
 	  -D BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE=Release \
 	  -D Teem_BZIP2=OFF -D Teem_FFTW3=OFF -D Teem_LEVMAR=OFF -D Teem_PTHREAD=OFF \
 	  -D Teem_PNG=OFF -D Teem_ZLIB=OFF \
-	  -D CMAKE_INSTALL_PREFIX:PATH=$TEEM \
+	  -D CMAKE_INSTALL_PREFIX:PATH=$TEEMDDRO \
 	  ../teem-src
 	make install
 	cd ..
@@ -129,11 +129,11 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 For all of the given "svn co" commands, the password is also "anonsvn".  To then configure and build
 any of these branches, the following commands can be run inside any of the per-branch directories
 (such as <code>vis12/</code>).
-Note the use of the <code>TEEM</code> variable set above.
+Note the use of the <code>TEEMDDRO</code> variable set above.
 
 	autoheader -Iconfig
 	autoconf -Iconfig
-	./configure --with-teem=$TEEM
+	./configure --with-teem=$TEEMDDRO
 	make local-install
 
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
