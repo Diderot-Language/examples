@@ -67,8 +67,8 @@ To build Teem:
 The **vis12** branch was created with a
 [VIS 12](http://ieeevis.org/year/2012/info/call-participation/welcome)
 submission in mind. It never happened, and the
-[VIS 12](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected.
-The branch has become the most mature of the branches, but it currently lacks
+[VIS 13](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected,
+but this branch is currently the most mature, though it currently lacks
 important new features.
 
 
