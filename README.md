@@ -14,9 +14,15 @@ discuss the language and its use.
 
 ## Building Diderot
 
-You'll need [Cmake](https://cmake.org) Makefile-generator tool
+You'll need [Cmake](https://cmake.org) to generate Makefiles, and
 the [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
-tools (specifically <code>autoconf</code> and <code>autoheader</code>)
+tools (specifically <code>autoconf</code> and <code>autoheader</code>).
+
+To keep things contained, you may want to create a directory (perhaps <code>ddro</code>)
+to contain all the other software directories below:
+
+	mkdir ddro
+	cd ddro
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
@@ -53,5 +59,10 @@ To build Teem:
 	  ../teem-src
 	make install
 	cd ..
-bingo bingo
+
+#### (2) Getting Diderot (the various branches)
+
+**As Diderot branches are merged, the names and URLs for these may change**
+
+The "vis12" branch was created with a [VIS 12](http://ieeevis.org/year/2012/info/call-participation/welcome) submission in mind (it never happeed, and the [VIS 12](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected).
 
