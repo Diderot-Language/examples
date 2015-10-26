@@ -12,7 +12,7 @@ associated files is still evolving.  Patience and/or fearless engagement is appr
 The [diderot-language](https://goo.gl/kXpxhV) google group is the place to
 discuss the language and its use.
 
-## Building Diderot
+## Building Diderot and these examples
 
 You'll need [Cmake](https://cmake.org) to generate Makefiles, and
 the [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
@@ -23,6 +23,10 @@ to contain all the other software directories below:
 
 	mkdir ddro
 	cd ddro
+
+#### (0) Get the examples:
+
+	git clone https://github.com/kindlmann/ddro-examples.git
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
@@ -68,7 +72,7 @@ representation that the Diderot run-time assumes.
 
 #### (3) Getting Diderot (the various branches)
 
-**As Diderot branches are merged, the names and URLs for these may change**
+**NOTE: As Diderot branches are merged, the names and URLs for these may change**
 
 At this point there are different branches with different functionalities;
 work on merging them is ongoing.
