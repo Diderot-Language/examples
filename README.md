@@ -64,12 +64,25 @@ To build Teem:
 
 **As Diderot branches are merged, the names and URLs for these may change**
 
-The **vis12** branch was created with a
+At this point there are different branches with different functionalities;
+work on merging them is ongoing.
+
+* The **vis12** branch was created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
-submission in mind. It never happened, and the
-[VIS'13](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected,
-but this branch is currently the most mature, though it currently lacks
-important new features.
+submission in mind. That never happened, and the
+[VIS'13](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected.
+Still, this has become the most mature branch, though it lacks some features from other branches.
+
+* The **vis12-cl** branch includes the OpenCL backend.
+
+* The **lamont** branch includes the implementation of strand communication.
+
+* The **charisee** branch includes field "lifting", based on the EIN internal representation.
+
+
+
+	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
+
 
 
 
