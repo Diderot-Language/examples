@@ -95,6 +95,7 @@ To add these Teem utilities to your path:
 
 	cd teem-util/bin
 	export PATH=${PATH}:`pwd`
+	cd -
 
 #### (3) Getting Diderot (the various branches)
 
