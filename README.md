@@ -30,7 +30,7 @@ The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
 (currently 110.79) to get files needed to install SML/NJ on your platform.
-You need at least version 110.75 to build Diderot.
+You need at least version 110.77 to build Diderot.
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
@@ -68,8 +68,7 @@ Note that we do **not** recommend adding this <code>teem-ddro/bin</code> to your
 its not very useful.
 
 Instead, post-processing of Diderot output often generates PNG images, which means you'll
-want a **separate** Teem build that includes PNG and zlib.
-If you don't already have such a Teem build in your path, you can:
+want a **separate** Teem build that includes PNG and zlib. You get get this with:
 
 	mkdir teem-util
 	cd teem-util; TEEMUTIL=`pwd`; cd -
@@ -84,6 +83,7 @@ If you don't already have such a Teem build in your path, you can:
 	  ../teem-src
 	make install
 	cd ..
+(The difference with the commands above is the "-D Teem_PNG=ON -D Teem_ZLIB=ON").
 To make sure this build includes the useful libraries, try:
 
 	teem-util/bin/unu about | tail -n 4
@@ -129,8 +129,11 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
-To then configure and build
-any of these branches, the following commands can be run inside any of the per-branch directories
+The steps to configure and build any of these Diderot branches are the same.
+First make sure that <code>sml</code> is in your path, or you can
+
+	export SMLNJ_CMD=/path/to/your/sml
+Then the following commands can be run inside any of the per-branch directories
 (such as <code>vis12/</code>).
 Note the use of the <code>TEEMDDRO</code> variable set above.
 
@@ -140,7 +143,7 @@ Note the use of the <code>TEEMDDRO</code> variable set above.
 	make local-install
 
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
-From within one of the branch directories, you can check that the build worked by trying:
+From within one of the Diderot branch directories, you can check that the build worked by trying:
 
 	bin/diderotc --help
 
