@@ -30,7 +30,16 @@ The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
 (currently 110.79) to get files needed to install SML/NJ on your platform.
-You need at least version 110.77 to build Diderot.
+
+You need at least version 110.77 to build Diderot.  You can learn the version
+of SML by running
+
+	sml @SMLversion
+
+If you do not install SML so that the executable <code>sml</code> is in your path,
+you need to (for the sake of later Diderot configuration):
+
+	export SMLNJ_CMD=/path/to/your/sml
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
@@ -129,13 +138,11 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
-The steps to configure and build any of these Diderot branches are the same.
-First make sure that <code>sml</code> is in your path, or you can
-
-	export SMLNJ_CMD=/path/to/your/sml
-Then the following commands can be run inside any of the per-branch directories
+The steps to configure and build any of these Diderot branches are the same;
+these commands can be run inside any of the per-branch directories
 (such as <code>vis12/</code>).
-Note the use of the <code>TEEMDDRO</code> variable set above.
+Note the use of the <code>TEEMDDRO</code> variable set above, and the possible
+use of the <code>SMLNJ_CMD</code> variable also described above:
 
 	autoheader -Iconfig
 	autoconf -Iconfig
