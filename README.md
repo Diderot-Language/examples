@@ -13,6 +13,8 @@ discuss the language and its use.
 
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
+* <code>hello</code>: Hello world in Diderot
+
 ## Building Diderot and these examples
 
 You'll need [Cmake](https://cmake.org) to generate Makefiles, and
