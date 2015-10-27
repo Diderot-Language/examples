@@ -25,6 +25,8 @@ to contain all the other software directories below:
 	mkdir ddro
 	cd ddro
 
+All shell commands used here assume sh/bash syntax.
+
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
@@ -51,7 +53,7 @@ has shown that additional dependencies from Teem will complicate the linking tha
 the Diderot compiler does.
 
 To get the Teem source and set the
-<code>TEEMDDRO</code> variable needed, run (these and all later commands assume sh/bash):
+<code>TEEMDDRO</code> variable needed, run:
 
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-ddro
