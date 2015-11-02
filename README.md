@@ -14,6 +14,8 @@ discuss the language and its use.
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
 * <code>hello</code>: Hello world in Diderot
+* <code>heron</code>: A non-trivial program to find square roots, via Heron's method. Also
+shows input variables, the stabilize method, and 5-argument lerp().
 
 ## Building Diderot and these examples
 
