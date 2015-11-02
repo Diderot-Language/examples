@@ -15,11 +15,11 @@ unu save -f text -i out.nrrd
 */
 
 strand hello (int ii) {
-  output int out = 42;
+   output int out = 42;
 
-  update {
-    print("hello, world\n");
-    stabilize;
-  }
+   update {
+      print("hello, world\n");
+      stabilize;
+   }
 }
 initially [ hello(ii) | ii in 0..0 ];  // only one strand

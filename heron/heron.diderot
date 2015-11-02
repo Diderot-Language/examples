@@ -60,6 +60,7 @@ strand sqroot (real val) {
          stabilize;
       }
    }
+   // this method is called upon strand stabilization
    stabilize {
       vrie = [val, root, iter, sqrt(val)-root];
    }

@@ -13,6 +13,8 @@ discuss the language and its use.
 
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
+Some information about the examples so far:
+
 * <code>hello</code>: Hello world in Diderot
 * <code>heron</code>: A non-trivial program to find square roots, via Heron's method. Also
 shows input variables, the stabilize method, and 5-argument lerp().
@@ -162,11 +164,11 @@ From within one of the Diderot branch directories, you can check that the build 
 
 #### (4) Get the examples:
 
-	git clone https://github.com/kindlmann/ddro-examples.git
+	git clone https://github.com/Diderot-Language/examples.git
 
 #### (5) Try running the "hello world" example
 
-	cd ddro-examples/hello
+	cd examples/hello
 	../../vis12/bin/diderotc --exec hello.diderot
 	./hello
 
