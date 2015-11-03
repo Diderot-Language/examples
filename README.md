@@ -18,6 +18,7 @@ Some information about the examples so far:
 * <code>hello</code>: Hello world in Diderot
 * <code>heron</code>: A non-trivial program to find square roots, via Heron's method. Also
 shows input variables, the stabilize method, and 5-argument lerp().
+* <code>fs2d</code>: For generating 2D synthetic datasets
 * <code>unicode</code>: Not for computing anything; comments include a Diderot Unicode cheatsheet
 
 ## Building Diderot and these examples
