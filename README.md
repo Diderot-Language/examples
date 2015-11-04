@@ -37,12 +37,17 @@ All shell commands used here assume sh/bash syntax.
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
+need to install that first. On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
-(currently 110.79) to get files needed to install SML/NJ on your platform.
+(currently 110.79) to get files needed to install SML/NJ on your platform. You'll need at least
+version 110.77 to build Diderot.
 
-You need at least version 110.77 to build Diderot.  You can learn the version
-of SML by running
+Depending on your Linux distribution SML/NJ might be available through your package manager, however
+installing through your package manager may not include the ml-lpt library which is also required
+to build the compiler. You'll want to make sure ml-lpt is installed as well, it's likely also provided
+by your package manager.
+
+You can learn the version of SML by running
 
 	sml @SMLversion
 
@@ -160,6 +165,9 @@ use of the <code>SMLNJ_CMD</code> variable also described above:
 	make local-install
 
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
+If your build fails with an error message along the lines of "ml-lpt-lib.cm not defined" you're missing
+the ml-lpt library, which you can probably get through your package manager or from the
+[SML/NJ](http://smlnj.org/) download page.
 From within one of the Diderot branch directories, you can check that the build worked by trying:
 
 	bin/diderotc --help
