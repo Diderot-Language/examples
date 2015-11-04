@@ -23,17 +23,30 @@ Demonstrates input variables, the stabilize method, and 5-argument lerp().
 initialization-time, user-defined function, and printing.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
-having an image dataset as an input variable, strands calling `die`, and finding gradients with ∇.
+having an image dataset as an input variable, strands calling `die`, the `normalize` function,
+and finding gradients with ∇.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet
 
 ## Building Diderot and these examples
 
-You'll need [Cmake](https://cmake.org) to generate Makefiles, and
-the [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
-tools (specifically <code>autoconf</code> and <code>autoheader</code>).
+Installing software needed to build Teem (CMake) and Diderot (autoconf) may be easier as root;
+the `apt-get` and `brew` commands may need to be prefixed by `sudo `.
+
+[Cmake](https://cmake.org) is used to build Teem:
+* Linux: `apt-get install cmake`
+* OSX: `[brew](http://brew.sh) install cmake`
+* In any case, the [CMake download](https://cmake.org/download/)
+page includes "Binary distributions" that have the executable
+`cmake` you'll need.
+
+The [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
+tools (specifically <code>autoconf</code> and <code>autoheader</code>) are used to
+configure the Diderot compilation:
+* Linux: `apt-get install autoconf`
+* OSX: `[brew](http://brew.sh) install autoconf`
 
 To keep things contained, you may want to create a directory (perhaps <code>ddro</code>)
-to contain all the other software directories below:
+to contain all the other software directories referred to below:
 
 	mkdir ddro
 	cd ddro
@@ -42,7 +55,19 @@ All shell commands used here assume sh/bash syntax.
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
+need to install that first.  There are different ways of doing this.
+
+**On Ubuntu Linux**: Use these two lines:
+
+	apt-get install smlnj
+	apt-get install ml-lpt
+
+The second command is needed for building the Diderot compiler, without
+that you'll get errors like "ml-lpt-lib.cm not defined".
+
+**Download OS-specific executables directly from http://smlnj.org**
+
+On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
 (currently 110.79) to get files needed to install SML/NJ on your platform.
 
@@ -51,7 +76,8 @@ of SML by running
 
 	sml @SMLversion
 
-If you do not install SML so that the executable <code>sml</code> is in your path,
+If you do not install SML so that the executable <code>sml</code> is in your path
+(test this with `which sml`)
 you need to (for the sake of later Diderot configuration):
 
 	export SMLNJ_CMD=/path/to/your/sml
@@ -92,7 +118,7 @@ Note that we do **not** recommend adding this <code>teem-ddro/bin</code> to your
 its not very useful.
 
 Instead, post-processing of Diderot output often generates PNG images, which means you'll
-want a **separate** Teem build that includes PNG and zlib. You get get this with:
+want a **separate** Teem build that includes PNG and zlib. You get this with:
 
 	mkdir teem-util
 	cd teem-util; TEEMUTIL=`pwd`; cd -
