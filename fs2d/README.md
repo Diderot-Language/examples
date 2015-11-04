@@ -13,7 +13,7 @@ the sampling grid in a world-space.
 Assuming the directions at https://github.com/Diderot-Language/examples
 this program can be compiled with:
 
-../../vis12/bin/diderotc --exec fs2d-scl.diderot
+	../../vis12/bin/diderotc --exec fs2d-scl.diderot
 
 The "-which" option will determine which function is sampled; look
 for "(0 == which)" below to see the function definitions.
@@ -23,6 +23,6 @@ sampling grid, so using the program involves redirection.  To
 get a self-contained parab.nrrd containing a parabola function
 (assuming sh/bash redirection):
 
-./fs2d-scl -which 2  2>&1 | unu save -f nrrd -o parab.nrrd
-rm out.nrrd
+	./fs2d-scl -which 2  2>&1 | unu save -f nrrd -o parab.nrrd
+	rm out.nrrd
 

@@ -69,6 +69,7 @@ strand sqroot (real val) {
 /*
 ** Initialize strands with value to take the square root of; with this
 ** 5-argument lerp, the output ranges from minval to maxval as ii ranges
-** from 1 to numval
+** from 1 to numval. The "initially { }" creates a collection of
+** strands (as opposed to a grid).
 */
 initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };
