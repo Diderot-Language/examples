@@ -29,16 +29,14 @@ To now run the isocontour sampling (starting with a 100x100 grid of points)
 
 which saves the output positions in pos.nrrd as a list of 2-vectors, which
 can be seen by running `unu head pos.nrrd`. You can convert this to a
-text file with:
-
-	unu save -f text -i pos.nrrd -o pos.txt
+text file with `unu save -f text -i pos.nrrd -o pos.txt`.
 
 In any case, Diderot doesn't itself supply a way of visualizing this
 point set; some other graphics or plotting program is needed.  A really
 quick-and-dirty way of showing the points is as a joint histogram
 of their X and Y coordinates:
 
-	unu jhisto -i pos.nrrd -b 500 500 -min -4 -4 -max 4 4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos.png
+	unu jhisto -i pos.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos.png
 
 Even though you had to supply the input image at compile-time, you can
 supply a different image at run-time, if the image is noted as an
@@ -51,7 +49,7 @@ to the dataset:
 and then re-run the isocontouring and display on the new data.
 
 	./iso2d -cmin -4 -4 -cmax 4 4 -isoval -0.5 -size 100 -img noisy.nrrd -o pos2.nrrd
-	unu jhisto -i pos2.nrrd -b 500 500 -min -4 -4 -max 4 4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos2.png
+	unu jhisto -i pos2.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos2.png
 
 Things to try (to see their effect on the output positions, both the
 number of outputs and their location):

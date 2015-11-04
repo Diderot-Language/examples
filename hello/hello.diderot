@@ -1,18 +1,18 @@
-/*
-** The usual greeting, in Diderot
-**
-** Assuming the directions at https://github.com/Diderot-Language/examples
-** this program can be compiled and run with:
+/* ==========================================
+## hello.diderot: The usual greeting, in Diderot
 
-../../vis12/bin/diderotc --exec hello.diderot
-./hello
+Assuming the directions at https://github.com/Diderot-Language/examples
+this program can be compiled and run with:
 
-** The output can be checked with:
+	../../vis12/bin/diderotc --exec hello.diderot
+	./hello
 
-unu save -f text -i out.nrrd
+The output can be checked with:
 
-** which should produce "42".
-*/
+	unu save -f text -i out.nrrd
+
+which should produce "42".
+========================================== */
 
 strand hello (int ii) {
    output int out = 42;

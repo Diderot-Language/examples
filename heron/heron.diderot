@@ -1,38 +1,38 @@
-/*
-** This program find square roots of numval reals between minval and maxval
-** using Heron's method (aka the Babylonion method)
-** https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
-**
-** Assuming the directions at https://github.com/Diderot-Language/examples
-** this program can be compiled and run with:
+/* ==========================================
+This program find square roots of numval reals between minval and maxval
+using Heron's method (aka the Babylonion method)
+https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
 
-../../vis12/bin/diderotc --exec heron.diderot
-./heron
+Assuming the directions at https://github.com/Diderot-Language/examples
+this program can be compiled and run with:
 
-** The output stores four numbers for each value processed:
-** 0) the value whose square root was found
-** 1) the computed square root
-** 2) the number of iterations taken to compute it
-** 3) the error, relative to Diderot's sqrt() function
-** To see the values (one set of 4 numbers per line):
+	../../vis12/bin/diderotc --exec heron.diderot
+	./heron
 
-unu save -f text -i vrie.nrrd
+The output stores four numbers for each value processed:
+0. the value whose square root was found
+1. the computed square root
+2. the number of iterations taken to compute it
+3. the error, relative to Diderot's sqrt() function
+To see the values (one set of 4 numbers per line):
 
-** The command-line executables produced by Diderot have
-** hest-generated usage infomation; try:
+	unu save -f text -i vrie.nrrd
 
-./heron --help
+The command-line executables produced by Diderot have
+hest-generated usage infomation; try:
 
-** to see how to set the input values and output filename stem.
-** Experiment with different values for eps; if it is set
-** too low the algorithm may not converge.  Compiling with:
+	./heron --help
 
-../../vis12/bin/diderotc --double --exec heron.diderot
+to see how to set the input values and output filename stem.
+Experiment with different values for eps; if it is set
+too low the algorithm may not converge.  Compiling with:
 
-** makes "reals" into doubles, instead of the default
-** single-precision floats, which permits higher-accuracy
-** results.
-*/
+	../../vis12/bin/diderotc --double --exec heron.diderot
+
+makes "reals" into doubles, instead of the default
+single-precision floats, which permits higher-accuracy
+results.
+========================================== */
 
 input real minval = 1;      // min value to find root of
 input real maxval = 100;    // max value to find root of
