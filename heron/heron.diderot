@@ -60,7 +60,9 @@ strand sqroot (real val) {
          stabilize;
       }
    }
-   // this method is called upon strand stabilization
+   // The stabilize method is called upon strand stabilization;
+   // you can use this to do some post-processing on whatever
+   // computation has finished, prior to saving the output
    stabilize {
       vrie = [val, root, iter, sqrt(val)-root];
    }
