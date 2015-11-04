@@ -34,7 +34,7 @@ the `apt-get` and `brew` commands may need to be prefixed by `sudo `.
 
 [Cmake](https://cmake.org) is used to build Teem:
 * Linux: `apt-get install cmake`
-* OSX: `[brew](http://brew.sh) install cmake`
+* OSX: [`brew`](http://brew.sh)` install cmake`
 * In any case, the [CMake download](https://cmake.org/download/)
 page includes "Binary distributions" that have the executable
 `cmake` you'll need.
