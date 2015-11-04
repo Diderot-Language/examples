@@ -13,13 +13,16 @@ discuss the language and its use.
 
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
-Some information about the examples so far:
+Here is a list of the examples written so far, in the order we suggest you read through
+them in (going from simpler to more complex programs):
 
-* <code>hello</code>: Hello world in Diderot
-* <code>heron</code>: A non-trivial program to find square roots, via Heron's method. Also
-shows input variables, the stabilize method, and 5-argument lerp().
-* <code>fs2d</code>: For generating 2D synthetic datasets
-* <code>unicode</code>: Not for computing anything; comments include a Diderot Unicode cheatsheet
+* [`hello`](hello/): Hello world in Diderot
+* [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
+Demonstrates input variables, the stabilize method, and 5-argument lerp().
+* `fs2d`: For generating 2D synthetic datasets. Demonstrates computing on globals at
+initialization-time, user-defined function, and printing.
+* `iso2d`: Sampling isocontours with non-interacting particles
+* `unicode`: Not for computing anything; comments include a Diderot Unicode cheatsheet
 
 ## Building Diderot and these examples
 
