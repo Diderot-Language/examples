@@ -1,8 +1,12 @@
 /*
-** This example program doesn't actually do anything; its just a
-** list of the Unicode characters that you might need in Diderot.
-** After each character is the LaTeX equivalent, which might be
-** useful for Diderot programs in LaTeX documents.
+==========================================
+## unicode.diderot: The Diderot unicode cheatsheet
+
+This example program doesn't actually do anything; its just a
+list of the Unicode characters that you might need in Diderot.
+After each character is the LaTeX equivalent, which might be
+useful for Diderot programs in LaTeX documents.
+==========================================
 
 ⊛
 convolution, as in:
@@ -43,8 +47,9 @@ LaTeX: \infty
 
 */
 
-strand blah (int i) {
-    output real out = 0.0;
+// This is basically the no-op Diderot program
+strand noop (int i) {
+    output real out = 0;
     update { stabilize; }
 }
-initially [ blah(i) | i in 0..0 ];
+initially [ noop(i) | i in 0..0 ];
