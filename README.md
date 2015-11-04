@@ -34,7 +34,7 @@ the `apt-get` and `brew` commands may need to be prefixed by `sudo `.
 
 [Cmake](https://cmake.org) is used to build Teem:
 * Linux: `apt-get install cmake`
-* OSX: [`brew`](http://brew.sh)` install cmake`
+* OSX: [`brew`](http://brew.sh) ` install cmake`
 * In any case, the [CMake download](https://cmake.org/download/)
 page includes "Binary distributions" that have the executable
 `cmake` you'll need.
@@ -43,7 +43,7 @@ The [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
 tools (specifically <code>autoconf</code> and <code>autoheader</code>) are used to
 configure the Diderot compilation:
 * Linux: `apt-get install autoconf`
-* OSX: `[brew](http://brew.sh) install autoconf`
+* OSX: [`brew`](http://brew.sh) ` install autoconf`
 
 To keep things contained, you may want to create a directory (perhaps <code>ddro</code>)
 to contain all the other software directories referred to below:
