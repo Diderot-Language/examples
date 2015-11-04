@@ -1,0 +1,85 @@
+/**********
+# 2D isocontour sampling by independent (non-interacting) particles
+
+First make a little dataset, using ../fs2d/fs2d-scl:
+
+	../fs2d/fs2d-scl -size0 60 -size1 60 -which 3 -width 8 2>&1 | unu save -f nrrd -o cubic.nrrd
+
+Then compile this program; assuming the directions at
+https://github.com/Diderot-Language/examples you can:
+
+	../../vis12/bin/diderotc --exec iso2d.diderot
+
+Note that if a Diderot program refers to an image file, that image
+file needs to exist at compile time (so that the compiler can generate
+instructions specific to the data type and the image orientation). Hence the need to create
+cubic.nrrd before running diderotc.  If a needed .nrrd file is missing,
+the error message looks like:
+
+	uncaught exception Fail [Fail: Nrrd file "cubic.nrrd" does not exist]
+	  raised at common/phase-timer.sml:78.50-78.52
+	  raised at common/phase-timer.sml:78.50-78.52
+	  raised at nrrd/nrrd-info.sml:146.15-146.74
+
+However, you can supply a different image at run-time, if the image
+is noted as an "input" (as below), provided that it exactly matches
+the type and shape of the image given at compile-time.
+
+**********/
+
+input real isoval = 0;        // the isovalue
+input int stepsMax = 10;      // max # steps allowed to converge
+input real epsilon = 0.00001; // convergence threshold
+input image(2)[] img = image("cubic.nrrd"); // data to isocontour
+
+// way of specifying the grid on which sampling is done
+input vec2 cmin = [-1,-1]; // # lower corner of sampling grid
+input vec2 cmax = [1,1];   // # upper corner of sampling grid
+input int size = 30;       // # samples on both axes
+
+// field is defined so isocontour of interest is at zero levelset
+field#1(2)[] F = c4hexic ⊛ img - isoval;
+
+
+/*
+The ID argument is not actually used, but it is included here as an
+example of a way of identifying strands that can be useful for
+debugging.
+*/
+strand iso(int ID, vec2 pos0) {
+   output vec2 pos = pos0;
+   int steps = 0;
+   update {
+      // Stop if no longer inside, or have taken too many steps.
+      if (!inside(pos, F) || steps > stepsMax) {
+         die;
+      }
+
+      // Subsequent expressions are undefined if |∇F| is zero
+      if (|∇F(pos)| == 0.0) {
+         die;
+      }
+
+      // The Newton-Raphson step
+      vec2 delta = -normalize(∇F(pos)) * F(pos)/|∇F(pos)|;
+      pos += delta;
+
+      // We've converged if delta is small enough
+      if (|delta| < epsilon) {
+         stabilize;
+      }
+      steps += 1;
+   }
+}
+
+/*
+** This generates a node-centered sampling of the region;
+** a cell-centered sampling would be created with:
+                [lerp(cmin[0], cmax[0], -0.5, idx0, size-0.5),
+                 lerp(cmin[1], cmax[1], -0.5, idx1, size-0.5)])
+*/
+initially { iso(idx0 + size*idx1,
+                [lerp(cmin[0], cmax[0], 0, idx0, size-1),
+                 lerp(cmin[1], cmax[1], 0, idx1, size-1)])
+           | idx1 in 0..(size-1),   // SLOWER axis
+             idx0 in 0..(size-1) }; // FASTER axis
