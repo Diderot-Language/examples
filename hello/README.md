@@ -1,0 +1,13 @@
+## hello.diderot: The usual greeting, in Diderot
+
+Assuming the directions at https://github.com/Diderot-Language/examples
+this program can be compiled and run with:
+
+	../../vis12/bin/diderotc --exec hello.diderot
+	./hello
+
+The output can be checked with:
+
+	unu save -f text -i out.nrrd
+
+which should produce "42".
