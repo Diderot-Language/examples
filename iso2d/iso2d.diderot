@@ -72,7 +72,6 @@ input int size = 30;       // # samples on both axes
 // field is defined so isocontour of interest is at zero levelset
 field#1(2)[] F = c4hexic ⊛ img - isoval;
 
-
 /*
 The ID argument is not actually used, but it is included here as an
 example of a way of identifying strands that can be useful for
