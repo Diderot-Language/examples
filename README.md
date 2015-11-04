@@ -55,19 +55,7 @@ All shell commands used here assume sh/bash syntax.
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  There are different ways of doing this.
-
-**On Ubuntu Linux**: Use these two lines:
-
-	apt-get install smlnj
-	apt-get install ml-lpt
-
-The second command is needed for building the Diderot compiler, without
-that you'll get errors like "ml-lpt-lib.cm not defined".
-
-**Download OS-specific executables directly from http://smlnj.org**
-
-On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
+need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
 (currently 110.79) to get files needed to install SML/NJ on your platform.
 
