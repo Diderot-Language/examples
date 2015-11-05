@@ -23,8 +23,8 @@ Demonstrates input variables, the stabilize method, and 5-argument lerp().
 initialization-time, user-defined function, and printing.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
-having an image dataset as an input variable, strands calling `die`, the `normalize` function,
-and finding gradients with ∇.
+having an image dataset as an input variable, strands calling `die`,
+the `inside` and `normalize` functions, and finding gradients with ∇.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet
 
 ## Building Diderot and these examples
@@ -215,7 +215,7 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 
 The steps to configure and build any of these Diderot branches are the same;
 these commands can be run inside any of the per-branch directories
-(such as <code>vis12/</code>).
+(such as `$DDRO_ROOT/vis12/`).
 Note the use of the <code>TEEMDDRO</code> variable set above, and the possible
 use of the <code>SMLNJ_CMD</code> variable also described above:
 
