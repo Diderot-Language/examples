@@ -90,14 +90,14 @@ page, go to the topmost "Sofware links: files" link
 On OSX there is an installer package to get executables.
 
 Or, you can compile smlnj from source. Doing this on a modern 64-bit
-Linux machine requires support 32-bit executables, since
+Linux machine requires support for 32-bit executables, since
 `sml` is available only as a 32-bit program. You will know you're missing
 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
-How you install this support will vary between different versions of Linux;
+How you fix this will vary between different versions of Linux;
 please tell us specific steps for your Linux flavor!
 
-* On Ubuntu: [`sudo apt-get install gcc-multilib`](http://stackoverflow.com/questions/23182765/how-to-install-ia32-libs-in-ubuntu-14-04-lts-trusty-tahr)
+* On Ubuntu (at least in version 14.04): [`sudo apt-get install gcc-multilib`](http://stackoverflow.com/questions/23182765/how-to-install-ia32-libs-in-ubuntu-14-04-lts-trusty-tahr)
 
 Then, to compile `sml` from files at http://smlnj.org (the `wget` command
 is specific to version 110.79; there may now be a newer version):
@@ -215,10 +215,10 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
 The steps to configure and build any of these Diderot branches are the same;
-these commands can be run inside any of the per-branch directories
+run these commands inside any of the per-branch directories
 (such as `$DDRO_ROOT/vis12/`).
 Note the use of the <code>TEEMDDRO</code> variable set above, and the possible
-use of the <code>SMLNJ_CMD</code> variable also described above:
+(implicit) use of the <code>SMLNJ_CMD</code> variable also described above:
 
 	autoheader -Iconfig
 	autoconf -Iconfig
