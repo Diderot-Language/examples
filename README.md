@@ -90,16 +90,16 @@ page, go to the topmost "Sofware links: files" link
 On OSX there is an installer package to get executables.
 
 Or, you can compile smlnj from source. Doing this on a modern 64-bit
-Linux machine requires libraries to support 32-bit executables, since
-`sml` is available only as a 32-bit program. You'll know you need to get these
-32-bit support libraries if the `config/install.sh` command below fails
+Linux machine requires support 32-bit executables, since
+`sml` is available only as a 32-bit program. You will know you're missing
+32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you install this support will vary between different versions of Linux;
 please tell us specific steps for your Linux flavor!
 
-* On Ubuntu: `sudo apt-get install gcc-multilib`
+* On Ubuntu: [`sudo apt-get install gcc-multilib`](http://stackoverflow.com/questions/23182765/how-to-install-ia32-libs-in-ubuntu-14-04-lts-trusty-tahr)
 
-And then to compile `sml` from files at http://smlnj.org (the `wget` command
+Then, to compile `sml` from files at http://smlnj.org (the `wget` command
 is specific to version 110.79; there may now be a newer version):
 
 	mkdir $DDRO_ROOT/smlnj
@@ -110,7 +110,7 @@ is specific to version 110.79; there may now be a newer version):
 	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
 Once you believe you have `sml` installed, it should either be in your path
 (test this with `which sml`), or, if you didn't do this when compiling `sml`
-from source with the steps immediately above:
+with the steps immediately above:
 
 	export SMLNJ_CMD=/path/to/your/sml
 This is required for subsequent Diderot compilation.
