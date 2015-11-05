@@ -175,8 +175,7 @@ The "Formats available" should include "png", and the
 
 To add these Teem utilities to your path:
 
-	cd $DDRO_ROOT/teem-util/bin
-	export PATH=${PATH}:`pwd`
+	export PATH=$DDRO_ROOT/teem-util/bin:${PATH}
 
 Finally, note that <code>unu dnorm</code> is a useful command for
 normalizing the orientation and meta-data in a Nrrd arrays into the consistent
