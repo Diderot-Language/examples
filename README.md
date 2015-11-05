@@ -202,7 +202,9 @@ Still, this has become the most mature branch, though it lacks some features fro
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
-The **vis12-cl** branch includes the OpenCL backend.
+The **vis12-cl** branch is the only one with a working OpenCL backend.  The `diderotc`
+compiler from the other branches may advertise a `--target=cl` option, but don't believe that;
+it only works in the vis12-cl branch.
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
 
@@ -223,8 +225,8 @@ the same. Run these commands inside any of the per-branch directories
 	./configure --with-teem=$TEEMDDRO
 	make local-install
 
-Note the use of the <code>TEEMDDRO</code> variable set above, and the possible
-(implicit) use of the <code>SMLNJ_CMD</code> variable also described above:
+Note the use of the <code>$TEEMDDRO</code> variable set above, and the possible
+(implicit) use of the <code>$SMLNJ_CMD</code> variable also described above.
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
 From within one of the Diderot branch directories, you can check that the build worked by trying:
 
