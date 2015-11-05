@@ -80,7 +80,7 @@ if that's at or above version 110.77, you can:
 	sudo apt-get install smlnj
 	sudo apt-get install ml-lpt
 The second `apt-get` command is included because one user reported that
-this resolved error messages like "ml-lpt-lib.cm not defined" (arising
+installing `ml-lpt` resolved error messages like "ml-lpt-lib.cm not defined" (arising
 during the later compilation of the Diderot compiler).
 
 **To install from files at http://smlnj.org**:
@@ -228,6 +228,9 @@ the same. Run these commands inside any of the per-branch directories
 Note the use of the <code>$TEEMDDRO</code> variable set above, and the possible
 (implicit) use of the <code>$SMLNJ_CMD</code> variable also described above.
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
+If your build fails with an error message along the lines of "ml-lpt-lib.cm not defined" you're missing
+the ml-lpt library, which you can probably get through your package manager or from the
+[SML/NJ](http://smlnj.org/) download page.
 From within one of the Diderot branch directories, you can check that the build worked by trying:
 
 	bin/diderotc --help
