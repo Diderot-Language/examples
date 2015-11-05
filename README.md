@@ -117,12 +117,14 @@ This is required for subsequent Diderot compilation.
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
-Teem is overdue for a release, but in the mean time you build from source with CMake.
+Teem is overdue for a release, but in the mean time you should build
+it from source with CMake, because Diderot (and these examples) assume
+the current source.
 
-Even if you already have a version of Teem installed, it is best if you build a new Teem
-for Diderot, with *none* of the optional libraries (PNG, zlib, etc) enabled. Experience
-has shown that additional dependencies from Teem will complicate the linking that
-the Diderot compiler does.
+It is best to build a Teem for Diderot that has *none* of the optional
+libraries (PNG, zlib, etc) enabled. Experience has shown that
+additional dependencies from Teem will complicate the linking that the
+Diderot compiler does.
 
 To get the Teem source and set the
 <code>TEEMDDRO</code> variable needed later, run:
