@@ -29,25 +29,27 @@ and finding gradients with ∇.
 
 ## Building Diderot and these examples
 
-Installing software needed to build Teem (CMake) and Diderot (autoconf) may be easier as root;
-the `apt-get` commands may need to be prefixed by `sudo `. The [Homebrew `brew`](http://brew.sh)
-commands shouldn't need sudo.
+#### (0) Get Cmake, autoconf, and creating $DDRO_ROOT
 
-[Cmake](https://cmake.org) is used to build Teem:
-* Linux: `apt-get install cmake`
+CMake is needed to build Teem, and autoconf is need to configure the compilation
+of Diderot.  These utilities can be obtained via `apt-get` on Ubuntu/Debian Linux,
+or via [Homebrew `brew`](http://brew.sh) on OSX.
+
+To get [Cmake](https://cmake.org):
+* Linux: `sudo apt-get install cmake`
 * OSX: `brew install cmake`
 * In any case, the [CMake download](https://cmake.org/download/)
 page includes "Binary distributions" that have the executable
 `cmake` you'll need.
 
-The [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
-tools (specifically <code>autoconf</code> and <code>autoheader</code>) are used to
-configure the Diderot compilation:
-* Linux: `apt-get install autoconf`
+To get the [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
+tools (specifically <code>autoconf</code> and <code>autoheader</code>):
+* Linux: `sudo apt-get install autoconf`
 * OSX: `brew install autoconf`
 
-To keep things contained, you may want to create a directory (perhaps <code>ddro</code>)
-to contain all the other software directories referred to below:
+To keep things contained, you should create a directory (perhaps <code>~/ddro</code>)
+to contain all the other software directories referred to below,
+and set `$DDRO_ROOT` to refer to it:
 
 	mkdir ddro
 	cd ddro
@@ -75,8 +77,8 @@ mentions version 110.77 or higher, then
 version.  `apt-cache policy smlnj` reports what version you can get;
 if that's at or above version 110.77, you can:
 
-	apt-get install smlnj
-	apt-get install ml-lpt
+	sudo apt-get install smlnj
+	sudo apt-get install ml-lpt
 
 The second `apt-get` command is included because one user reported that
 this resolved error messages like "ml-lpt-lib.cm not defined" (arising
