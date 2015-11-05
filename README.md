@@ -125,13 +125,13 @@ has shown that additional dependencies from Teem will complicate the linking tha
 the Diderot compiler does.
 
 To get the Teem source and set the
-<code>TEEMDDRO</code> variable needed, run:
+<code>TEEMDDRO</code> variable needed later, run:
 
 	cd $DDRO_ROOT
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-ddro
-	cd teem-ddro; TEEMDDRO=`pwd`; cd -
-To build Teem and install into `teem-ddro`:
+	cd teem-ddro; TEEMDDRO=`pwd`
+Then, build Teem and install into `teem-ddro`:
 
 	mkdir $DDRO_ROOT/teem-ddro-build
 	cd $DDRO_ROOT/teem-ddro-build
@@ -165,7 +165,7 @@ want a **separate** Teem build that includes PNG and zlib. You get this with:
 	  -D CMAKE_INSTALL_PREFIX:PATH=$TEEMUTIL \
 	  ../teem-src
 	make install
-(The difference with the commands above is the "-D Teem_PNG=ON -D Teem_ZLIB=ON").
+(The difference with the commands above is the `-D Teem_PNG=ON -D Teem_ZLIB=ON`).
 To make sure this build includes the useful libraries, try:
 
 	$DDRO_ROOT/teem-util/bin/unu about | tail -n 4
@@ -177,7 +177,6 @@ To add these Teem utilities to your path:
 
 	cd $DDRO_ROOT/teem-util/bin
 	export PATH=${PATH}:`pwd`
-	cd -
 
 Finally, note that <code>unu dnorm</code> is a useful command for
 normalizing the orientation and meta-data in a Nrrd arrays into the consistent
@@ -188,8 +187,11 @@ representation that the Diderot run-time assumes.
 **NOTE: As Diderot branches are merged, the names and URLs for these may change**
 
 At this point there are different branches with different functionalities;
-work on merging them is ongoing.
-For all of the "svn co" commands below, the password is also "anonsvn".
+work on merging them is ongoing.  Any or all of them should be within `$DDRO_ROOT`:
+
+	cd $DDRO_ROOT
+
+Every branch is available via an "svn co" command below.  The password is also "anonsvn".
 
 The **vis12** branch was created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
