@@ -100,7 +100,7 @@ please tell us specific steps for your Linux flavor!
 * On Ubuntu: `sudo apt-get install gcc-multilib`
 
 And then to compile `sml` from files at http://smlnj.org (the `wget` command
-is specific to version 110.79; there may now be a newer verion):
+is specific to version 110.79; there may now be a newer version):
 
 	mkdir $DDRO_ROOT/smlnj
 	cd $DDRO_ROOT/smlnj
