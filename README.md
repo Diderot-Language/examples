@@ -231,11 +231,12 @@ From within one of the Diderot branch directories, you can check that the build 
 
 #### (4) Get the examples:
 
+	cd $DDRO_ROOT
 	git clone https://github.com/Diderot-Language/examples.git
 
 #### (5) Try running the "hello world" example
 
-	cd examples/hello
+	cd $DDRO_ROOT/examples/hello
 	../../vis12/bin/diderotc --exec hello.diderot
 	./hello
 
