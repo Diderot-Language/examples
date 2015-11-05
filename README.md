@@ -19,13 +19,13 @@ them in (going from simpler to more complex programs):
 * [`hello`](hello/): Hello world in Diderot
 * [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
 Demonstrates input variables, the stabilize method, and 5-argument lerp().
+* [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet
 * [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
 initialization-time, user-defined function, and printing.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
 having an image dataset as an input variable, strands calling `die`,
 the `inside` and `normalize` functions, and finding gradients with ∇.
-* [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet
 
 ## Building Diderot and these examples
 
