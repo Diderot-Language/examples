@@ -30,7 +30,8 @@ and finding gradients with ∇.
 ## Building Diderot and these examples
 
 Installing software needed to build Teem (CMake) and Diderot (autoconf) may be easier as root;
-the `apt-get` and [`brew`](http://brew.sh) commands may need to be prefixed by `sudo `.
+the `apt-get` commands may need to be prefixed by `sudo `. The [Homebrew `brew`](http://brew.sh)
+commands shouldn't need sudo.
 
 [Cmake](https://cmake.org) is used to build Teem:
 * Linux: `apt-get install cmake`
@@ -50,25 +51,71 @@ to contain all the other software directories referred to below:
 
 	mkdir ddro
 	cd ddro
+	export DDRO_ROOT=`pwd`
 
 All shell commands used here assume sh/bash syntax.
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
-page, go to the topmost "Sofware links: files" link
-(currently 110.79) to get files needed to install SML/NJ on your platform.
-
-You need at least version 110.77 to build Diderot.  You can learn the version
-of SML by running
+need to install that first.  **You need at least version 110.77 to build Diderot.**
+You can learn the version of the executable `sml` by running
 
 	sml @SMLversion
 
-If you do not install SML so that the executable <code>sml</code> is in your path
-(test this with `which sml`)
-you need to (for the sake of later Diderot configuration):
+There are different ways of getting `sml`.
+
+**On OSX**, (using [Homebrew](https://brew.sh)). Assuming that `brew info smlnj`
+mentions version 110.77 or higher, then
+
+	brew install smlnj
+
+(possibly followed by `brew link smlnj`) should work.
+
+**On Ubuntu or Debian**, `apt-get` may work to install a sufficiently recent
+version.  `apt-cache policy smlnj` reports what version you can get;
+if that's at or above version 110.77, you can:
+
+	apt-get install smlnj
+	apt-get install ml-lpt
+
+The second `apt-get` command is included because one user reported that
+this resolved error messages like "ml-lpt-lib.cm not defined" (arising
+during the later compilation of the Diderot compiler).
+
+**To install from files at http://smlnj.org**:
+On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
+page, go to the topmost "Sofware links: files" link
+(currently 110.79) to get files needed to install SML/NJ on your platform.
+On OSX there is an installer package to get executables.
+
+Or, you can compile smlnj from source. Doing this on a modern 64-bit
+Linux machine requires libraries to support 32-bit executables;
+`sml` is available only as a 32-bit program. You'll know you need these
+32-bit support libraries if the `config/install.sh` command below fails
+with an error message like `SML/NJ requires support for 32-bit executables.`
+How you install this support will vary between different versions of Linux;
+please tell us specific steps for your Linux flavor!
+
+* On Ubuntu: `sudo apt-get install gcc-multilib`
+
+And then to compile `sml` from files at http://smlnj.org (the `wget` command
+is specific to version 110.79; there may now be a newer verion):
+
+	mkdir $DDRO_ROOT/smlnj
+	cd $DDRO_ROOT/smlnj
+	wget http://smlnj.cs.uchicago.edu/dist/working/110.79/config.tgz
+	tar xzf config.tgz
+	config/install.sh
+	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
+        cd $DDRO_ROOT
+
+Once you believe you have `sml` installed, it should either be in your path
+(test this with `which sml`), or, if you didn't do this when compiling `sml`
+from source with the steps immediately above:
 
 	export SMLNJ_CMD=/path/to/your/sml
+
+This is required for subsequent Diderot compilation.
 
 #### (2) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
