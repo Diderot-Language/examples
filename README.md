@@ -109,7 +109,7 @@ is specific to version 110.79; there may now be a newer verion):
 	tar xzf config.tgz
 	config/install.sh
 	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
-        cd $DDRO_ROOT
+	cd $DDRO_ROOT
 
 Once you believe you have `sml` installed, it should either be in your path
 (test this with `which sml`), or, if you didn't do this when compiling `sml`
