@@ -73,7 +73,7 @@ mentions version 110.77 or higher, then
 
 (possibly followed by `brew link smlnj`) should work.
 
-**On Ubuntu or Debian**, `apt-get` may work to install a sufficiently recent
+**On Ubuntu or Debian Linux**, `apt-get` may work to install a sufficiently recent
 version.  `apt-cache policy smlnj` reports what version you can get;
 if that's at or above version 110.77, you can:
 
@@ -91,10 +91,10 @@ page, go to the topmost "Sofware links: files" link
 On OSX there is an installer package to get executables.
 
 Or, you can compile smlnj from source. Doing this on a modern 64-bit
-Linux machine requires libraries to support 32-bit executables;
-`sml` is available only as a 32-bit program. You'll know you need these
+Linux machine requires libraries to support 32-bit executables, since
+`sml` is available only as a 32-bit program. You'll know you need to get these
 32-bit support libraries if the `config/install.sh` command below fails
-with an error message like `SML/NJ requires support for 32-bit executables.`
+with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you install this support will vary between different versions of Linux;
 please tell us specific steps for your Linux flavor!
 
