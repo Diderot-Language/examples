@@ -79,7 +79,6 @@ if that's at or above version 110.77, you can:
 
 	sudo apt-get install smlnj
 	sudo apt-get install ml-lpt
-
 The second `apt-get` command is included because one user reported that
 this resolved error messages like "ml-lpt-lib.cm not defined" (arising
 during the later compilation of the Diderot compiler).
@@ -109,14 +108,11 @@ is specific to version 110.79; there may now be a newer verion):
 	tar xzf config.tgz
 	config/install.sh
 	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
-	cd $DDRO_ROOT
-
 Once you believe you have `sml` installed, it should either be in your path
 (test this with `which sml`), or, if you didn't do this when compiling `sml`
 from source with the steps immediately above:
 
 	export SMLNJ_CMD=/path/to/your/sml
-
 This is required for subsequent Diderot compilation.
 
 #### (2) Get Teem
@@ -131,6 +127,7 @@ the Diderot compiler does.
 To get the Teem source and set the
 <code>TEEMDDRO</code> variable needed, run:
 
+	cd $DDRO_ROOT
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-ddro
 	cd teem-ddro; TEEMDDRO=`pwd`; cd -
