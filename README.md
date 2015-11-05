@@ -214,17 +214,17 @@ The **charisee** branch includes field "lifting", based on the EIN internal repr
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
-The steps to configure and build any of these Diderot branches are the same;
-run these commands inside any of the per-branch directories
-(such as `$DDRO_ROOT/vis12/`).
-Note the use of the <code>TEEMDDRO</code> variable set above, and the possible
-(implicit) use of the <code>SMLNJ_CMD</code> variable also described above:
+**To configure and build** any of these branches, the steps are
+the same. Run these commands inside any of the per-branch directories
+(such as `$DDRO_ROOT/vis12/`):
 
 	autoheader -Iconfig
 	autoconf -Iconfig
 	./configure --with-teem=$TEEMDDRO
 	make local-install
 
+Note the use of the <code>TEEMDDRO</code> variable set above, and the possible
+(implicit) use of the <code>SMLNJ_CMD</code> variable also described above:
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
 From within one of the Diderot branch directories, you can check that the build worked by trying:
 
