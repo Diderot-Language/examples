@@ -131,10 +131,10 @@ To get the Teem source and set the
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
 	mkdir teem-ddro
 	cd teem-ddro; TEEMDDRO=`pwd`; cd -
-To build Teem and install into <code>teem-ddro</code>:
+To build Teem and install into `teem-ddro`:
 
-	mkdir teem-ddro-build
-	cd teem-ddro-build
+	mkdir $DDRO_ROOT/teem-ddro-build
+	cd $DDRO_ROOT/teem-ddro-build
 	cmake \
 	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
 	  -D BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE=Release \
@@ -143,10 +143,9 @@ To build Teem and install into <code>teem-ddro</code>:
 	  -D CMAKE_INSTALL_PREFIX:PATH=$TEEMDDRO \
 	  ../teem-src
 	make install
-	cd ..
 To make sure your build works, try:
 
-	teem-ddro/bin/unu --version
+	$DDRO_ROOT/teem-ddro/bin/unu --version
 
 Note that we do **not** recommend adding this <code>teem-ddro/bin</code> to your path;
 its not very useful.
@@ -154,10 +153,10 @@ its not very useful.
 Instead, post-processing of Diderot output often generates PNG images, which means you'll
 want a **separate** Teem build that includes PNG and zlib. You get this with:
 
-	mkdir teem-util
-	cd teem-util; TEEMUTIL=`pwd`; cd -
-	mkdir teem-util-build
-	cd teem-util-build
+	mkdir $DDRO_ROOT/teem-util
+	cd $DDRO_ROOT/teem-util; TEEMUTIL=`pwd`
+	mkdir $DDRO_ROOT/teem-util-build
+	cd $DDRO_ROOT/teem-util-build
 	cmake \
 	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
 	  -D BUILD_SHARED_LIBS=OFF -D CMAKE_BUILD_TYPE=Release \
@@ -166,18 +165,17 @@ want a **separate** Teem build that includes PNG and zlib. You get this with:
 	  -D CMAKE_INSTALL_PREFIX:PATH=$TEEMUTIL \
 	  ../teem-src
 	make install
-	cd ..
 (The difference with the commands above is the "-D Teem_PNG=ON -D Teem_ZLIB=ON").
 To make sure this build includes the useful libraries, try:
 
-	teem-util/bin/unu about | tail -n 4
+	$DDRO_ROOT/teem-util/bin/unu about | tail -n 4
 
 The "Formats available" should include "png", and the
 "Nrrd data encodings available" should include "gz".
 
 To add these Teem utilities to your path:
 
-	cd teem-util/bin
+	cd $DDRO_ROOT/teem-util/bin
 	export PATH=${PATH}:`pwd`
 	cd -
 
