@@ -40,12 +40,13 @@ of their X and Y coordinates:
 
 	unu jhisto -i pos.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos.png
 
-Make sure your pos.png looks like [`pos-ref.png`](pos-ref.png); if it
-does not, your Teem checkout may be old (a new fix was committed Nov 5 2015).
-Assuming your PNG viewer uses conventional display orientation,
-the `-min -4 4 -max 4 -4` arguments to `unu jhisto` should make
-the first coordinate ("x") increase to the right, and the second coordinate ("y")
-increase towards up.
+Make sure your pos.png looks like [`pos-ref.png`](pos-ref.png); it may
+not be an exact pixel match but it should be close.  If `pos.png`
+looks very different (or blank), your Teem checkout may be old (a new
+fix was committed Nov 5 2015).  Assuming your PNG viewer uses
+conventional display orientation, the `-min -4 4 -max 4 -4` arguments
+to `unu jhisto` should make the first coordinate ("x") increase to the
+right, and the second coordinate ("y") increase towards up.
 
 Even though you had to supply the input image at compile-time, you can
 supply a different image at run-time, if the image is noted as an
