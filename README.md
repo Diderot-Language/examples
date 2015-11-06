@@ -246,8 +246,8 @@ From within one of the Diderot branch directories, you can check that the build 
 	../../vis12/bin/diderotc --exec hello.diderot
 	./hello
 
-Running <code>hello</code> should print "hello, world".  All Diderot programs,
-even this out, produces an output file; this one created <code>out.nrrd</code>,
+Running <code>hello</code> should print "hello, world".  Every Diderot program,
+even this trivial one, produces an output file. `hello` created <code>out.nrrd</code>,
 a container for a single int.  We can check its contents with:
 
 	unu save -f text -i out.nrrd
