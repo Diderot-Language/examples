@@ -9,7 +9,7 @@ https://github.com/Diderot-Language/examples you can:
 
 	../../vis12/bin/diderotc --exec iso2d.diderot
 
-You should try `iso2d --help` to see the available input variables.
+You should try `./iso2d --help` to see the available input variables.
 Note that if a Diderot program refers to an image file, that image
 file needs to exist at compile time (so that the compiler can generate
 instructions specific to the data type and the image
