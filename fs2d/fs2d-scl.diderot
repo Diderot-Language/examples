@@ -22,9 +22,8 @@ This program is unusual in that its printed output needs to be captured
 in order to have a NRRD header that records the orientation of the
 sampling grid, so using the program involves redirection.  To
 get a self-contained parab.nrrd containing a parabola function
-(assuming sh/bash redirection):
 
-	./fs2d-scl -which 2  2>&1 | unu save -f nrrd -o parab.nrrd
+	./fs2d-scl -which 2 | unu save -f nrrd -o parab.nrrd
 	rm out.nrrd
 
 ========================================== */
@@ -50,7 +49,12 @@ vec2 edge1 = rot•[0, spc[1]] + shear*edge0;
 // location of first sample
 vec2 orig = -(edge0*(size0-1) + edge1*(size1-1))/2 + off;
 
-// the function to evaluate at each grid point
+/*
+The function to evaluate at each grid point The usage of the parm[]
+vector elements is just as a tuple of numbers, rather than a geometric
+vector, and is made somewhat confusing by the intent that the the
+function be useful with the default all-zero parm
+*/
 function real func(vec2 pos) {
    real x = pos[0];
    real y = pos[1];
@@ -63,10 +67,16 @@ function real func(vec2 pos) {
       ret = pos•pos;
    } else if (3 == which) { // 3: Tschirnhausen cubic
       // using 4*y^2 instead of y^2 for aesthetic reasons
+      // expects width of about 8
       ret = x^3 + 3*x^2 - 4*y^2;
    } else if (4 == which) { // 4: sine waves
       ret = sin((1 + parm[0])*(x + parm[1]))
           + sin((1 + parm[2])*(y + parm[3]));
+   } else if (5 == which) { // 5: circle with soft edge, plus ramps
+      real r = |pos|;
+      // expects width of about 4
+      ret = lerp(1, 0, -1, erf((r - (1 + parm[0]))*(8*(1+parm[1]))), 1)
+            + parm[2]*x + parm[3]*y;
    } else {
       print("HEY no function defined for which = ", which, "\n");
    }

@@ -21,8 +21,7 @@ This program is unusual in that its printed output needs to be captured
 in order to have a NRRD header that records the orientation of the
 sampling grid, so using the program involves redirection.  To
 get a self-contained parab.nrrd containing a parabola function
-(assuming sh/bash redirection):
 
-	./fs2d-scl -which 2  2>&1 | unu save -f nrrd -o parab.nrrd
+	./fs2d-scl -which 2 | unu save -f nrrd -o parab.nrrd
 	rm out.nrrd
 
