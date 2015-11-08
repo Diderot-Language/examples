@@ -79,9 +79,9 @@ if that's at or above version 110.77, you can:
 
 	sudo apt-get install smlnj
 	sudo apt-get install ml-lpt
-The second `apt-get` command is included because one user reported that
-installing `ml-lpt` resolved error messages like "ml-lpt-lib.cm not defined" (arising
-during the later compilation of the Diderot compiler).
+The second `apt-get` to get `ml-lpt` is required because without it, the later compilation
+of the Diderot compiler (with the `sml` from `apt-get`) will stop with an error message
+like `driver/sources.cm:16.3-16.18 Error: anchor $ml-lpt-lib.cm not defined`.
 
 **To install from files at http://smlnj.org**:
 On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
@@ -95,9 +95,9 @@ Linux machine requires support for 32-bit executables, since
 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you fix this will vary between different versions of Linux;
-please tell us specific steps for your Linux flavor!
+please tell us any specific steps you learn for your specific Linux flavor.
 
-* On Ubuntu (at least in version 14.04): [`sudo apt-get install gcc-multilib`](http://stackoverflow.com/questions/23182765/how-to-install-ia32-libs-in-ubuntu-14-04-lts-trusty-tahr)
+* On Ubuntu: [`sudo apt-get install gcc-multilib`](http://stackoverflow.com/questions/23182765/how-to-install-ia32-libs-in-ubuntu-14-04-lts-trusty-tahr)  (tested on 14.04 and 15.10)
 
 Then, to compile `sml` from files at http://smlnj.org (the `wget` command
 is specific to version 110.79; there may now be a newer version):
