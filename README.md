@@ -228,10 +228,11 @@ the same. Run these commands inside any of the per-branch directories
 Note the use of the <code>$TEEMDDRO</code> variable set above, and the possible
 (implicit) use of the <code>$SMLNJ_CMD</code> variable also described above.
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
-If your build fails with an error message along the lines of "ml-lpt-lib.cm not defined" you're missing
-the ml-lpt library, which you can probably get through your package manager or from the
+If your build fails with an error message `anchor $ml-lpt-lib.cm not defined`, you're missing
+the ml-lpt library, which you can get through your package manager (such as `sudo apt-get install ml-lpt`) or from the
 [SML/NJ](http://smlnj.org/) download page.
-From within one of the Diderot branch directories, you can check that the build worked by trying:
+
+Once the build of the Diderot compiler is finished, you can check that it worked by trying:
 
 	bin/diderotc --help
 
