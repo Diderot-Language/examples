@@ -203,7 +203,7 @@ Still, this has become the most mature branch, though it lacks some features fro
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
 The **vis12-cl** branch is the only one with a working OpenCL backend.  The `diderotc`
-compiler from the other branches may advertise a `--target=cl` option, but don't believe that;
+compiler from the other branches may advertise a `--target=cl` option, but actually
 it only works in the vis12-cl branch.
 
 	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
