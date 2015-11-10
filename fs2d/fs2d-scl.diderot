@@ -78,6 +78,7 @@ function real func(vec2 pos) {
       ret = lerp(1, 0, -1, erf((r - (1 + parm[0]))*(8*(1+parm[1]))), 1)
             + parm[2]*x + parm[3]*y;
    } else {
+      // update "input int which" annotation above as cases are added
       print("HEY no function defined for which = ", which, "\n");
    }
    return ret;
