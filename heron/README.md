@@ -34,7 +34,7 @@ usage information.  So the declarations:
 	input int numval ("how many values to compute") = 100;
 	input real eps ("relative error convergence test") = 0.000001;
 
-becomes in the usage information:
+become in the usage information:
 
 	-minval <val> = min value to find root of (double); default: "1.000000"
 	-maxval <val> = max value to find root of (double); default: "100.000000"
