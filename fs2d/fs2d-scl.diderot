@@ -28,14 +28,14 @@ get a self-contained parab.nrrd containing a parabola function
 
 ========================================== */
 
-input int size0 = 101;  // # samples on faster axis
-input int size1 = 100;  // # samples on slower axis
-input real width = 1;   // approx width of world-space region sampled
-input vec2 off = [0,0]; // translation offset from origin-centered grid
-input real shear = 0;   // amount of shear in sampling grid
-input real angle = 0;   // orientation (in degrees) of faster axis
-input int which = 0;    // which function to sample
-input vec4 parm = [0,0,0,0]; // parameters that functions may use
+input int size0 ("# samples on faster axis") = 101;
+input int size1 ("# samples on slower axis") = 100;
+input real width ("approx width of world-space region sampled") = 1;
+input vec2 off ("translation offset from origin-centered grid") = [0,0];
+input real shear ("amount of shear in sampling grid") = 0;
+input real angle ("orientation (in degrees) of faster axis") = 0;
+input int which ("which function to sample, currently from 0 to 5") = 0;
+input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
 real theta = angle*π/180;
 // rotation by theta of [1,0] towards [0,1]
@@ -86,9 +86,11 @@ function real func(vec2 pos) {
 strand sample(int idx0, int idx1) {
    output real out = 0.0;
    update {
-      /* Diderot doesn't (currently) allow print statements from global
-         initialization, so to print something once per program, you
-         need to test for a condition that will be true for one strand */
+      /* Diderot doesn't (currently) allow print statements from
+         global initialization, so to print something once per
+         program, you need to test for a condition that will be true
+         for one strand.  By the immediate stabilize, this will only
+         run for one iteration. */
       if (0 == idx0 && 0 == idx1) {
          print("NRRD0004\n");
          print("# Complete NRRD file format specification at:\n");
