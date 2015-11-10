@@ -74,15 +74,15 @@ number of outputs and their location):
 * increasing or decreasing `size`; if it goes too low then the program will not have any output
 ========================================== */
 
-input real isoval = 0;        // the isovalue
-input int stepsMax = 10;      // max # steps allowed to converge
-input real epsilon = 0.00001; // convergence threshold
-input image(2)[] img = image("cubic.nrrd"); // data to isocontour
+input real isoval ("isovalue of isosurface to sample") = 0;
+input int stepsMax ("max # steps allowed for convergence") = 10;
+input real epsilon ("convergence threshold") = 0.00001;
+input image(2)[] img ("data to isocontour") = image("cubic.nrrd");
 
 // way of specifying the grid on which sampling is done
-input vec2 cmin = [-1,-1]; // # lower corner of sampling grid
-input vec2 cmax = [1,1];   // # upper corner of sampling grid
-input int size = 30;       // # samples on both axes
+input vec2 cmin ("# lower corner of sampling grid") = [-1,-1];
+input vec2 cmax ("# upper corner of sampling grid") = [1,1];
+input int size ("# samples on both axes of sampling grid") = 30;
 
 // field is defined so isocontour of interest is at zero levelset
 field#1(2)[] F = c4hexic ⊛ img - isoval;
