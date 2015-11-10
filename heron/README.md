@@ -9,12 +9,12 @@ this program can be compiled and run with:
 	./heron
 
 The output stores four numbers for each value processed:
-
-1. the value whose square root was found
-2. the computed square root
-3. the number of iterations taken to compute it
-4. the error, relative to Diderot's sqrt() function
-
+<ol start=0>
+<li> the value whose square root was found
+<li> the computed square root
+<li> the number of iterations taken to compute it
+<li> the error, relative to Diderot's sqrt() function
+</ol>
 To see the values (one set of 4 numbers per line):
 
 	unu save -f text -i vrie.nrrd
