@@ -7,7 +7,8 @@ copy-and-pasting was involved).
 This programs generates synthetic scalar 3D data on regular grids, and
 the grids have specific location and orientation in world space.
 The input arguments here make it easy to sample the same underlying
-function on grids with differing orientation, resolution, and shear.
+function on grids with differing orientation and resolution.  Grid
+orientation is specified by the angle and axis of rotation.
 
 Assuming the directions at https://github.com/Diderot-Language/examples
 this program can be compiled with:
@@ -118,7 +119,7 @@ function real func(vec3 pos) {
       ret = gauss(a, 0, 0.35+parm[0])*gauss(b, 0, 0.1+parm[1]);
    } else if (8 == which) { // 8: three twisty blades
       /* some methods in http://people.cs.uchicago.edu/~glk/pubs/#VIS-2013
-      were debugged with the aid of this datase, though it didn't appear
+      were debugged with the aid of this dataset, though it didn't appear
       in the paper.  The isosurface at isovalue 0.5 fits comfortably
       inside width 2 */
       real R3 = |pos|;
