@@ -16,9 +16,9 @@ this program can be compiled with:
 The `-which` option will determine which function is sampled; look
 for `(0 == which)` below to see the function definitions, this
 includes 3D functions used to make datasets for
-[http://people.cs.uchicago.edu/~glk/pubs/#VIS-2003](some)
-[http://people.cs.uchicago.edu/~glk/pubs/#VIS-2009](previous)
-[http://people.cs.uchicago.edu/~glk/pubs/#VIS-2014](papers).
+[some](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2003)
+[previous](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2009)
+[papers](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2014).
 
 This program is unusual in that its printed output needs to be captured
 in order to have a NRRD header that records the orientation of the
