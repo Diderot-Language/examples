@@ -14,7 +14,12 @@ this program can be compiled with:
 	../../vis12/bin/diderotc --exec fs3d-scl.diderot
 
 The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the function definitions.
+for `(0 == which)` below to see the function definitions, this
+includes 3D functions used to make datasets for
+[http://people.cs.uchicago.edu/~glk/pubs/#VIS-2003](some)
+[http://people.cs.uchicago.edu/~glk/pubs/#VIS-2009](previous)
+[http://people.cs.uchicago.edu/~glk/pubs/#VIS-2014](papers).
+
 This program is unusual in that its printed output needs to be captured
 in order to have a NRRD header that records the orientation of the
 sampling grid, so using the program involves redirection.  To
