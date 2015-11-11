@@ -6,7 +6,8 @@ copy-and-pasting was involved).
 This programs generates synthetic scalar 3D data on regular grids, and
 the grids have specific location and orientation in world space.
 The input arguments here make it easy to sample the same underlying
-function on grids with differing orientation, resolution, and shear.
+function on grids with differing orientation and resolution.  Grid
+orientation is specified by the angle and axis of rotation.
 
 Assuming the directions at https://github.com/Diderot-Language/examples
 this program can be compiled with:
