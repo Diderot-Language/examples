@@ -1,17 +1,17 @@
 /* ==========================================
 ## fs3d-scl.diderot: utility for generating synthetic scalar 3D datasets
 
-This is based on [`fs2d-scl.diderot`](../fs2d) example; some
-copy-and-pasting was involved.  Like this program, the value of this
+This is based on [`fs2d-scl.diderot`](../fs2d); some
+copy-and-pasting was involved.  Like that program, the value of this
 is not so much as a model of what a good or typical Diderot program
 looks like, but as a utility for generating datasets for other Diderot
-programs.
+programs to work on.
 
-This programs generates synthetic scalar 3D data on regular grids, and
-the grids have specific location and orientation in world space.
-The input arguments here make it easy to sample the same underlying
-function on grids with differing orientation and resolution.  Grid
-orientation is specified by the angle and axis of rotation.
+This programs generates synthetic scalar 3D data on regular grids that
+are located and oriented in world space.  The input arguments here
+make it easy to sample the same underlying function on different
+grids.  Grid orientation is specified by the angle and axis of
+rotation.
 
 Assuming the directions at https://github.com/Diderot-Language/examples
 this program can be compiled with:
