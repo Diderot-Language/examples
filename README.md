@@ -26,8 +26,9 @@ initialization-time, user-defined function, and printing.
 Newton-Raphson iteration. Demonstrates
 having an image dataset as an input variable, strands calling `die`,
 the `inside` and `normalize` functions, and finding gradients with ∇.
-* [`fs3d`](fs3d/): For generating 3D synthetic datasets; similar to but more complicated
-than [`fs2d`](fs2d/)). Includes a user-defined function for doing quaternion to
+* [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
+similar to but more complicated than [`fs2d`](fs2d/).
+Includes a user-defined function for doing quaternion to
 rotation matrix conversion.
 
 ## Building Diderot and these examples
