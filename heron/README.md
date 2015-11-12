@@ -8,7 +8,7 @@ this program can be compiled and run with:
 	../../vis12/bin/diderotc --exec heron.diderot
 	./heron
 
-The output stores four numbers for each value processed:
+The output stores four numbers for each value processed (by index along fast axis):
 <ol start=0>
 <li> the value whose square root was found
 <li> the computed square root
