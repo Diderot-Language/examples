@@ -2,12 +2,12 @@
 ==========================================
 ## unicode.diderot: The Diderot unicode cheatsheet
 
-This example program doesn't actually do anything; its just a
-list of the Unicode characters that you might need in Diderot.
+This example program doesn't actually do anything; these comments
+list the Unicode characters that you can use in Diderot.
 After each character is the LaTeX equivalent, which might be
 useful for Diderot programs in LaTeX documents.
 
-#### ⊛ means convolution, as in:
+#### ⊛ means convolution, as in
 
 	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
 LaTeX: `\circledast` is probably typical, but
