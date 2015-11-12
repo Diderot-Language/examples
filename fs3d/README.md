@@ -1,4 +1,4 @@
-## fs3d-scl.diderot: utility for generating synthetic scalar 3D datasets
+## fs3d-scl.diderot: function sampler, 3D scalar synthetic fields
 
 This is based on [`fs2d-scl.diderot`](../fs2d); some
 copy-and-pasting was involved.  Like that program, the value of this
