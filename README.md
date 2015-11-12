@@ -13,7 +13,7 @@ discuss the language and its use.
 
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
-Here is a list of the examples written so far, in the order we suggest you read through
+Here are the examples written so far, listed in the order we suggest you read through
 them in (going from simpler to more complex programs):
 
 * [`hello`](hello/): Hello world in Diderot

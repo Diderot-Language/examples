@@ -110,6 +110,9 @@ strand sample(int idx0, int idx1) {
          print("endian: little\n");
          print("encoding: raw\n");
          print("space dimension: 2\n");
+         // Diderot prints vectors like it parses them, e.g "[0.1,0.3]"
+         // but this is not how orientation vectors are stored in the NRRD
+         // header, hence the need to print individual components
          print("space directions: (", edge0[0], ",", edge0[1],
                                ") (", edge1[0], ",", edge1[1], ")\n");
          print("space origin: (", orig[0], ",", orig[1], ")\n");
