@@ -1,5 +1,5 @@
 /* ==========================================
-## fs2d-scl.diderot: utility for generating synthetic scalar 2D datasets
+## fs2d-scl.diderot: function sampler, 2D scalar synthetic fields
 
 This programs generates synthetic scalar 2D data on regular grids, and
 the grids have specific location and orientation in world space.
