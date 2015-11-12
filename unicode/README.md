@@ -5,18 +5,18 @@ list of the Unicode characters that you might need in Diderot.
 After each character is the LaTeX equivalent, which might be
 useful for Diderot programs in LaTeX documents.
 
-⊛ means convolution, as in:
+#### ⊛ means convolution, as in:
 
 	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
 LaTeX: `circledast` is probably typical, but
 `varoast` (with `usepackage{stmaryrd}`) is slightly more legible
 
-× means cross product, as in
+#### × means cross product, as in
 
 	vec3 camU = normalize(camN × camUp);
 LaTeX: `times`
 
-π means Pi, as in
+#### π means Pi, as in
 
 	real rad = degrees*π/180;
 LaTeX: `pi`
