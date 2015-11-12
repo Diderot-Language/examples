@@ -23,24 +23,24 @@ LaTeX: `\times`
 	real rad = degrees*π/180;
 LaTeX: `\pi`
 
-∇ means Del, as in
+#### ∇ means Del, as in
 
 	vec3 grad = ∇F(pos);
 LaTeX: `\nabla`
 
-• means dot product and matrix multiplication, as in
+#### • means dot product and matrix multiplication, as in
 
 	real ld = norm • lightDir;
 LaTeX: `\bullet` which is more consistently visible than
 the `\cdot` which more typical for dot products.
 Note that tensor double-dot product is just ASCII :
 
-⊗ means tensor product, as in
+#### ⊗ means tensor product, as in
 
 	tensor[3,3] Proj = identity[3] - norm⊗norm
 LaTeX: `\otimes`
 
-∞ means Infinity, as in
+#### ∞ means Infinity, as in
 
 	output real max = -∞;
 LaTeX: `\infty`
