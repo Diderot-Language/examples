@@ -188,7 +188,7 @@ function real func(vec3 pos) {
       ret = ramp*pos[0] + erf(sharp*(rad-|pos|));
    } else if (11 == which) { // 11: little coordinate frame
       /* this is useful for debugging cameras in volume rendering;
-         it assumes width >= 2, though much of it is constant zero
+         it assumes width >= 3, though much of it is constant zero
          (it doesn't set much in the negative X, Y, or Z half-spaces) */
       /* big ball at origin */
       ret = max(ret, ball(0.3, pos));
