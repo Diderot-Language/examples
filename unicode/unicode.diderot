@@ -31,8 +31,8 @@ useful for Diderot programs in LaTeX documents, and other comments.
 
 	vec3 camU = normalize(camN × camUp);
 * LaTeX: `\times`
-* As the cross-product, this is only defined for `vec3` variables,
-  and it also works for the curl of a vector field; see below.
+* As the cross-product, this is only defined for `vec3` variables.
+  It also works for the curl of a vector field; see below.
 
 #### ⊗ means tensor product, as in
 
@@ -62,8 +62,11 @@ useful for Diderot programs in LaTeX documents, and other comments.
 	field#1(3)[3,3] jacobian = ∇⊗V;
 	field#1(3)[3] curl = ∇×V;
 	field#1(3)[] divergence = ∇•V;
+	field#2(2)[2] U = ...;
+	field#1(2)[] vort = ∇×U;
 * LaTeX: `\nabla`.
-* See above for the different uses of `∇`.
+* See above for the different uses of `∇`.  Note that `∇×` applied to a 2D vector field
+  gives you a scalar, but `∇×` applied to a 3D vector field gives you another 3D vector field.
 ========================================== */
 
 // This is basically the no-op Diderot program
