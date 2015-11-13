@@ -60,6 +60,5 @@ useful for Diderot programs in LaTeX documents, and other comments.
 	field#1(3)[3,3] jacobian = ∇⊗V;
 	field#1(3)[3] curl = ∇×V;
 	field#1(3)[] divergence = ∇•V;
-
 * LaTeX: `nabla`.
 * See above for the different uses of `∇`.
