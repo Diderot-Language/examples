@@ -1,0 +1,59 @@
+/* ==========================================
+## mip.diderot: basic maximum intensity projection (MIP) volume rendering
+
+(docs in progress)
+
+This has code that is re-used verbatim in other examples, both for
+setting up the ray-casting geometry given the camera specification, as
+well as for sampling along rays. This may later become a target for evolving
+Diderot to support libraries that contain common functionality.
+========================================== */
+
+input image(3)[] vol ("volume dataset to MIP") = image("vol.nrrd");
+input vec3 camEye ("camera look-from point") = [6, 9, 2];
+input vec3 camAt ("camera look-at point") = [0, 0, 0];
+input vec3 camUp ("camera pseudo-up vector") = [0, 0, 1];
+input real camNearAtRel ("distance to near clipping plane (where rays start from) relative to look-at point") = -3;
+input real camFarAtRel ("distance to far clipping plane, relative to look-at point") = 3;
+input real camFOV ("field-of-view angle subtended vertically by view plane") = 15;
+input int iresU ("# samples on horizontal axis of image") = 640;
+input int iresV ("# samples on vertical axis of image") = 480;
+input real rayStep ("inter-sample step along view direction") = 0.1;
+input real out0 ("value at which to initilize output max accumulator; using -inf ensures that output will stay -inf if ray misses volume entirely") = -∞;
+
+/* convolve volume data with kernel. */
+field#0(3)[] F = tent ⊛ vol;
+
+// (boilerplate) computing view-space basis vectors
+vec3 camN = normalize(camAt - camEye);  // N: away from eye
+vec3 camU = normalize(camN × camUp);    // U: right
+vec3 camV = camN × camU;                // V: down
+real camDist = |camAt - camEye|;
+real camVmax = tan(camFOV*π/360)*camDist;
+real camUmax = camVmax*iresU/iresV;
+real camNear = camNearAtRel + camDist;
+real camFar = camFarAtRel + camDist;
+
+// how to compute MIP of ray through (rayU,rayV) on view plane
+strand raycast(real rayU, real rayV) {
+   output real out = out0;
+   real rayN = camNear;
+   // the direction of the ray; only unit-length along view direction
+   vec3 rayVec = (camDist*camN + rayU*camU + rayV*camV)/camDist;
+
+   update { // how to compute one sample of a MIP
+      vec3 pos = camEye + rayN*rayVec;  // pos = ray sample position
+      if (inside(pos,F)) {  // can only query field inside its domain
+         out = max(out, F(pos));  // update max value seen so far
+      }
+      if (rayN > camFar) {  // ray has reached the far clipping plane
+         stabilize;
+      }
+      rayN += rayStep;  // increment ray position
+   }
+}
+
+/* this creates a cell-centered sampling of the view plane */
+initially [ raycast(lerp(-camUmax, camUmax, -0.5, ui, iresU-0.5),
+                    lerp(-camVmax, camVmax, -0.5, vi, iresV-0.5))
+            | vi in 0..iresV-1, ui in 0..iresU-1 ];
