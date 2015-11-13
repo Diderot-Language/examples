@@ -186,14 +186,16 @@ function real func(vec3 pos) {
       real sharp = 7 + parm[1];
       real ramp = 2 + parm[2];
       ret = ramp*pos[0] + erf(sharp*(rad-|pos|));
-   } else if (11 == which) { /* 11: little coordinate frame, useful for
-                                debugging cameras in volume rendering */
+   } else if (11 == which) { // 11: little coordinate frame
+      /* this is useful for debugging cameras in volume rendering;
+         it assumes width >= 2, though much of it is constant zero
+         (it doesn't set much in the negative X, Y, or Z half-spaces) */
       /* big ball at origin */
       ret = max(ret, ball(0.3, pos));
       /* cylinder along X axis */
       ret = max(ret, ball(0.2,  [0,y,z])*trpz(0.1,0,x,1,1));
       /* cone at end of X axis w/ local maxima at [1,0,0] */
-      ret = max(ret, cone(0.3, pos - [1,0,0]));
+      ret = max(ret, cone(0.25, pos - [1,0,0]));
       /* conical-ish thing along Y axis w/ local maxima at [0,1,0] */
       ret = max(ret, ball(0.25, [x,0,z])*trpz(0.1,0,y,1,0.5));
       /* short rot along Z axis */
