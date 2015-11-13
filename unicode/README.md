@@ -21,7 +21,8 @@ useful for Diderot programs in LaTeX documents, and other comments.
 #### ⊛ means convolution, as in
 
 	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
-* LaTeX: `circledast` is probably typical, but `varoast` (with `usepackage{stmaryrd}`) is slightly more legible
+* LaTeX: `circledast` is probably typical, but `varoast` (with `usepackage{stmaryrd}`)
+  is slightly more legible
 * This commutes; you could also write `image("img.nrrd") ⊛ bspln3`.
 
 #### × means cross product, as in
@@ -29,14 +30,14 @@ useful for Diderot programs in LaTeX documents, and other comments.
 	vec3 camU = normalize(camN × camUp);
 * LaTeX: `times`
 * As the cross-product, this is only defined for `vec3` variables,
-  and it also works for the curl of a vector field, see below.
+  and it also works for the curl of a vector field; see below.
 
 #### ⊗ means tensor product, as in
 
 	tensor[3,3] Proj = identity[3] - norm⊗norm
 * LaTeX: `otimes`.
 * As an operator on coordinate vectors, this is typically called the outer product.
-  It is also used to define the Jacobian of a vector field, see below.
+  It is also used to define the Jacobian of a vector field; see below.
 
 #### • means dot product and matrix multiplication, as in
 
@@ -46,7 +47,8 @@ useful for Diderot programs in LaTeX documents, and other comments.
 * The meaning of `•` is really (in tensor-speak) "contract out the
   last index of the first argument with the first index of the second argument".
   Note that tensor double-dot product (which contracts out two indices
-  in other side) is plain ASCII `:`.
+  in other side) is plain ASCII `:`.  `•` is also used for the divergence
+  of a vector field; see below.
 
 #### ∇ means Del, which is part of various derivative operators on fields, as in
 
@@ -61,4 +63,3 @@ useful for Diderot programs in LaTeX documents, and other comments.
 
 * LaTeX: `nabla`.
 * See above for the different uses of `∇`.
-
