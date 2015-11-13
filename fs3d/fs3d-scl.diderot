@@ -47,7 +47,7 @@ input real width ("width of edge of cube region sampled") = 4;
 input vec3 axis ("axis (non-normalized) of rotation of sampling grid") = [1,1,1];
 input real angle ("angle (in degrees) of rotation of sampling grid") = 0;
 input vec3 off ("translation offset from origin-centered grid") = [0,0,0];
-input int which ("which function to sample (from 0 to 10)") = 0;
+input int which ("which function to sample (from 0 to 11)") = 0;
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
 real theta = angle*π/180;
@@ -80,6 +80,7 @@ function real gauss(real xs, real mean, real stdv) {
 }
 
 // distance inside sphere of radius r
+// Note how a function may defined by equality with a single expression
 function real ball(real r, vec3 pos) = max(0, r - |pos|);
 
 // radius R code pointing along positive x
@@ -96,6 +97,10 @@ function real cone(real R, vec3 pos) {
 function real trpz(real R, real a, real b, real c, real scl) {
    real ww = (b-a)/(c-a);
    real rr = R/c-a;
+   /* Note the use of Python syntax for conditional expressions;
+      chaining them like this may look a little weird at first
+      but note that it can sort of be read like a decision tree,
+      with the two sides branching off the central "if" part */
    return (0.0
            if ww < -rr
            else (scl*(1 + ww/rr)
@@ -197,7 +202,7 @@ function real func(vec3 pos) {
       ret = max(ret, ball(0.25, pos - [0,0,1]));
    } else {
       // update "input int which" annotation above as cases are added
-      print("HEY no function defined for which = ", which, "\n");
+      print("Sorry, no function defined for which = ", which, "\n");
    }
    return ret;
 }
