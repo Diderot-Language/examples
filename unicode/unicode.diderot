@@ -56,8 +56,8 @@ useful for Diderot programs in LaTeX documents, and other comments.
 
 	field#3(3)[] F = ...;
 	field#2(3)[3] gradient = ∇F;
-        field#1(3)[3,3] hessian = ∇⊗∇F;
-        field#0(3)[3,3,3] wut = ∇⊗∇⊗∇F;
+	field#1(3)[3,3] hessian = ∇⊗∇F;
+	field#0(3)[3,3,3] wut = ∇⊗∇⊗∇F;
 	field#2(3)[3] V = ...;
 	field#1(3)[3,3] jacobian = ∇⊗V;
 	field#1(3)[3] curl = ∇×V;
