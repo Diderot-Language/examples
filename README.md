@@ -32,6 +32,8 @@ similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
 rotation matrix conversion, a single-expression function defined with `=`,
 and nested conditional expressions.
+* [`mip`](mip/): For maximum-intensity projections through 3D volumes;
+(still in progress).
 
 ## Building Diderot and these examples
 
