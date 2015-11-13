@@ -3,43 +3,62 @@
 This example program doesn't actually do anything; these comments
 list the Unicode characters that you can use in Diderot.
 After each character is the LaTeX equivalent, which might be
-useful for Diderot programs in LaTeX documents.
-
-#### ⊛ means convolution, as in
-
-	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
-LaTeX: `circledast` is probably typical, but
-`varoast` (with `usepackage{stmaryrd}`) is slightly more legible
-
-#### × means cross product, as in
-
-	vec3 camU = normalize(camN × camUp);
-LaTeX: `times`
+useful for Diderot programs in LaTeX documents, and other comments.
 
 #### π means Pi, as in
 
 	real rad = degrees*π/180;
-LaTeX: `pi`
+* LaTeX: `pi`
+* This is currently the only finite real constant in Diderot.
 
-#### ∇ means Del, as in
+#### ∞ means Infinity, as in
 
-	vec3 grad = ∇F(pos);
-LaTeX: `nabla`
+	output real out = -∞;
+* LaTeX: `infty`
+* The above line of code is how the output of maximum-intensity projection might be intialized;
+  from then on subsequent use might be like `out = max(out, F(pos))`.
 
-#### • means dot product and matrix multiplication, as in
+#### ⊛ means convolution, as in
 
-	real ld = norm • lightDir;
-LaTeX: `bullet` which is more consistently visible than
-the `cdot` which more typical for dot products.
-Note that tensor double-dot product is just ASCII :
+	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
+* LaTeX: `circledast` is probably typical, but `varoast` (with `usepackage{stmaryrd}`) is slightly more legible
+* This commutes; you could also write `image("img.nrrd") ⊛ bspln3`.
+
+#### × means cross product, as in
+
+	vec3 camU = normalize(camN × camUp);
+* LaTeX: `times`
+* As the cross-product, this is only defined for `vec3` variables,
+  and it also works for the curl of a vector field, see below.
 
 #### ⊗ means tensor product, as in
 
 	tensor[3,3] Proj = identity[3] - norm⊗norm
-LaTeX: `otimes`
+* LaTeX: `otimes`.
+* As an operator on coordinate vectors, this is typically called the outer product.
+  It is also used to define the Jacobian of a vector field, see below.
 
-#### ∞ means Infinity, as in
+#### • means dot product and matrix multiplication, as in
 
-	output real max = -∞;
-LaTeX: `infty`
+	real ld = norm • lightDir;
+* LaTeX: `bullet`, which is more consistently visible than
+  the `cdot` that more typical for dot products.
+* The meaning of `•` is really (in tensor-speak) "contract out the
+  last index of the first argument with the first index of the second argument".
+  Note that tensor double-dot product (which contracts out two indices
+  in other side) is plain ASCII `:`.
+
+#### ∇ means Del, which is part of various derivative operators on fields, as in
+
+	field#3(3)[] F = ...;
+	field#2(3)[3] gradient = ∇F;
+        field#1(3)[3,3] hessian = ∇⊗∇F;
+        field#0(3)[3,3,3] wut = ∇⊗∇⊗∇F;
+	field#2(3)[3] V = ...;
+	field#1(3)[3,3] jacobian = ∇⊗V;
+	field#1(3)[3] curl = ∇×V;
+	field#1(3)[] divergence = ∇•V;
+
+* LaTeX: `nabla`.
+* See above for the different uses of `∇`.
 
