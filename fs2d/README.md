@@ -16,7 +16,7 @@ this program can be compiled with:
 	../../vis12/bin/diderotc --exec fs2d-scl.diderot
 
 The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the function definitions.
+for `(0 == which)` below to see the start of the function definitions.
 This program is unusual in that its printed output needs to be captured
 in order to have a NRRD header that records the orientation of the
 sampling grid, so using the program involves redirection.  To
