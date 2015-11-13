@@ -84,7 +84,7 @@ function real func(vec2 pos) {
             + parm[2]*x + parm[3]*y;
    } else {
       // update "input int which" annotation above as cases are added
-      print("HEY no function defined for which = ", which, "\n");
+      print("Sorry, no function defined for which = ", which, "\n");
    }
    return ret;
 }
