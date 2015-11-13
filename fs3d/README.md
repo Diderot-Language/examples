@@ -17,9 +17,9 @@ this program can be compiled with:
 
 	../../vis12/bin/diderotc --exec fs3d-scl.diderot
 
-The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the function definitions, this
-includes 3D functions used to make datasets for
+The `-which` option will determine which function is sampled; look for
+`(0 == which)` in the code to see the start of the function
+definitions, this includes 3D functions used to make datasets for
 [some](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2003)
 [previous](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2009)
 [papers](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2014).

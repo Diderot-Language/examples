@@ -18,9 +18,9 @@ this program can be compiled with:
 
 	../../vis12/bin/diderotc --exec fs3d-scl.diderot
 
-The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the function definitions, this
-includes 3D functions used to make datasets for
+The `-which` option will determine which function is sampled; look for
+`(0 == which)` in the code to see the start of the function
+definitions, this includes 3D functions used to make datasets for
 [some](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2003)
 [previous](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2009)
 [papers](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2014).
@@ -55,8 +55,8 @@ real theta = angle*π/180;
 vec3 snax = sin(theta/2)*normalize(axis);
 // quaternion representing rotation
 vec4 qq = [cos(theta/2), snax[0], snax[1], snax[2]];
-// rotation matrix. A future version of Diderot may directly support
-// matrix/quaternion conversions.
+// create rotation matrix by converstion from quaternion
+// (which aren't currently natively supported in Diderot)
 tensor[3,3] rot = [[qq[0]*qq[0] + qq[1]*qq[1] - qq[2]*qq[2] - qq[3]*qq[3],
                     2*(qq[1]*qq[2] - qq[0]*qq[3]),
                     2*(qq[1]*qq[3] + qq[0]*qq[2])],
@@ -73,9 +73,38 @@ vec3 edge2 = rot•[0, 0, width/(sz2-1)];
 // location of first sample point
 vec3 orig = -(edge0*(sz0-1) + edge1*(sz1-1) + edge2*(sz2-1))/2 + off;
 
-function real gauss(real xx, real mean, real stdv) {
-  real x = xx - mean;
-  return exp(-(x*x)/(2*stdv*stdv))/(stdv*sqrt(2*π));
+// univariate normal distribution
+function real gauss(real xs, real mean, real stdv) {
+   real x = xs - mean;
+   return exp(-(x*x)/(2*stdv^2))/(stdv*sqrt(2*π)); // have some π
+}
+
+// distance inside sphere of radius r
+function real ball(real r, vec3 pos) = max(0, r - |pos|);
+
+// radius R code pointing along positive x
+function real cone(real R, vec3 pos) {
+   real x = pos[0];
+   real y = pos[1];
+   real z = pos[2];
+   real ret = max(0, R - (sqrt(y^2 + z^2) + x/2));
+   ret *= 1 if (x > 0) else 0;
+   return ret;
+}
+
+// trapezoid function at b in [a,c], with ramp R
+function real trpz(real R, real a, real b, real c, real scl) {
+   real ww = (b-a)/(c-a);
+   real rr = R/c-a;
+   return (0.0
+           if ww < -rr
+           else (scl*(1 + ww/rr)
+                 if ww < 0
+                 else (lerp(scl, 1, ww)
+                       if ww < 1
+                       else (1 - (ww-1)/rr
+                             if ww < 1+rr
+                             else 0.0))));
 }
 
 function real func(vec3 pos) {
@@ -102,7 +131,7 @@ function real func(vec3 pos) {
          the torus amplitude (scaling) is controlled by parm[2] and
          parm[3]. Note that the intensity cross-section across the
          core is more like a parabola x^2 than |x|; this is to make
-         the circle into a nicer ridge */
+         the core circle into a nicer ridge feature */
       real rmaj = parm[0] + 1;
       real rr = sqrt(x^2 + y^2);
       real win = parm[3] + 1;
@@ -152,6 +181,20 @@ function real func(vec3 pos) {
       real sharp = 7 + parm[1];
       real ramp = 2 + parm[2];
       ret = ramp*pos[0] + erf(sharp*(rad-|pos|));
+   } else if (11 == which) { /* 11: little coordinate frame, useful for
+                                debugging cameras in volume rendering */
+      /* big ball at origin */
+      ret = max(ret, ball(0.3, pos));
+      /* cylinder along X axis */
+      ret = max(ret, ball(0.2,  [0,y,z])*trpz(0.1,0,x,1,1));
+      /* cone at end of X axis w/ local maxima at [1,0,0] */
+      ret = max(ret, cone(0.3, pos - [1,0,0]));
+      /* conical-ish thing along Y axis w/ local maxima at [0,1,0] */
+      ret = max(ret, ball(0.25, [x,0,z])*trpz(0.1,0,y,1,0.5));
+      /* short rot along Z axis */
+      ret = max(ret, ball(0.2,  [x,y,0])*trpz(0.1,0,z,0.7,1));
+      /* ball centered at [0,0,1] */
+      ret = max(ret, ball(0.25, pos - [0,0,1]));
    } else {
       // update "input int which" annotation above as cases are added
       print("HEY no function defined for which = ", which, "\n");
