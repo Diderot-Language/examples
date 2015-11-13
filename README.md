@@ -19,7 +19,8 @@ them in (going from simpler to more complex programs):
 * [`hello`](hello/): Hello world in Diderot
 * [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
 Demonstrates input variables, the stabilize method, and 5-argument lerp().
-* [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet
+* [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
+with information about the operators that they represent.
 * [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
 initialization-time, user-defined function, and printing.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
@@ -28,8 +29,9 @@ having an image dataset as an input variable, strands calling `die`,
 the `inside` and `normalize` functions, and finding gradients with ∇.
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
-Includes a user-defined function for doing quaternion to
-rotation matrix conversion.
+Demonstrates a user-defined function for doing quaternion to
+rotation matrix conversion, a single-expression function defined with `=`,
+and nested conditional expressions.
 
 ## Building Diderot and these examples
 
