@@ -47,7 +47,7 @@ input real width ("width of edge of cube region sampled") = 4;
 input vec3 axis ("axis (non-normalized) of rotation of sampling grid") = [1,1,1];
 input real angle ("angle (in degrees) of rotation of sampling grid") = 0;
 input vec3 off ("translation offset from origin-centered grid") = [0,0,0];
-input int which ("which function to sample (from 0 to 11)") = 0;
+input int which ("which function to sample (from 0 to 13)") = 0;
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
 real theta = angle*π/180;
@@ -73,14 +73,14 @@ vec3 edge2 = rot•[0, 0, width/(sz2-1)];
 // location of first sample point
 vec3 orig = -(edge0*(sz0-1) + edge1*(sz1-1) + edge2*(sz2-1))/2 + off;
 
+/* Note how a function (like gauss and ball below) may defined by
+   equality with a single expression */
+
 // univariate normal distribution
-function real gauss(real xs, real mean, real stdv) {
-   real x = xs - mean;
-   return exp(-(x*x)/(2*stdv^2))/(stdv*sqrt(2*π)); // have some π
-}
+function real gauss(real stdv, real x) =
+   exp(-(x*x)/(2*stdv^2))/(stdv*sqrt(2*π)); // have some π
 
 // distance inside sphere of radius r
-// Note how a function may defined by equality with a single expression
 function real ball(real r, vec3 pos) = max(0, r - |pos|);
 
 // radius R code pointing along positive x
@@ -96,7 +96,7 @@ function real cone(real R, vec3 pos) {
 // trapezoid function at b in [a,c], with ramp R
 function real trpz(real R, real a, real b, real c, real scl) {
    real ww = (b-a)/(c-a);
-   real rr = R/c-a;
+   real rr = R + 0.000001;
    /* Note the use of Python syntax for conditional expressions;
       chaining them like this may look a little weird at first
       but note that it can sort of be read like a decision tree,
@@ -163,7 +163,7 @@ function real func(vec3 pos) {
       real phi = atan2(Rbig-dd, z) - atan2(x, y)/2;
       real a = Rlit*cos(phi);
       real b = Rlit*sin(phi);
-      ret = gauss(a, 0, 0.35+parm[0])*gauss(b, 0, 0.1+parm[1]);
+      ret = gauss(0.35+parm[0], a)*gauss(0.1+parm[1], b);
    } else if (9 == which) { // 9: three twisty lobes
       /* some methods in http://people.cs.uchicago.edu/~glk/pubs/#VIS-2013
          were debugged with the aid of this dataset (via particles sampling
@@ -192,18 +192,42 @@ function real func(vec3 pos) {
       /* this is useful for debugging cameras in volume rendering;
          it assumes width >= 3, though much of it is constant zero
          (it doesn't set much in the negative X, Y, or Z half-spaces) */
-      /* big ball at origin, so local maxima at [0,0,0] */
+      // big ball at origin, so local maxima at [0,0,0]
       ret = max(ret, ball(0.3, pos));
-      /* cylinder along X axis */
+      // cylinder along X axis
       ret = max(ret, ball(0.2,  [0,y,z])*trpz(0.1,0,x,1,1));
-      /* cone at end of X axis w/ local maxima at [1,0,0] */
+      // cone at end of X axis w/ local maxima at [1,0,0]
       ret = max(ret, cone(0.25, pos - [1,0,0]));
-      /* conical-ish thing along Y axis w/ local maxima at [0,1,0] */
+      // conical-ish thing along Y axis w/ local maxima at [0,1,0]
       ret = max(ret, ball(0.25, [x,0,z])*trpz(0.1,0,y,1,0.5));
-      /* short rod along Z axis */
+      // short rod along Z axis
       ret = max(ret, ball(0.2,  [x,y,0])*trpz(0.1,0,z,0.7,1));
-      /* ball centered at [0,0,1] */
+      // ball centered at [0,0,1]
       ret = max(ret, ball(0.25, pos - [0,0,1]));
+      // so that isovalue at 1 looks as intended
+      ret *= 10;
+   } else if (13 == which) { // 13: cube frame
+      /* has local maxima at (+-1,+-1,+-1) */
+      ret = max(ret, ball(0.4, pos-[ 1, 1, 1]));
+      ret = max(ret, ball(0.4, pos-[-1, 1, 1]));
+      ret = max(ret, ball(0.4, pos-[ 1,-1, 1]));
+      ret = max(ret, ball(0.4, pos-[-1,-1, 1]));
+      ret = max(ret, ball(0.4, pos-[ 1, 1,-1]));
+      ret = max(ret, ball(0.4, pos-[-1, 1,-1]));
+      ret = max(ret, ball(0.4, pos-[ 1,-1,-1]));
+      ret = max(ret, ball(0.4, pos-[-1,-1,-1]));
+      ret = max(ret, ball(0.2, [0,y,z]-[ 0, 1, 1])*trpz(0,-1,x,1,1));
+      ret = max(ret, ball(0.2, [0,y,z]-[ 0,-1, 1])*trpz(0,-1,x,1,1));
+      ret = max(ret, ball(0.2, [0,y,z]-[ 0, 1,-1])*trpz(0,-1,x,1,1));
+      ret = max(ret, ball(0.2, [0,y,z]-[ 0,-1,-1])*trpz(0,-1,x,1,1));
+      ret = max(ret, ball(0.2, [x,0,z]-[ 1, 0, 1])*trpz(0,-1,y,1,1));
+      ret = max(ret, ball(0.2, [x,0,z]-[-1, 0, 1])*trpz(0,-1,y,1,1));
+      ret = max(ret, ball(0.2, [x,0,z]-[ 1, 0,-1])*trpz(0,-1,y,1,1));
+      ret = max(ret, ball(0.2, [x,0,z]-[-1, 0,-1])*trpz(0,-1,y,1,1));
+      ret = max(ret, ball(0.2, [x,y,0]-[ 1, 1, 0])*trpz(0,-1,z,1,1));
+      ret = max(ret, ball(0.2, [x,y,0]-[-1, 1, 0])*trpz(0,-1,z,1,1));
+      ret = max(ret, ball(0.2, [x,y,0]-[ 1,-1, 0])*trpz(0,-1,z,1,1));
+      ret = max(ret, ball(0.2, [x,y,0]-[-1,-1, 0])*trpz(0,-1,z,1,1));
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
@@ -227,6 +251,7 @@ strand sample(int idx0, int idx1, int idx2) {
          print("dimension: 3\n");
          print("sizes: ", sz0, " ", sz1, " ", sz2, "\n");
          print("kinds: space space space\n");
+         print("centers: cell cell cell\n");
          // NOTE: this assumes machine endianness
          print("endian: little\n");
          print("encoding: raw\n");
