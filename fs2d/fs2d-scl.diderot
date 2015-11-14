@@ -106,6 +106,7 @@ strand sample(int idx0, int idx1) {
          print("dimension: 2\n");
          print("sizes: ", size0, " ", size1, "\n");
          print("kinds: space space\n");
+         print("centers: cell cell\n");
          // NOTE: this assumes machine endianness
          print("endian: little\n");
          print("encoding: raw\n");
