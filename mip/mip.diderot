@@ -9,6 +9,14 @@ camera geometry and ray sampling will be re-used verbatim in other volume
 rendering programs. This may later become a target for evolving Diderot to
 support libraries that contain common functionality.
 
+Note that the explicitly pedagogical nature of this example means that some
+unusual usages are required (like recompiling the program multiple times for
+different datasets).  In addition, the interaction loop of changing the
+program parameters via command-line option, generating (on the command-line)
+output images, and viewing the images, is very clumsy.  Diderot supports
+compiling programs to libraries, around which one can generate nicer GUIs,
+but these examples are intended to be as stand-alone and minimal as possible.
+
 Just like [`iso2d`](../iso2d) depends on first creating a dataset with
 [`fs2d-scl`](../fs2d), we need to create a volume dataset with [`fs3d-scl`](../fs3d)
 in order to compile this program `mip.diderot`:
@@ -46,15 +54,15 @@ And then make some MIP renderings:
 Make sure you can run these steps to get the same
 [cube-persp.png](cube-persp.png) and [cube-ortho.png](cube-ortho.png).  The
 only difference in the second image is the use of orthographic instead of
-perspective projection in the second image, which is apparent in the result.
-The `-out0 0` initialization of the MIP accumulator is safe because `unu
-minmax vol.nrrd` reports that the minimum value is 0; this avoids an extra
-`unu 2op exists` step.
+perspective projection, which is apparent in the result.  The `-out0 0`
+initialization of the MIP accumulator is safe because `unu minmax cube.nrrd`
+reports that the minimum value is 0; this avoids an extra `unu 2op exists`
+step.
 
 The usual parameters in volume rendering can be set by command-line options.
-This sampling is not exhaustive; you should try more yourself.  For the purposes
-of this demo we set a (shell) variable to store repeatedly used options, which
-can be over-ridden later in the command-line.
+This sampling of the various options is not exhaustive; you should try more
+yourself.  For the purposes of this demo we set a (shell) variable to store
+repeatedly used options, which can be over-ridden later in the command-line.
 
 	OPTS="-out0 0 -camFOV 20 -rayStep 0.03 -iresU 300 -iresV 300"
 	./mip $OPTS -camAt 1 1 1;  unu quantize -b 8 -i out.nrrd -o cube-111.png
@@ -127,8 +135,7 @@ Then we re-run the commands above, but saving the results to differently-named i
 	for I in 0 1 2 3; do
 	  echo === $I ====
 	  cp parab${I}.nrrd vol.nrrd
-	  #../../vis12/bin/diderotc --exec mip.diderot
-	  diderotc --exec mip.diderot
+	  ../../vis12/bin/diderotc --exec mip.diderot
 	  ./mip $OPTS
 	  unu quantize -b 8 -min 0 -max 1 -i out.nrrd -o parab${I}-ctmr.png
 	done
@@ -139,7 +146,7 @@ This generates four new images:
 [parab2-ctmr.png](parab2-ctmr.png),
 [parab3-ctmr.png](parab3-ctmr.png).
 
-As should be visually clear, these images are all be the same, demonstrating the
+As should be visually clear, these images are all the same (or very nearly so), demonstrating the
 accuracy of the Catmull-Rom spline for quadratic functions.
 
 Things to try by further modifications of this program:
@@ -180,8 +187,8 @@ input bool inSphere ("only render samples inside a unit sphere") = false;
    further indirection.  There is as yet not a good way to specify a kernel
    on the command-line, or assign one field to another at runtime, hence
    the need to uncomment one of these at a time */
-field#0(3)[] F = vol ⊛ tent;
-//field#1(3)[] F = vol ⊛ ctmr;
+//field#0(3)[] F = vol ⊛ tent;
+field#1(3)[] F = vol ⊛ ctmr;
 //field#2(3)[] F = vol ⊛ bspln3;
 //field#4(3)[] F = vol ⊛ c4hexic;
 
