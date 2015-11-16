@@ -33,7 +33,9 @@ Demonstrates a user-defined function for doing quaternion to
 rotation matrix conversion, a single-expression function defined with `=`,
 and nested conditional expressions.
 * [`mip`](mip/): For maximum-intensity projections through 3D volumes;
-(still in progress).
+Shows a minimal example of setting up a camera and casting rays,
+and also provides a setting for demonstrating how better reconstruction
+kernels can make a rendering output be invariant with respect to the sampling grid.
 
 ## Building Diderot and these examples
 
