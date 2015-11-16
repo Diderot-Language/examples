@@ -28,4 +28,5 @@ And then make some pictures:
 	./mip -out0 0 -camFOV 20 -rayStep 0.03 -iresU 300 -iresV 300 -camOrtho true
 	unu quantize -b 8 -i out.nrrd -o cube-ortho.png
 
+Make sure you can run these steps to get the same [cube-persp.png] and [cube-ortho.png].
 
