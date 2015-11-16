@@ -1,17 +1,40 @@
 /* ==========================================
 ## mip.diderot: basic maximum intensity projection (MIP) volume rendering
 
-(docs in progress)
+Maximum intensity projection is the minimalist volume visualization
+tool. This implementation is about as short as possible; much of the code is
+spent on specifying and setting up the ray geometry. It can also be adapted
+(by changing a line or two) to do other kinds of projections.  The code for
+camera geometry and ray sampling will be re-used verbatim in other volume
+rendering programs. This may later become a target for evolving Diderot to
+support libraries that contain common functionality.
 
-This has code that is re-used verbatim in other examples, both for
-setting up the ray-casting geometry given the camera specification, as
-well as for sampling along rays. This may later become a target for evolving
-Diderot to support libraries that contain common functionality.
+Just like [`iso2d`](../iso2d) depends on first creating a dataset with
+[`fs2d-scl`](../fs2d), we need to create a volume dataset with [`fs3d-scl`](../fs3d)
+in order to compile this program `mip.diderot`:
+
+	../fs3d/fs3d-scl -which 13 -width 3 -sz0 73 -sz1 73 -sz2 73 | unu save -f nrrd -o vol.nrrd
+
+In this case the volume size is chosen to ensure that the local maxima of
+this -which 13 synthetic function, a cube frame with maxima at
+(x,y,)=(+-1,+1,+1), are actually hit by grid sample points, which helps
+reason about subsequent debugging.  Now we can compile `mip.diderot`;
+
+	../../vis12/bin/diderotc --exec mip.diderot
+
+And then make some pictures:
+
+	./mip -out0 0 -camFOV 20 -rayStep 0.03 -iresU 300 -iresV 300
+	unu quantize -b 8 -i out.nrrd -o cube-persp.png
+	./mip -out0 0 -camFOV 20 -rayStep 0.03 -iresU 300 -iresV 300 -camOrtho true
+	unu quantize -b 8 -i out.nrrd -o cube-ortho.png
+
+
 ========================================== */
 
 input image(3)[] vol ("volume dataset to MIP") = image("vol.nrrd");
 /* Look-from and look-at are points, but up is a vector;
-   all are stored in vec3s.  Diderot has not adopted this
+   all are stored in vec3s.  Diderot has not adopted the
    mathematical vector-vs-point distinction into its type system */
 input vec3 camEye ("camera look-from point") = [6, 9, 2];
 input vec3 camAt ("camera look-at point") = [0, 0, 0];
@@ -25,8 +48,17 @@ input int iresV ("# samples on vertical axis of image") = 480;
 input real rayStep ("inter-sample step along view direction") = 0.1;
 input real out0 ("value at which to initilize output max accumulator; using -inf ensures that output will stay -inf if ray misses volume entirely") = -∞;
 
-/* convolve volume data with kernel. */
-field#0(3)[] F = tent ⊛ vol;
+/* Convolve volume data with one of various possible kernels. Typically
+   Diderot programs use one particular kernel suited for the task; knowing
+   the kernel at compile time permits the evaluation of the kernel and its
+   derivatives to be expressed in terms of specific constants rather via
+   further indirection.  There is as yet not a good way to specify a kernel
+   on the command-line, or assign one field to another at runtime, hence
+   the need to uncomment one of these at a time */
+field#0(3)[] F = vol ⊛ tent;
+//field#0(3)[] F = vol ⊛ ctmr;
+//field#0(3)[] F = vol ⊛ bspln3;
+//field#0(3)[] F = vol ⊛ c4hexic;
 
 // (boilerplate) computing ray parameters and view-space basis
 vec3 camN = normalize(camAt - camEye);  // N: away from eye
@@ -52,7 +84,7 @@ strand raycast(real rayU, real rayV) {
    update { // how to compute one sample of a MIP
       vec3 pos = rayOrig + rayN*rayVec;  // pos = ray sample position
       if (inside(pos,F)) {  // can only query field inside its domain
-         out = max(out, F(pos));  // update max value seen so far
+         out = max(out, F(pos));  // update output based on last sample
       }
       if (rayN > camFarVsp) {  // ray hit the far clipping plane
          stabilize;
