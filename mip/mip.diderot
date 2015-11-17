@@ -204,7 +204,6 @@ real camFarVsp = camFar + camDist;   // far clip, view space
 
 // how to compute MIP of ray through (rayU,rayV) on view plane
 strand raycast(real rayU, real rayV) {
-   output real out = out0;
    real rayN = camNearVsp;
    // offset from view-plane center to where ray hits it
    vec3 UV = rayU*camU + rayV*camV;
@@ -212,6 +211,8 @@ strand raycast(real rayU, real rayV) {
    vec3 rayOrig = camEye + (UV if camOrtho else [0,0,0]);
    // the vector to parameterize position along ray for this pixel
    vec3 rayVec = camN + ([0,0,0] if camOrtho else UV/camDist);
+   // initialize output value
+   output real out = out0;
 
    update { // how to compute one sample of a MIP
       vec3 pos = rayOrig + rayN*rayVec;  // pos = ray sample position
