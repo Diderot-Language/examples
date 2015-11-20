@@ -5,9 +5,9 @@ list the Unicode characters that you can use in Diderot.
 With each character we give the Unicode code point and name, the LaTeX equivalent (might be
 useful for Diderot programs in LaTeX documents), and other comments.
 
-Other computer scientists have nicely expressed the philosphy behind
-why it makes sense to express mathematical values and operators with
-mathematically idiomatic Unicode characters.
+Our basic philosophy behind indicating mathematical values and operators
+in the most idiomatic way possible is similar to principles previously
+articulated by other computer scientists.
 
 > First, we want to establish the idea that a computer language is not
 > just a way of getting a computer to perform operations but rather that
@@ -19,8 +19,10 @@ mathematically idiomatic Unicode characters.
 > Let us change our traditional attitude to the construction of
 > programs: instead of imagining that our main task is to instruct a
 > computer what to do, let us concentrate rather on explaining to humans
-> what we want the computer to do." -- Donald Knuth, Literate Programming (1984)
+> what we want the computer to do. -- Donald Knuth, Literate Programming (1984)
 
+The fact that these statements predate Unicode development does not
+undermind their continued relevance for programming.
 See https://en.wikipedia.org/wiki/Unicode_input for information about
 how best to input unicode in your OS.  Or, copy and paste from this file.
 
