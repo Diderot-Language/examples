@@ -23,8 +23,8 @@ articulated by other computer scientists.
 > computer what to do, let us concentrate rather on explaining to humans
 > what we want the computer to do. -- Donald Knuth, Literate Programming (1984)
 
-The fact that these statements predate Unicode development does not
-undermind their continued relevance for programming.
+These statements predate Unicode development, but that does not
+undermine their continued general relevance for programming.
 See https://en.wikipedia.org/wiki/Unicode_input for information about
 how best to input unicode in your OS.  Or, copy and paste from this file.
 
