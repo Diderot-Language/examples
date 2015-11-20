@@ -2,18 +2,20 @@
 
 This example program doesn't actually do anything; these comments
 list the Unicode characters that you can use in Diderot.
-After each character is the LaTeX equivalent, which might be
-useful for Diderot programs in LaTeX documents, and other comments.
+With each character we give the Unicode code point and name, the LaTeX equivalent (might be
+useful for Diderot programs in LaTeX documents), and other comments.
 
-#### π means Pi, as in
+#### π means pi, as in
 
 	real rad = degrees*π/180;
+* Unicode: U+03C0 (Greek Small Letter Pi)
 * LaTeX: `pi`
 * This is currently the only finite real constant in Diderot.
 
-#### ∞ means Infinity, as in
+#### ∞ means infinity, as in
 
 	output real out = -∞;
+* Unicode: U+221E (Infinity)
 * LaTeX: `infty`
 * The above line of code is how the output of maximum-intensity projection might be intialized;
   from then on subsequent use might be like `out = max(out, F(pos))`.
@@ -21,6 +23,7 @@ useful for Diderot programs in LaTeX documents, and other comments.
 #### ⊛ means convolution, as in
 
 	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
+* Unicode: U+229B (Circled Asterisk Operator)
 * LaTeX: `circledast` is probably typical, but `varoast` (with `usepackage{stmaryrd}`)
   is slightly more legible
 * This commutes; you could also write `image("img.nrrd") ⊛ bspln3`.
@@ -28,6 +31,7 @@ useful for Diderot programs in LaTeX documents, and other comments.
 #### × means cross product, as in
 
 	vec3 camU = normalize(camN × camUp);
+* Unicode: U+00D7 (Multiplication Sign)
 * LaTeX: `times`
 * As the cross-product, this is only defined for `vec3` variables.
   It also works for the curl of a vector field; see below.
@@ -35,6 +39,7 @@ useful for Diderot programs in LaTeX documents, and other comments.
 #### ⊗ means tensor product, as in
 
 	tensor[3,3] Proj = identity[3] - norm⊗norm
+* Unicode: U+2297 (Circled Times)
 * LaTeX: `otimes`.
 * As an operator on coordinate vectors, this is typically called the outer product.
   It is also used to define the Jacobian of a vector field; see below.
@@ -42,6 +47,7 @@ useful for Diderot programs in LaTeX documents, and other comments.
 #### • means dot product and matrix multiplication, as in
 
 	real ld = norm • lightDir;
+* Unicode: U+2022 (Bullet)
 * LaTeX: `bullet`, which is more consistently visible than
   the `cdot` that more typical for dot products.
 * The meaning of `•` is really (in tensor-speak) "contract out the
@@ -62,6 +68,7 @@ useful for Diderot programs in LaTeX documents, and other comments.
 	field#1(3)[] divergence = ∇•V;
 	field#2(2)[2] U = ...;
 	field#1(2)[] vort = ∇×U;
+* Unicode: U+2207 (Nabla)
 * LaTeX: `nabla`.
 * See above for the different uses of `∇`.  Note that `∇×` applied to a 2D vector field
   gives you a scalar, but `∇×` applied to a 3D vector field gives you another 3D vector field.
