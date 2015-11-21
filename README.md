@@ -189,9 +189,13 @@ To add these Teem utilities to your path:
 
 	export PATH=$DDRO_ROOT/teem-util/bin:${PATH}
 
-Finally, note that <code>unu dnorm</code> is a useful command for
-normalizing the orientation and meta-data in a Nrrd arrays into the consistent
-representation that the Diderot run-time assumes.
+**Note** that `unu dnorm` is used by the Diderot compiler to assert a
+canonical representation of orientation and meta-data in Nrrd arrays
+to simplify and specialize how that information is incoporated into a
+compiled Diderot program.  You can run `unu dnorm` (perhaps followed
+by piping into `unu head -`) on your own data to see exactly what it
+will do, or to normalize the meta-data prior to compiling the Diderot
+program (the normalization is idempotent by definition).
 
 #### (3) Getting Diderot (the various branches)
 
