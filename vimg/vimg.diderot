@@ -1,0 +1,65 @@
+/* ==========================================
+## vimg.diderot: 2D image sampler/viewer
+
+This program needs a dataset to render, for example:
+
+	ln -s ../data/sscand.nrrd img.nrrd
+
+Then compile this program; assuming the directions at
+https://github.com/Diderot-Language/examples you can:
+
+	../../vis12/bin/diderotc --exec vimg.diderot
+
+If the needed `img.nrrd` file is missing, the error message looks something like:
+
+	uncaught exception Fail [Fail: Nrrd file "img.nrrd" does not exist]
+	  raised at common/phase-timer.sml:78.50-78.52
+	  raised at common/phase-timer.sml:78.50-78.52
+	  raised at nrrd/nrrd-info.sml:146.15-146.74
+
+in which case you should run the `ln -s` command above, or
+link `img.nrrd` to some other 2D scalar nrrd file to view.
+
+The `-which` option will determine which function is sampled; look
+for `(0 == which)` below to see the start of the function definitions.
+========================================== */
+
+input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
+input vec2 cent ("center of viewing window") = [0,0];
+input real fov ("height of viewing window") = 2;
+input int sx ("# of horizontal samples in viewing window") = 300;
+input int sy ("# of vertical samples in viewing window") = 200;
+input real angle ("orientation (in counter-clockwise degrees) of viewing window") = 0;
+input int which ("what to show about the image (an integer option)") = 0;
+
+// field to sample and view
+field#1(2)[] F = ctmr ⊛ img;
+
+real wdth = fov*sx/sy;
+real phi = angle*π/180;
+tensor[2,2] rot = [[cos(phi),sin(phi)],[-sin(phi),cos(phi)]];
+
+vec2 spc = [wdth/(sx-1), fov/(sy-1)];
+vec2 dir0 = rot•[spc[0], 0];
+vec2 dir1 = rot•[0, spc[1]];
+vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
+
+strand sample(int ui, int vi) {
+   output vec3 rgb = [0,0,0];
+   update {
+      vec2 x = orig + ui*dir0 + vi*dir1;
+      if (inside(x, F)) {
+         if (0 == which) {
+            real y = F(x);
+            rgb = [y,y,y];
+         } else if (1 == which) {
+            real y = |∇F(x)|;
+            rgb = [y,y,y];
+         }
+      }
+      stabilize;
+   }
+}
+
+initially [ sample(ui, vi) | vi in 0..(sy-1),
+                             ui in 0..(sx-1) ];
