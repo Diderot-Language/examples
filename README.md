@@ -65,7 +65,7 @@ and set `$DDRO_ROOT` to refer to it:
 	cd ddro
 	export DDRO_ROOT=`pwd`
 
-All shell commands used here assume sh/bash syntax.
+**All shell commands used here assume sh/bash syntax (rather than csh/tcsh).**
 
 #### (1) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
