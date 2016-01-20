@@ -206,7 +206,7 @@ work on merging them is ongoing.  Any or all of them should be within `$DDRO_ROO
 
 	cd $DDRO_ROOT
 
-Every branch is available via an "svn co" command below.  The password is also "anonsvn".
+Every branch is available via an "svn co" command below.
 
 The **vis12** branch was created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
@@ -214,21 +214,21 @@ submission in mind. That never happened, and the
 [VIS'13](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected.
 Still, this has become the most mature branch, though it lacks some features from other branches.
 
-	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
 The **vis12-cl** branch is the only one with a working OpenCL backend.  The `diderotc`
 compiler from the other branches may advertise a `--target=cl` option, but actually
 it only works in the vis12-cl branch.
 
-	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
 
 The **lamont** branch includes the implementation of strand communication.
 
-	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/lamont
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/lamont
 
 The **charisee** branch includes field "lifting", based on the EIN internal representation.
 
-	svn co --username anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
 
 **To configure and build** any of these branches, the steps are
 the same. Run these commands inside any of the per-branch directories
