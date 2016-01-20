@@ -1,4 +1,4 @@
-# Didrot Examples
+# Diderot Examples
 
 These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu)
 
