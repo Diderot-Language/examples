@@ -20,20 +20,23 @@ If the needed `img.nrrd` file is missing, the error message looks something like
 in which case you should run the `ln -s` command above, or
 link `img.nrrd` to some other 2D scalar nrrd file to view.
 
-The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the start of the function definitions.
+The `-w` option will determine which function is sampled; look
+for `(0 == w)` below to see the start of the function definitions.
 ========================================== */
 
 input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
 input vec2 cent ("center of viewing window") = [0,0];
 input real fov ("height of viewing window") = 2;
-input int sx ("# of horizontal samples in viewing window") = 300;
-input int sy ("# of vertical samples in viewing window") = 200;
+input int sx ("# of horizontal samples in viewing window") = 640;
+input int sy ("# of vertical samples in viewing window") = 480;
 input real angle ("orientation (in counter-clockwise degrees) of viewing window") = 0;
-input int which ("what to show about the image (an integer option)") = 0;
+input int w ("what to show about the image (an integer option)") = 0;
+input real iso ("value at which to show approximate isocontour") = 0;
+input real th ("thickness of isocontour") = 1;
 
 // field to sample and view
-field#1(2)[] F = ctmr ⊛ img;
+// C1 kernels include c1tent, ctmr, bspln3, c4hexic
+field#1(2)[] F = bspln3 ⊛ img;
 
 real wdth = fov*sx/sy;
 real phi = angle*π/180;
@@ -44,17 +47,21 @@ vec2 dir0 = rot•[spc[0], 0];
 vec2 dir1 = rot•[0, spc[1]];
 vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
 
+function real bump(real h) = max(0, 1 - |h|/th);
+
 strand sample(int ui, int vi) {
-   output vec3 rgb = [0,0,0];
+   output real gray = 0;
    update {
       vec2 x = orig + ui*dir0 + vi*dir1;
       if (inside(x, F)) {
-         if (0 == which) {
-            real y = F(x);
-            rgb = [y,y,y];
-         } else if (1 == which) {
-            real y = |∇F(x)|;
-            rgb = [y,y,y];
+         if (0 == w) {
+            gray = F(x);
+         } else if (1 == w) {
+            gray = |∇F(x)|;
+         } else if (2 == w) {
+            gray = bump(F(x) - iso);
+         } else if (3 == w) {
+            gray = bump((F(x) - iso)/|∇F(x)|);
          }
       }
       stabilize;

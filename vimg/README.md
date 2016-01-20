@@ -19,5 +19,5 @@ If the needed `img.nrrd` file is missing, the error message looks something like
 in which case you should run the `ln -s` command above, or
 link `img.nrrd` to some other 2D scalar nrrd file to view.
 
-The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the start of the function definitions.
+The `-w` option will determine which function is sampled; look
+for `(0 == w)` below to see the start of the function definitions.
