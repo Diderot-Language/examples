@@ -22,22 +22,26 @@ in which case you should run the `ln -s` command above, or link `img.nrrd`
 to some other 2D scalar nrrd file to view.  The same applies to the need
 for `cmap.nrrd` to link to a colormap.
 
-The `-w` option will determine which function is sampled; look
-for `(0 == w)` below to see the start of the function definitions.
-Some examples are, using the links, given above, of `img.nrrd`
+The `-which` option will determine which function is sampled; look
+for `(0 == which)` below to see the start of the function definitions.
+Assuming the symbolic links given above (of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
-respectively.
-* `./vimg -cent 280 418 -fov 42 -w 0`
-* `./vimg -cent 280 418 -fov 42 -w 1`
-* `./vimg -cent 280 418 -fov 42 -w 2`
-* `./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
-* `./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
-
+respectively), some examples usages are:
+* `./vimg -cent 290 414 -fov 45 -which 0`
+* `./vimg -cent 290 414 -fov 45 -which 1`
+* `./vimg -cent 290 414 -fov 45 -which 2`
+* `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
+* `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
-an 8-bit image version of the output.  The `-w 3` and `-w 4` commands show an
-important comparison, by demonstrating how knowing the gradient permits
+an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
+show an important comparison, by demonstrating how knowing the gradient permits
 drawing of equal-thickness isocontours (according to the first-order Taylor
 expansion).
+
+Viewing `../data/sscand.nrrd` with the parameters above gives a roughly
+100km view of the area around Geilo, Norway, home of the
+[Winter School](http://www.sintef.no/projectweb/geilowinterschool/2016-scientific-visualization/)
+for which this program was originally created.
 ========================================== */
 
 input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
@@ -47,7 +51,7 @@ input real fov ("height of viewing window") = 2;
 input int sx ("# of horizontal samples in viewing window") = 640;
 input int sy ("# of vertical samples in viewing window") = 480;
 input real angle ("orientation (in counter-clockwise degrees) of viewing window") = 0;
-input int w ("what to show about the image (an integer option)") = 0;
+input int which ("what to show about the image, currently from 0 to 4") = 0;
 input real iso ("value at which to show approximate isocontour") = 0;
 input real th ("thickness of isocontour") = 1;
 input real cmin ("value to use at min end of colormap") = 0;
@@ -70,33 +74,37 @@ vec2 dir0 = rot•[spc[0], 0];
 vec2 dir1 = rot•[0, spc[1]];
 vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
 
-// a function that is 1 at 0, and goes down linearly to 0
-// according to thickness parameter th
+// A function that is 1 at 0, and goes down linearly to 0 according to
+// thickness parameter th. Note that if a function is a simple expression like
+// this it can be defined with a single `=`, with no need for a `return`
+// inside a sequence of statements. You might want to call this function
+// "tent" but that name is already taken by a kernel.
 function real bump(real z) = max(0, 1 - |z|/th);
 
 strand sample(int ui, int vi) {
-   // The output type is fixed for a Diderot program, regardless of input
-   // variables or execution outcomes. So this program sometimes saves
-   // what is really just grayscale information in an RGB color image.
+   // The output type for a Diderot program is fixed at compile-time,
+   // regardless of input variable values or execution outcomes. So
+   // this program sometimes saves what is really just grayscale
+   // information in an RGB color image.
    output vec3 rgb = [0,0,0];
    real y = 0;
    update {
       vec2 x = orig + ui*dir0 + vi*dir1;
       if (inside(x, F)) {
-         if (0 == w) {
+         if (0 == which) {
             // the image value itself
             y = F(x);
             rgb = [y,y,y];
-         } else if (1 == w) {
+         } else if (1 == which) {
             // the gradient magnitude
             y = |∇F(x)|;
             rgb = [y,y,y];
-         } else if (2 == w) {
+         } else if (2 == which) {
             // the gradient vector, saved in
             // first two components of output
             vec2 gg = ∇F(x);
             rgb = [gg[0],gg[1],0];
-         } else if (3 == w) {
+         } else if (3 == which) {
             // colormapped, with simple value-based isocontour
             // Note that there isn't (curently) a way to learn
             // within the language what the domain of colormap
@@ -107,11 +115,14 @@ strand sample(int ui, int vi) {
             // HEY: use clerp() when available
             rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
             rgb *= 1 - bump(F(x) - iso);
-         } else if (4 == w) {
+         } else if (4 == which) {
             // colormapped, with Newton-based isocontour
             // HEY: use clerp() when available
             rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
             rgb *= 1 - bump((F(x) - iso)/|∇F(x)|);
+         } else {
+            // update "input int which" annotation above as cases are added
+            print("Sorry, no function defined for which = ", which, "\n");
          }
       }
       stabilize;

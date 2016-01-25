@@ -21,19 +21,23 @@ in which case you should run the `ln -s` command above, or link `img.nrrd`
 to some other 2D scalar nrrd file to view.  The same applies to the need
 for `cmap.nrrd` to link to a colormap.
 
-The `-w` option will determine which function is sampled; look
-for `(0 == w)` below to see the start of the function definitions.
-Some examples are, using the links, given above, of `img.nrrd`
+The `-which` option will determine which function is sampled; look
+for `(0 == which)` below to see the start of the function definitions.
+Assuming the symbolic links given above (of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
-respectively.
-* `./vimg -cent 280 418 -fov 42 -w 0`
-* `./vimg -cent 280 418 -fov 42 -w 1`
-* `./vimg -cent 280 418 -fov 42 -w 2`
-* `./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
-* `./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
-
+respectively), some examples usages are:
+* `./vimg -cent 290 414 -fov 45 -which 0`
+* `./vimg -cent 290 414 -fov 45 -which 1`
+* `./vimg -cent 290 414 -fov 45 -which 2`
+* `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
+* `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
-an 8-bit image version of the output.  The `-w 3` and `-w 4` commands show an
-important comparison, by demonstrating how knowing the gradient permits
+an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
+show an important comparison, by demonstrating how knowing the gradient permits
 drawing of equal-thickness isocontours (according to the first-order Taylor
 expansion).
+
+Viewing `../data/sscand.nrrd` with the parameters above gives a roughly
+100km view of the area around Geilo, Norway, home of the
+[Winter School](http://www.sintef.no/projectweb/geilowinterschool/2016-scientific-visualization/)
+for which this program was originally created.
