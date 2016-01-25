@@ -26,11 +26,11 @@ for `(0 == w)` below to see the start of the function definitions.
 Some examples are, using the links, given above, of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
 respectively.
-* ./vimg -cent 280 418 -fov 42 -w 0
-* ./vimg -cent 280 418 -fov 42 -w 1
-* ./vimg -cent 280 418 -fov 42 -w 2
-* ./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18
-* ./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18
+* `./vimg -cent 280 418 -fov 42 -w 0`
+* `./vimg -cent 280 418 -fov 42 -w 1`
+* `./vimg -cent 280 418 -fov 42 -w 2`
+* `./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
+* `./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
 
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-w 3` and `-w 4` show an
