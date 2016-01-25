@@ -1,9 +1,10 @@
 /* ==========================================
 ## vimg.diderot: 2D image sampler/viewer
 
-This program needs a dataset to render, for example:
+This program needs a dataset to render, and a colormap, for example:
 
 	ln -s ../data/sscand.nrrd img.nrrd
+	ln -s ../cmap/spiralch.nrrd cmap.nrrd
 
 Then compile this program; assuming the directions at
 https://github.com/Diderot-Language/examples you can:
@@ -17,14 +18,30 @@ If the needed `img.nrrd` file is missing, the error message looks something like
 	  raised at common/phase-timer.sml:78.50-78.52
 	  raised at nrrd/nrrd-info.sml:146.15-146.74
 
-in which case you should run the `ln -s` command above, or
-link `img.nrrd` to some other 2D scalar nrrd file to view.
+in which case you should run the `ln -s` command above, or link `img.nrrd`
+to some other 2D scalar nrrd file to view.  The same applies to the need
+for `cmap.nrrd` to link to a colormap.
 
 The `-w` option will determine which function is sampled; look
 for `(0 == w)` below to see the start of the function definitions.
+Some examples are, using the links, given above, of `img.nrrd`
+and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
+respectively.
+* ./vimg -cent 280 418 -fov 42 -w 0
+* ./vimg -cent 280 418 -fov 42 -w 1
+* ./vimg -cent 280 418 -fov 42 -w 2
+* ./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18
+* ./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18
+
+In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to
+create an 8-bit image version of the output.  The `-w 3` and `-w 4`
+show an interesting comparison, by demonstrating how knowing the
+gradient permits drawing of equal-thickness isocontours (according to
+the first-order Taylor expansion).
 ========================================== */
 
 input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
+input image(1)[3] cmimg ("colormap to use") = image("cmap.nrrd");
 input vec2 cent ("center of viewing window") = [0,0];
 input real fov ("height of viewing window") = 2;
 input int sx ("# of horizontal samples in viewing window") = 640;
@@ -33,10 +50,15 @@ input real angle ("orientation (in counter-clockwise degrees) of viewing window"
 input int w ("what to show about the image (an integer option)") = 0;
 input real iso ("value at which to show approximate isocontour") = 0;
 input real th ("thickness of isocontour") = 1;
+input real cmin ("value to use at min end of colormap") = 0;
+input real cmax ("value to use at max end of colormap") = 1;
+
+// the colormap can always use tent; it is not differentiated
+field#0(1)[3] cmap = tent ⊛ cmimg;
 
 // field to sample and view
 // C1 kernels include c1tent, ctmr, bspln3, c4hexic
-field#1(2)[] F = bspln3 ⊛ img;
+field#1(2)[] F = c4hexic ⊛ img;
 
 real wdth = fov*sx/sy;
 real phi = angle*π/180;
@@ -50,18 +72,34 @@ vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
 function real bump(real h) = max(0, 1 - |h|/th);
 
 strand sample(int ui, int vi) {
-   output real gray = 0;
+   // The output type must be fixed for the program, regardless of what
+   // it does or wants to save. So this program sometimes saves what is
+   // really just grayscale information in a color image.
+   output vec3 rgb = [0,0,0];
+   real y = 0;
    update {
       vec2 x = orig + ui*dir0 + vi*dir1;
       if (inside(x, F)) {
          if (0 == w) {
-            gray = F(x);
+            // the image value itself
+            y = F(x);
+            rgb = [y,y,y];
          } else if (1 == w) {
-            gray = |∇F(x)|;
+            // the gradient magnitude
+            y = |∇F(x)|;
+            rgb = [y,y,y];
          } else if (2 == w) {
-            gray = bump(F(x) - iso);
+            // the gradient vector
+            vec2 gg = ∇F(x);
+            rgb = [gg[0],gg[1],0];
          } else if (3 == w) {
-            gray = bump((F(x) - iso)/|∇F(x)|);
+            // colormapped, with simple value-based isocontour
+            rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
+            rgb *= 1-bump(F(x) - iso);
+         } else if (4 == w) {
+            // colormapped, with Newton-based isocontour
+            rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
+            rgb *= 1-bump((F(x) - iso)/|∇F(x)|);
          }
       }
       stabilize;
