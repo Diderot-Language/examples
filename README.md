@@ -23,6 +23,9 @@ Demonstrates input variables, the stabilize method, and 5-argument lerp().
 with information about the operators that they represent.
 * [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
 initialization-time, user-defined function, and printing.
+* [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
+of an image or of some of its derived attributes. Demonstrates univariate colormapping,
+and some of the math behind other visualization methods.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
 having an image dataset as an input variable, strands calling `die`,
