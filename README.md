@@ -25,6 +25,7 @@ with information about the operators that they represent.
 initialization-time, user-defined function, and printing.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
 of an image or of some of its derived attributes. Demonstrates univariate colormapping,
+a single-expression function defined with `=`,
 and some of the math behind other visualization methods.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
@@ -33,8 +34,7 @@ the `inside` and `normalize` functions, and finding gradients with ∇.
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
-rotation matrix conversion, a single-expression function defined with `=`,
-and nested conditional expressions.
+rotation matrix conversion, and nested conditional expressions.
 * [`mip`](mip/): For maximum-intensity projections through 3D volumes;
 Shows a minimal example of setting up a camera and casting rays,
 and also provides a setting for demonstrating how better reconstruction
@@ -191,6 +191,10 @@ The "Formats available" should include "png", and the
 To add these Teem utilities to your path:
 
 	export PATH=$DDRO_ROOT/teem-util/bin:${PATH}
+
+This will only have an effect for your current shell, you'll have to [take
+other steps, depending your environment](https://www.google.com/search?client=safari&rls=en&q=adding+paths+at+login),
+to ensure that this path is added with every login.
 
 **Note** that `unu dnorm` is used by the Diderot compiler to assert a
 canonical representation of orientation and meta-data in Nrrd arrays
