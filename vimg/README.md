@@ -32,8 +32,8 @@ respectively.
 * ./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18
 * ./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18
 
-In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to
-create an 8-bit image version of the output.  The `-w 3` and `-w 4`
-show an interesting comparison, by demonstrating how knowing the
-gradient permits drawing of equal-thickness isocontours (according to
-the first-order Taylor expansion).
+In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
+an 8-bit image version of the output.  The `-w 3` and `-w 4` show an
+important comparison, by demonstrating how knowing the gradient permits
+drawing of equal-thickness isocontours (according to the first-order Taylor
+expansion).

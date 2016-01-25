@@ -33,11 +33,11 @@ respectively.
 * ./vimg -cent 280 418 -fov 42 -w 3 -cmin -500 -cmax 1900 -iso 1210 -th 18
 * ./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18
 
-In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to
-create an 8-bit image version of the output.  The `-w 3` and `-w 4`
-show an interesting comparison, by demonstrating how knowing the
-gradient permits drawing of equal-thickness isocontours (according to
-the first-order Taylor expansion).
+In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
+an 8-bit image version of the output.  The `-w 3` and `-w 4` show an
+important comparison, by demonstrating how knowing the gradient permits
+drawing of equal-thickness isocontours (according to the first-order Taylor
+expansion).
 ========================================== */
 
 input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
@@ -60,16 +60,19 @@ field#0(1)[3] cmap = tent ⊛ cmimg;
 // C1 kernels include c1tent, ctmr, bspln3, c4hexic
 field#1(2)[] F = c4hexic ⊛ img;
 
+// compute the image-to-world transform based on specification
+// of the viewing window
 real wdth = fov*sx/sy;
 real phi = angle*π/180;
 tensor[2,2] rot = [[cos(phi),sin(phi)],[-sin(phi),cos(phi)]];
-
 vec2 spc = [wdth/(sx-1), fov/(sy-1)];
 vec2 dir0 = rot•[spc[0], 0];
 vec2 dir1 = rot•[0, spc[1]];
 vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
 
-function real bump(real h) = max(0, 1 - |h|/th);
+// a function that is 1 at 0, and goes down linearly to 0
+// according to thickness parameter th
+function real bump(real z) = max(0, 1 - |z|/th);
 
 strand sample(int ui, int vi) {
    // The output type must be fixed for the program, regardless of what
@@ -95,11 +98,11 @@ strand sample(int ui, int vi) {
          } else if (3 == w) {
             // colormapped, with simple value-based isocontour
             rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
-            rgb *= 1-bump(F(x) - iso);
+            rgb *= 1 - bump(F(x) - iso);
          } else if (4 == w) {
             // colormapped, with Newton-based isocontour
             rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
-            rgb *= 1-bump((F(x) - iso)/|∇F(x)|);
+            rgb *= 1 - bump((F(x) - iso)/|∇F(x)|);
          }
       }
       stabilize;
