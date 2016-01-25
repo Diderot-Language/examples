@@ -193,7 +193,7 @@ To add these Teem utilities to your path:
 	export PATH=$DDRO_ROOT/teem-util/bin:${PATH}
 
 This will only have an effect for your current shell, you'll have to [take
-other steps, depending your environment](https://www.google.com/search?client=safari&rls=en&q=adding+paths+at+login),
+other steps, depending your environment](https://www.google.com/search?q=adding+paths+at+login+unix),
 to ensure that this path is added with every login.
 
 **Note** that `unu dnorm` is used by the Diderot compiler to assert a
