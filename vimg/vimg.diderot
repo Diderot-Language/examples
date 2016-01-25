@@ -32,6 +32,7 @@ respectively), some examples usages are:
 * `./vimg -cent 290 414 -fov 45 -which 2`
 * `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
 * `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
+
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
 show an important comparison, by demonstrating how knowing the gradient permits
@@ -39,7 +40,7 @@ drawing of equal-thickness isocontours (according to the first-order Taylor
 expansion).
 
 Viewing `../data/sscand.nrrd` with the parameters above gives a roughly
-100km view of the area around Geilo, Norway, home of the
+100km view of the area around Geilo, Norway, site of the
 [Winter School](http://www.sintef.no/projectweb/geilowinterschool/2016-scientific-visualization/)
 for which this program was originally created.
 ========================================== */
