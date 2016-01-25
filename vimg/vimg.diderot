@@ -34,7 +34,7 @@ respectively.
 * `./vimg -cent 280 418 -fov 42 -w 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
 
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
-an 8-bit image version of the output.  The `-w 3` and `-w 4` show an
+an 8-bit image version of the output.  The `-w 3` and `-w 4` commands show an
 important comparison, by demonstrating how knowing the gradient permits
 drawing of equal-thickness isocontours (according to the first-order Taylor
 expansion).
@@ -75,9 +75,9 @@ vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
 function real bump(real z) = max(0, 1 - |z|/th);
 
 strand sample(int ui, int vi) {
-   // The output type must be fixed for the program, regardless of what
-   // it does or wants to save. So this program sometimes saves what is
-   // really just grayscale information in a color image.
+   // The output type is fixed for a Diderot program, regardless of input
+   // variables or execution outcomes. So this program sometimes saves
+   // what is really just grayscale information in an RGB color image.
    output vec3 rgb = [0,0,0];
    real y = 0;
    update {
@@ -92,15 +92,24 @@ strand sample(int ui, int vi) {
             y = |∇F(x)|;
             rgb = [y,y,y];
          } else if (2 == w) {
-            // the gradient vector
+            // the gradient vector, saved in
+            // first two components of output
             vec2 gg = ∇F(x);
             rgb = [gg[0],gg[1],0];
          } else if (3 == w) {
             // colormapped, with simple value-based isocontour
+            // Note that there isn't (curently) a way to learn
+            // within the language what the domain of colormap
+            // (or of any field) is, so that we want to scale the
+            // function range to [0,1] here reflects either prior
+            // knowledge or an assumption about the orientation
+            // meta-data in whatever cmap.nrrd links to
+            // HEY: use clerp() when available
             rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
             rgb *= 1 - bump(F(x) - iso);
          } else if (4 == w) {
             // colormapped, with Newton-based isocontour
+            // HEY: use clerp() when available
             rgb = cmap(clamp(0,1,lerp(0,1,cmin,F(x),cmax)));
             rgb *= 1 - bump((F(x) - iso)/|∇F(x)|);
          }
