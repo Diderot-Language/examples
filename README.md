@@ -1,11 +1,11 @@
 # Diderot Examples
 
-These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu)
+These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu).
 
-As a Diderot user, these examples are useful starting points for adapting and modifying for your
-own purposes. You can help by fixing issues that arise, and contributing new example programs.
-
-As Diderot is a fairly new language, the best practices for packaging up these examples and their
+If you want to use Diderot, adapting and modifying these examples for your
+own purposes may be easier than writing your own programs entirely from scratch.
+You can help by fixing issues that arise, and contributing new example programs.
+Diderot is a fairly new language, so the best practices for packaging up these examples and their
 associated files is still evolving.  Patience and/or constructive engagement is appreciated.
 
 The [diderot-language](https://goo.gl/kXpxhV) Google group is the place to
@@ -24,13 +24,16 @@ with information about the operators that they represent.
 * [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
 initialization-time, user-defined function, and printing.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
-of an image or of some of its derived attributes. Demonstrates univariate colormapping,
+of an image or of some of its derived attributes. Demonstrates
+having an image dataset as an input variable,
+univariate colormapping,
 a single-expression function defined with `=`,
-and some of the math behind other visualization methods.
+and some of the math behind other visualization methods (still a work-in-progress).
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
-having an image dataset as an input variable, strands calling `die`,
-the `inside` and `normalize` functions, and finding gradients with ∇.
+strands calling `die`,
+the `inside` and `normalize` functions,
+and finding gradients with ∇.
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
