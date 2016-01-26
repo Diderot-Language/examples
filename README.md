@@ -2,11 +2,12 @@
 
 These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu).
 
-If you want to use Diderot, adapting and modifying these examples for your
-own purposes may be easier than writing your own programs entirely from scratch.
-You can help by fixing issues that arise, and contributing new example programs.
-Diderot is a fairly new language, so the best practices for packaging up these examples and their
-associated files is still evolving.  Patience and/or constructive engagement is appreciated.
+If you want to use Diderot, adapting and modifying these examples may
+be easier than writing your own programs entirely from scratch.  You
+can help by fixing issues that arise, and contributing new example
+programs.  Diderot is a fairly new language, so the best practices for
+packaging up these examples and their associated files is still
+evolving.  Patience and/or constructive engagement is appreciated.
 
 The [diderot-language](https://goo.gl/kXpxhV) Google group is the place to
 discuss the language and its use.
