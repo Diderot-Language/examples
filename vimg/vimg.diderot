@@ -1,3 +1,29 @@
+/* ==========================================
+## vimg.diderot: 2D image sampler/viewer
+
+This program needs a dataset to render, and a colormap, for example:
+
+	ln -s ../data/sscand.nrrd img.nrrd
+	ln -s ../cmap/spiralch.nrrd cmap.nrrd
+
+Then compile this program; assuming the directions at
+https://github.com/Diderot-Language/examples you can:
+
+	../../vis12/bin/diderotc --exec vimg.diderot
+
+If the needed `img.nrrd` file is missing, the error message looks something like:
+
+	uncaught exception Fail [Fail: Nrrd file "img.nrrd" does not exist]
+	  raised at common/phase-timer.sml:78.50-78.52
+	  raised at common/phase-timer.sml:78.50-78.52
+	  raised at nrrd/nrrd-info.sml:146.15-146.74
+
+in which case you should run the `ln -s` command above, or link `img.nrrd`
+to some other 2D scalar nrrd file to view.  The same applies to the need
+for `cmap.nrrd` to link to a colormap.
+
+The `-which` option will determine which function is sampled; look
+for `(0 == which)` below to see the start of the function definitions.
 Assuming the symbolic links given above (of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
 respectively), some examples usages are:
@@ -6,6 +32,8 @@ respectively), some examples usages are:
 * `./vimg -cent 290 414 -fov 45 -which 2`
 * `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 20`
 * `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.2`
+* `./vimg -cent 290 414 -fov 45 -which 5 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
+* `./vimg -cent 290 414 -fov 45 -which 6 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
 
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
@@ -27,7 +55,7 @@ input int sx ("# of horizontal samples in viewing window") = 640;
 input int sy ("# of vertical samples in viewing window") = 480;
 input real angle ("orientation (in counter-clockwise degrees) of viewing window") = 0;
 input vec3 bkgd ("RGB color to show outside image domain") = [0.2,0.1,0.1];
-input vec3 line ("RGB color to show inside line features") = [0.0,0.0,0.0];
+input vec3 fcol ("RGB color to show inside features") = [0.0,0.0,0.0];
 input int which ("what to show about the image, currently from 0 to 9") = 0;
 input real iso ("value at which to show approximate isocontour") = 0;
 input real th ("apparent thickness of feature (meaning varies depending on which)") = 1;
@@ -158,7 +186,7 @@ strand sample(int ui, int vi) {
             // update "input int which" annotation above as cases are added
             print("Sorry, no function defined for which = ", which, "\n");
          }
-         rgb = lerp(rgb, line, ll);
+         rgb = lerp(rgb, fcol, ll);
       }
       stabilize;
    }
