@@ -34,6 +34,9 @@ respectively), some examples usages are:
 * `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.2`
 * `./vimg -cent 290 414 -fov 45 -which 5 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
 * `./vimg -cent 290 414 -fov 45 -which 6 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
+* `./vimg -cent 290 414 -fov 45 -which 7 -cmin -500 -cmax 1900 -th 0.2 -sthr 25 -fcol 1 0 0`
+* `./vimg -cent 290 414 -fov 45 -which 8 -cmin -500 -cmax 1900 -th 0.2 -fcol 0 1 0`
+* `./vimg -cent 290 414 -fov 45 -which 9 -cmin -500 -cmax 1900 -th 0.2 -sthr 25 -fcol 0 0 1`
 
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
@@ -61,7 +64,7 @@ input real iso ("value at which to show approximate isocontour") = 0;
 input real th ("apparent thickness of feature (meaning varies depending on which)") = 1;
 input real cmin ("value to use at min end of colormap") = 0;
 input real cmax ("value to use at max end of colormap") = 1;
-input real seps ("epsilon >= 0 value to use in divisor when computing strength") = 0;
+input real seps ("epsilon >= 0 value to use in divisor when computing strength") = 0.001;
 input real sthr ("strength threshold for showing ridges and valleys") = 0;
 
 /*
@@ -170,7 +173,7 @@ strand sample(int ui, int vi) {
             vec2 delta = inv(∇⊗∇F(x))•∇F(x);
             real{2} eval = evals(∇⊗∇F(x));
             if (7 == which) {        // maxima
-               if (eval{0} < 0 && eval{1} < 0) {
+               if (eval{0} < 0 && eval{1} < 0 && eval{0} < -sthr) {
                   ll = bump(|delta|);
                }
             } else if (8 == which) { // saddle
@@ -178,7 +181,7 @@ strand sample(int ui, int vi) {
                   ll = bump(|delta|);
                }
             } else {  // 9 == which:  minima
-               if (eval{0} > 0 && eval{1} > 0) {
+               if (eval{0} > 0 && eval{1} > 0 && eval{1} > sthr) {
                   ll = bump(|delta|);
                }
             }
