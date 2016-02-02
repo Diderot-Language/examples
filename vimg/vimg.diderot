@@ -1,41 +1,15 @@
-/* ==========================================
-## vimg.diderot: 2D image sampler/viewer
-
-This program needs a dataset to render, and a colormap, for example:
-
-	ln -s ../data/sscand.nrrd img.nrrd
-	ln -s ../cmap/spiralch.nrrd cmap.nrrd
-
-Then compile this program; assuming the directions at
-https://github.com/Diderot-Language/examples you can:
-
-	../../vis12/bin/diderotc --exec vimg.diderot
-
-If the needed `img.nrrd` file is missing, the error message looks something like:
-
-	uncaught exception Fail [Fail: Nrrd file "img.nrrd" does not exist]
-	  raised at common/phase-timer.sml:78.50-78.52
-	  raised at common/phase-timer.sml:78.50-78.52
-	  raised at nrrd/nrrd-info.sml:146.15-146.74
-
-in which case you should run the `ln -s` command above, or link `img.nrrd`
-to some other 2D scalar nrrd file to view.  The same applies to the need
-for `cmap.nrrd` to link to a colormap.
-
-The `-which` option will determine which function is sampled; look
-for `(0 == which)` below to see the start of the function definitions.
 Assuming the symbolic links given above (of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
 respectively), some examples usages are:
 * `./vimg -cent 290 414 -fov 45 -which 0`
 * `./vimg -cent 290 414 -fov 45 -which 1`
 * `./vimg -cent 290 414 -fov 45 -which 2`
-* `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
-* `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
+* `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 20`
+* `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.2`
 
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
-show an important comparison, by demonstrating how knowing the gradient permits
+show an important comparison, demonstrating how knowing the gradient permits
 drawing of equal-thickness isocontours (according to the first-order Taylor
 expansion).
 
@@ -53,23 +27,32 @@ input int sx ("# of horizontal samples in viewing window") = 640;
 input int sy ("# of vertical samples in viewing window") = 480;
 input real angle ("orientation (in counter-clockwise degrees) of viewing window") = 0;
 input vec3 bkgd ("RGB color to show outside image domain") = [0.2,0.1,0.1];
-input int which ("what to show about the image, currently from 0 to 4") = 0;
+input vec3 line ("RGB color to show inside line features") = [0.0,0.0,0.0];
+input int which ("what to show about the image, currently from 0 to 9") = 0;
 input real iso ("value at which to show approximate isocontour") = 0;
-input real th ("thickness of isocontour") = 1;
+input real th ("apparent thickness of feature (meaning varies depending on which)") = 1;
 input real cmin ("value to use at min end of colormap") = 0;
 input real cmax ("value to use at max end of colormap") = 1;
+input real seps ("epsilon >= 0 value to use in divisor when computing strength") = 0;
+input real sthr ("strength threshold for showing ridges and valleys") = 0;
 
-// field to sample and view
-// C1 kernels include c1tent, ctmr, bspln3, c4hexic
-field#1(2)[] F = c4hexic ⊛ img;
+/*
+The field to sample and view; needs to be more or less differentiable
+depending on what we want to do with it.
+C1 kernels include: c1tent, ctmr, bspln3, c4hexic
+C2 kernels include: c2ctmr, bspln3, c4hexic
+*/
+field#2(2)[] F = c4hexic ⊛ img;
 
-// The colormap can always use tent; it is not differentiated.  Note the use
-// of clamp() here: it means that the before evaluating cmap(x), x will be
-// clamped to inside the domain of cmap, as defined by the location of the
-// samples in the cmimg, and the support of the reconstruction filter tent.
-// In a functional sense, it almost might make more sense for the notation to
-// use composition: "tent⊛cming◦clamp": clamp first, then lookup into cmimg
-// and reconstruct with tent, but this was judged to be a bit baroque.
+/*
+The colormap can always use tent; it is not differentiated.  Note the
+clamp() here: it means that before evaluating cmap(x), x will be clamped to
+inside the domain of cmap, as defined by the location of the samples in the
+cmimg, and the support of the reconstruction filter tent.  From a
+functional sense, it might make more sense for the notation to use
+composition: "tent⊛cming◦clamp": clamp first, then lookup into cmimg and
+reconstruct with tent, but this looks a bit weird.
+*/
 field#0(1)[3] cmap = tent ⊛ clamp(cmimg);
 
 // compute the image-to-world transform based on specification
@@ -89,23 +72,30 @@ vec2 orig = cent - (dir0*(sx-1) + dir1*(sy-1))/2;
 // "tent" but that name is already taken by a kernel.
 function real bump(real z) = max(0, 1 - |z|/th);
 
+// 2x2 matrix inversion should be part of the language; until
+// then it is pretty easy to create a function for it.
+function tensor[2,2] inv(tensor[2,2] m) {
+  real d = m[0,0]*m[1,1] - m[0,1]*m[1,0];
+  return [[m[1,1],-m[0,1]],[-m[1,0],m[0,0]]]/d;
+}
+
 strand sample(int ui, int vi) {
    // The output type for a Diderot program is fixed at compile-time,
    // regardless of input variable values or execution outcomes. So
    // this program sometimes saves what is really just grayscale
    // information in an RGB color image.
    output vec3 rgb = bkgd;
-   real y = 0;
+   real ll = 0;
    update {
       vec2 x = orig + ui*dir0 + vi*dir1;
       if (inside(x, F)) {
          if (0 == which) {
             // the image value itself
-            y = F(x);
+            real y = F(x);
             rgb = [y,y,y];
          } else if (1 == which) {
             // the gradient magnitude
-            y = |∇F(x)|;
+            real y = |∇F(x)|;
             rgb = [y,y,y];
          } else if (2 == which) {
             // the gradient vector, saved in
@@ -113,25 +103,62 @@ strand sample(int ui, int vi) {
             vec2 gg = ∇F(x);
             rgb = [gg[0],gg[1],0];
          } else if (3 == which) {
-            // colormapped, with simple value-based isocontour
-            // Note that there isn't (curently) a way to learn
-            // within the language what the domain of colormap
-            // (or of any field) is, so that we want to scale the
-            // function range to [0,1] here reflects either prior
-            // knowledge or an assumption about the orientation
-            // meta-data in whatever cmap.nrrd links to. There is
-            // no need to clamp before evaluating cmap(); that is
-            // handled by the clamp included in cmap's declaration
+            /* Colormapped, with simple value-based isocontour. Note that
+            there isn't (currently) a way to learn within the language what
+            the domain of colormap (or of any field) is, so rescaling the
+            function range to [0,1] here reflects either prior knowledge
+            or an assumption about the orientation meta-data in whatever
+            cmap.nrrd links to. There is no need to clamp before evaluating
+            cmap(); that is handled by the clamp in cmap's declaration */
             rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            rgb *= 1 - bump(F(x) - iso);
+            ll = bump(F(x) - iso);
          } else if (4 == which) {
             // colormapped, with Newton-based isocontour
             rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            rgb *= 1 - bump((F(x) - iso)/|∇F(x)|);
+            ll = bump((F(x) - iso)/|∇F(x)|);
+         } else if (5 == which) {
+            // colormapped, with Newton-based ridge line
+            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+            vec2{2} evec = evecs(∇⊗∇F(x));
+            real{2} eval = evals(∇⊗∇F(x));
+            real strn = -eval{1}/(|∇F(x)| + seps);
+            if (eval{1} < 0 && strn > sthr) {
+               vec2 delta = (evec{1}⊗evec{1}/eval{1})•∇F(x);
+               ll = bump(|delta|);
+            }
+         } else if (6 == which) {
+            // colormapped, with Newton-based valley line
+            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+            vec2{2} evec = evecs(∇⊗∇F(x));
+            real{2} eval = evals(∇⊗∇F(x));
+            real strn = eval{0}/(|∇F(x)| + seps);
+            if (eval{0} > 0 && strn > sthr) {
+               vec2 delta = (evec{0}⊗evec{0}/eval{0})•∇F(x);
+               ll = bump(|delta|);
+            }
+         } else if (7 == which || 8 == which || 9 == which) {
+            // colormapped, with critical points
+            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+            vec2 delta = inv(∇⊗∇F(x))•∇F(x);
+            real{2} eval = evals(∇⊗∇F(x));
+            if (7 == which) {        // maxima
+               if (eval{0} < 0 && eval{1} < 0) {
+                  ll = bump(|delta|);
+               }
+            } else if (8 == which) { // saddle
+               if (eval{0} > 0 && eval{1} < 0) {
+                  ll = bump(|delta|);
+               }
+            } else {  // 9 == which:  minima
+               if (eval{0} > 0 && eval{1} > 0) {
+                  ll = bump(|delta|);
+               }
+            }
          } else {
             // update "input int which" annotation above as cases are added
             print("Sorry, no function defined for which = ", which, "\n");
          }
+         rgb = lerp(rgb, line, ll);
       }
       stabilize;
    }
