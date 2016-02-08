@@ -30,7 +30,7 @@ of an image or of some of its derived attributes. Demonstrates
 having an image dataset as an input variable,
 univariate colormapping,
 a single-expression function defined with `=`,
-and some of the math behind other visualization methods (still a work-in-progress).
+and use of `evals` and `evecs` for eigenvalues and eigenvectors.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
 strands calling `die`,
