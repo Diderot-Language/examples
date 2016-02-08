@@ -84,7 +84,7 @@ input vec2 cmin ("# lower corner of sampling grid") = [-1,-1];
 input vec2 cmax ("# upper corner of sampling grid") = [1,1];
 input int size ("# samples on both axes of sampling grid") = 30;
 
-// field is defined so isocontour of interest is at zero levelset
+// field is defined so that isocontour of interest is the zero levelset
 field#1(2)[] F = c4hexic ⊛ img - isoval;
 
 /*
@@ -92,7 +92,7 @@ The ID argument is not actually used, but it is included here as an
 example of a way of identifying strands that can be useful for
 debugging.
 */
-strand iso(int ID, vec2 pos0) {
+strand iso(int ID, vec2 pos0) { // vec2 is a synonym for tensor[2]
    output vec2 pos = pos0;
    int steps = 0;
    update {
