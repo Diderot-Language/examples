@@ -1,6 +1,7 @@
 # Diderot Examples
 
-These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu).
+These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu),
+recently described in a [VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).
 
 If you want to use Diderot, adapting and modifying these examples may
 be easier than writing your own programs entirely from scratch.  You
