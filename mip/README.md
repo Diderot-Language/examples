@@ -24,7 +24,7 @@ in order to compile this program `mip.diderot`:
 
 In this case the volume size is chosen to ensure that the local maxima of
 this -which 13 synthetic function, a cube frame with maxima at
-(x,y,)=(+-1,+1,+1), are actually hit by grid sample points, which helps
+(x,y,z)=(+-1,+1,+1), are actually hit by grid sample points, which helps
 reason about subsequent debugging.  We can inspect the volume by tiled slicing
 in `unu` to make [cube-tile.png](cube-tile.png):
 
@@ -37,7 +37,7 @@ These examples are mainly to demonstrate Diderot, but some learning some
 and type, for example, `unu pad` to get the usage info for `unu pad`.
 
 We copy `cube.nrrd` to `vol.nrrd`, so that `mip.diderot` can see it in its
-default location (in the current directory), we then we can compile
+default location (in the current directory), and then we can compile
 `mip.diderot`:
 
 	cp cube.nrrd vol.nrrd
