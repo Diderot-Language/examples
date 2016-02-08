@@ -29,12 +29,17 @@ respectively), some examples usages are:
 * `./vimg -cent 290 414 -fov 45 -which 0`
 * `./vimg -cent 290 414 -fov 45 -which 1`
 * `./vimg -cent 290 414 -fov 45 -which 2`
-* `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 18`
-* `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.18`
+* `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 20`
+* `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.2`
+* `./vimg -cent 290 414 -fov 45 -which 5 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
+* `./vimg -cent 290 414 -fov 45 -which 6 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
+* `./vimg -cent 290 414 -fov 45 -which 7 -cmin -500 -cmax 1900 -th 0.2 -sthr 25 -fcol 1 0 0`
+* `./vimg -cent 290 414 -fov 45 -which 8 -cmin -500 -cmax 1900 -th 0.2 -fcol 0 1 0`
+* `./vimg -cent 290 414 -fov 45 -which 9 -cmin -500 -cmax 1900 -th 0.2 -sthr 25 -fcol 0 0 1`
 
 In all cases, one can `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
-show an important comparison, by demonstrating how knowing the gradient permits
+show an important comparison, demonstrating how knowing the gradient permits
 drawing of equal-thickness isocontours (according to the first-order Taylor
 expansion).
 
