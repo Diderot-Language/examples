@@ -75,8 +75,8 @@ function real func(vec2 pos) {
       // expects width of about 8
       ret = x^3 + 3*x^2 - 4*y^2;
    } else if (4 == which) { // 4: sine waves
-      ret = sin((1 + parm[0])*(x + parm[1]))
-          + sin((1 + parm[2])*(y + parm[3]));
+      ret = sin((1 + parm[0])*(x + parm[2]))
+          + sin((1 + parm[1])*(y + parm[3]));
    } else if (5 == which) { // 5: circle with soft edge, plus ramps
       real r = |pos|;
       // expects width of about 4
