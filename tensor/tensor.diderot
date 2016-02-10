@@ -10,7 +10,7 @@ depend on index ordering.
 Assuming the directions at https://github.com/Diderot-Language/examples
 this program can be compiled with:
 
-	../../vis12/bin/diderotc --exec fs3d-scl.diderot
+	../../vis12/bin/diderotc --exec tensor.diderot
 
 Like Mathematica, Diderot doesn't enforce a semantic distinction
 between row and column vectors, but the following assumptions should
