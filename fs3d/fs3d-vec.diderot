@@ -5,9 +5,14 @@ copy-and-pasting.  As with that program, the `-which` option will
 determine which function is sampled; look for `(0 == which)` in the
 code to see the start of the function definitions.
 
-This program's printed output needs to be captured in order to have a
-NRRD header that records the orientation of the sampling grid. To get
-a self-contained ident.nrrd containing an identity function:
+Assuming the directions at https://github.com/Diderot-Language/examples
+this program can be compiled with:
+
+	../../vis12/bin/diderotc --exec fs3d-vec.diderot
+
+This program's printed output needs to be captured to generate
+NRRD header with full orientation info. A vector-valued identity
+function is sampled via:
 
 	./fs2d-vec -which 0 | unu save -f nrrd -o ident.nrrd
 	rm out.nrrd
@@ -67,9 +72,8 @@ function vec3 func(vec3 pos) {
    if (0 == which) {        // 0: identity
       ret = [x,y,z];
    } else if (1 == which) { // 2: with Jacobian = [parm0, parm1, parm2]
-      ret = [parm0[0]*x + parm0[1]*y + parm0[2]*z,
-             parm1[0]*x + parm1[1]*y + parm1[2]*z,
-             parm2[0]*x + parm2[1]*y + parm2[2]*z];
+      mat3 jac = [parm0, parm1, parm2];
+      ret = jac•pos;
    } else if (2 == which) { // 1: something with predictable derivatives
       // Note: this is used by another example ../tensor/tensor.diderot
       ret = [x,2*y,4*z] + x*[0.4,0.2,0.1] + x*x*[0,0.4,0] + y*z*[0,0,1];
