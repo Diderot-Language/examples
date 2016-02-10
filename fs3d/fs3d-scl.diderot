@@ -1,11 +1,14 @@
 /* ==========================================
 ## fs3d-scl.diderot: function sampler, 3D scalar synthetic fields
 
-This is based on [`fs2d-scl.diderot`](../fs2d); some
+`fs3d-scl.diderot` is based on [`fs2d-scl.diderot`](../fs2d); some
 copy-and-pasting was involved.  Like that program, the value of this
 is not so much as a model of what a good or typical Diderot program
 looks like, but as a utility for generating datasets for other Diderot
-programs to work on.
+programs to work on.  This same directory has a `fs3d-vec.diderot` for
+generating vector fields, and possibly other programs; the
+documentation below is for `fs3d-scl.diderot` though the other
+programs will have very similar structure and usage.
 
 This programs generates synthetic scalar 3D data on regular grids that
 are located and oriented in world space.  The input arguments here
