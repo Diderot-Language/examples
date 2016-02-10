@@ -23,6 +23,8 @@ them in (going from simpler to more complex programs):
 Demonstrates input variables, the stabilize method, and 5-argument lerp().
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
+* [`tensor`](tensor/): Demonstrates printing, indexing, and multiplication of
+tensors, including differentiation.
 * [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
 initialization-time, user-defined function, and printing.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,

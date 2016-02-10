@@ -6,6 +6,8 @@ set -o nounset
 # single) such diderot program per example directory. Normal people would use
 # a proper text-processing DSL for this task.
 
+# This is the special flag, within the the top comment, that signifies
+# that this is supposed to be put into a markdown file.
 flag='=========================================='
 
 saveIFS="$IFS"
