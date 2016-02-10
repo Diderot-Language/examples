@@ -1,0 +1,174 @@
+/* ==========================================
+## tensor.diderot: demo of some details of how tensors work
+
+In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and
+tensors generally are objects with some number of ordered indices.
+The semantics of operations like indexing and contraction, with either
+`•` or `:`, depend on the index ordering, as demonstrated by the
+statements here.
+
+Like Mathematica, Diderot doesn't enforce a semantic distinction
+between row and column vectors, but the following assumptions should
+not create any surprises. In a rank-2 tensor, i.e. a matrix, the first
+index is into the rows, and the second index is into the columns.
+Indexing starts at 0. A matrix is created by
+`mm = [[a,b,c],[d,e,f],[g,h,i]]` would conventionally be written as:
+
+	a b c
+	d e f
+	g h i
+
+This program also demonstrates how differentiation increases tensor rank
+with the help of a small 3-vector dataset `vec.nrrd`, created via:
+
+	../fs3d/fs3d-vec -width 10 -angle 30 -axis 1 2 3 -which 2 -sz0 30 -sz1 25 -sz2 20 |
+	unu save -f nrrd -o vec.nrrd
+	rm -f out.nrrd
+
+The vector-valued function sampled by this field over (x,y,) should be:
+
+	[1.4*x,
+	2*y + 0.2*x + 0.4*x*x,
+	4*z + 0.1*x + y*z]
+
+This function has an intentionally non-symmetric Jacobian, and some isolated
+elements in the second derivative, for the testing purposes here.
+
+Notes that things commented out and tagged with `RSN` refer to things
+that should be working hopefully real soon now.
+========================================== */
+
+//field#2(3)[3] F = c4hexic ⊛ image("vec.nrrd");
+field#2(3)[3] F = bspln3 ⊛ image("vec.nrrd");
+
+// vec3 means tensor[3]
+input vec3 r0 ("1st test vector") = [3,5,7];
+input vec3 r1 ("2nd test vector") = [4,9,2];
+input vec3 r2 ("3rd test vector") = [8,1,6];
+
+// This utility will become moot when printing matrices is implemented.
+// Diderot functions cannot return "void", so we have to return something.
+function real pmat(tensor[3,3] m) {
+   print("[");
+   print("[", m[0,0], ", ", m[0,1], ", ", m[0,2], "],");
+   print("[", m[1,0], ", ", m[1,1], ", ", m[1,2], "],");
+   print("[", m[2,0], ", ", m[2,1], ", ", m[2,2], "]");
+   print("]\n");
+   return 0;
+}
+
+strand go (int ii) {
+   output real out = 0;
+   update {
+      print("\nGiven vec3 r0, r1, r2:\n");
+      // Indexing starts at 0
+      print("r0 = [", r0[0], ",", r0[1], ",", r0[2], "] = ", r0, "\n");
+      print("r1 = [", r1[0], ",", r1[1], ",", r1[2], "] = ", r1, "\n");
+      print("r2 = [", r2[0], ",", r2[1], ",", r2[2], "] = ", r2, "\n");
+
+      // The new index created by assembling the vectors comes *before*
+      // the index into the constituent vectors.
+      print("\ntensor[3,3] mm=[r0,r1,r2]:\n");
+      tensor[3,3] mm=[r0,r1,r2];
+      print("mm[0,:] = [", mm[0,0], ",", mm[0,1], ",", mm[0,2], "]", /* RSN: " = ", mm[0,:], */ "\n");
+      print("mm[1,:] = [", mm[1,0], ",", mm[1,1], ",", mm[1,2], "]", /* RSN: " = ", mm[1,:], */ "\n");
+      print("mm[2,:] = [", mm[2,0], ",", mm[2,1], ",", mm[2,2], "]", /* RSN: " = ", mm[2,:], */ "\n");
+      // Note that mm[0] is not valid syntax for slicing
+      /* RSN: printing matrices with: print("mm = ", mm, "\n"); */
+      print("mm = "); real dummy = pmat(mm);
+
+      /* RSN: non-square matrices
+      print("\ntensor[2,3] ll=[r0,r1]:\n");
+      tensor[2,3] ll=[r0,r1];
+      print("ll[0,:] = [", ll[0,0], ",", ll[0,1], ",", ll[0,2], "] = ", ll[0,:], "\n");
+      print("ll[1,:] = [", ll[1,0], ",", ll[1,1], ",", ll[1,2], "] = ", ll[1,:], "\n");
+      print("ll = ", ll, "\n");
+      */
+
+      /* Can also recover original vectors by contracting on the left with
+         vectors that select one element */
+      print("\nContracting out and selecting on first index:\n");
+      vec3 rr0 = [1,0,0]•mm;
+      vec3 rr1 = [0,1,0]•mm;
+      vec3 rr2 = [0,0,1]•mm;
+      print("rr0 = [", rr0[0], ",", rr0[1], ",", rr0[2], "] = ", rr0, "\n");
+      print("rr1 = [", rr1[0], ",", rr1[1], ",", rr1[2], "] = ", rr1, "\n");
+      print("rr2 = [", rr2[0], ",", rr2[1], ",", rr2[2], "] = ", rr2, "\n");
+
+      // Diderot doesn't support assigning to individual elements, so
+      //   rr0[0] = 3.5;
+      // isn't possible, but the same result is available with:
+      rr0 = [3.5, rr0[1], rr0[2]];
+      print("\nNew rr0 = ", rr0, "\n");
+
+      print("\nContracting out and selecting on second index:\n");
+      vec3 cc0 = mm•[1,0,0];
+      vec3 cc1 = mm•[0,1,0];
+      vec3 cc2 = mm•[0,0,1];
+      print("cc0 = [", cc0[0], ",", cc0[1], ",", cc0[2], "] = ", cc0, "\n");
+      print("cc1 = [", cc1[0], ",", cc1[1], ",", cc1[2], "] = ", cc1, "\n");
+      print("cc2 = [", cc2[0], ",", cc2[1], ",", cc2[2], "] = ", cc2, "\n");
+
+      print("\nContracting out two indices, and matrix-matrix multiplication:\n");
+      tensor[3,3] ss = zeros[3,3];
+      print("mm:zeros[3,3] = ", mm:ss, "\n");
+      ss = [[1,0,0],[0,0,0],[0,0,0]];
+      print("\nss[0,0] = ", ss[0,0], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
+      print("mm.ss = "); dummy = pmat(mm•ss);
+      print("ss.mm = "); dummy = pmat(ss•mm);
+      ss = [[0,1,0],[0,0,0],[0,0,0]];
+      print("\nss[0,1] = ", ss[0,1], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
+      print("mm.ss = "); dummy = pmat(mm•ss);
+      print("ss.mm = "); dummy = pmat(ss•mm);
+      ss = [[0,0,1],[0,0,0],[0,0,0]];
+      print("\nss[0,2] = ", ss[0,2], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
+      print("mm.ss = "); dummy = pmat(mm•ss);
+      print("ss.mm = "); dummy = pmat(ss•mm);
+      ss = [[0,0,0],[0,0,0],[1,0,0]];
+      print("\nss[2,0] = ", ss[2,0], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
+      print("mm.ss = "); dummy = pmat(mm•ss);
+      print("ss.mm = "); dummy = pmat(ss•mm);
+
+      print("\nProbing vector field from vec.nrrd:\n");
+      print("F([0,0,0]) = ", F([0,0,0]), "\n");
+      print("F([1,0,0]) = ", F([1,0,0]), "\n");
+      print("F([0,1,0]) = ", F([0,1,0]), "\n");
+      print("F([0,0,1]) = ", F([0,0,1]), "\n");
+      /* Differentiation increases tensor rank by one: if F(p) has rank N
+         then ∇⊗F(p) must have rank N+1, so a new index has to be added to
+         to the shape of F(p) to describe the shape of ∇⊗F(p). In a Jacobian
+         matrix, each row is the gradient of one vector component, implying
+         that the new index from differentiation comes *after* the existing
+         indices; this is what Diderot does */
+      tensor[3,3] J = ∇⊗F([0,0,0]);
+      print("Jacobian (one component gradient per row) = \n");
+      print("J[0,:] = [", J[0,0], ",", J[0,1], ",", J[0,2], "] = ", [1,0,0]•J, "\n");
+      print("J[1,:] = [", J[1,0], ",", J[1,1], ",", J[1,2], "] = ", [0,1,0]•J, "\n");
+      print("J[2,:] = [", J[2,0], ",", J[2,1], ",", J[2,2], "] = ", [0,0,1]•J, "\n");
+
+      tensor[3,3,3] K = ∇⊗∇⊗F([0,0,0]);
+      print("\nPer-component Hessians:\n");
+      /* By contracting with [1,0,0] on the left, we're keeping the two
+         indices created by differentiation, i.e. the Hessian of the
+         first component of F */
+      tensor[3,3] H0 = [1,0,0]•K;
+      print("H0[0,:] = [", H0[0,0], ",", H0[0,1], ",", H0[0,2], "]\n");
+      print("H0[1,:] = [", H0[1,0], ",", H0[1,1], ",", H0[1,2], "]\n");
+      print("H0[2,:] = [", H0[2,0], ",", H0[2,1], ",", H0[2,2], "]\n\n");
+      tensor[3,3] H1 = [0,1,0]•K; // Hessian of F[1]
+      print("H1[0,:] = [", H1[0,0], ",", H1[0,1], ",", H1[0,2], "]\n");
+      print("H1[1,:] = [", H1[1,0], ",", H1[1,1], ",", H1[1,2], "]\n");
+      print("H1[2,:] = [", H1[2,0], ",", H1[2,1], ",", H1[2,2], "]\n\n");
+      tensor[3,3] H2 = [0,0,1]•K; // Hessian of F[2]
+      print("H2[0,:] = [", H2[0,0], ",", H2[0,1], ",", H2[0,2], "]\n");
+      print("H2[1,:] = [", H2[1,0], ",", H2[1,1], ",", H2[1,2], "]\n");
+      print("H2[2,:] = [", H2[2,0], ",", H2[2,1], ",", H2[2,2], "]\n\n");
+      /* RSN: indexing with K[i,j,k] */
+      /* RSN: printing tensors with: print("K = ", K, "\n"); */
+
+      out = dummy; // surpress warning about unused dummy
+      stabilize;
+   }
+}
+
+initially [ go(ii) | ii in 0..0 ];  // only one strand
