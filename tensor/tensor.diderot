@@ -129,17 +129,18 @@ strand go (int ii) {
       print("mm.ss = "); dummy = pmat(mm•ss);
       print("ss.mm = "); dummy = pmat(ss•mm);
 
+
       print("\nProbing vector field from vec.nrrd:\n");
       print("F([0,0,0]) = ", F([0,0,0]), "\n");
       print("F([1,0,0]) = ", F([1,0,0]), "\n");
       print("F([0,1,0]) = ", F([0,1,0]), "\n");
       print("F([0,0,1]) = ", F([0,0,1]), "\n");
-      /* Differentiation increases tensor rank by one: if F(p) has rank N
-         then ∇⊗F(p) must have rank N+1, so a new index has to be added to
-         to the shape of F(p) to describe the shape of ∇⊗F(p). In a Jacobian
-         matrix, each row is the gradient of one vector component, implying
-         that the new index from differentiation comes *after* the existing
-         indices; this is what Diderot does */
+      // Differentiation increases tensor rank by one: if F(p) has rank N
+      // then ∇⊗F(p) must have rank N+1, so a new index has to be added to
+      // to the shape of F(p) to describe the shape of ∇⊗F(p). In a Jacobian
+      // matrix, each row is the gradient of one vector component, implying
+      // that the new index from differentiation comes *after* the existing
+      // indices; this is what Diderot does generally.
       tensor[3,3] J = ∇⊗F([0,0,0]);
       print("Jacobian (one component gradient per row) = \n");
       print("J[0,:] = [", J[0,0], ",", J[0,1], ",", J[0,2], "] = ", [1,0,0]•J, "\n");
@@ -148,9 +149,9 @@ strand go (int ii) {
 
       tensor[3,3,3] K = ∇⊗∇⊗F([0,0,0]);
       print("\nPer-component Hessians:\n");
-      /* By contracting with [1,0,0] on the left, we're keeping the two
-         indices created by differentiation, i.e. the Hessian of the
-         first component of F */
+      // By contracting with [1,0,0] on the left, we're keeping the two
+      // indices created by differentiation, i.e. the Hessian of the
+      // first component of F
       tensor[3,3] H0 = [1,0,0]•K;
       print("H0[0,:] = [", H0[0,0], ",", H0[0,1], ",", H0[0,2], "]\n");
       print("H0[1,:] = [", H0[1,0], ",", H0[1,1], ",", H0[1,2], "]\n");
@@ -163,8 +164,9 @@ strand go (int ii) {
       print("H2[0,:] = [", H2[0,0], ",", H2[0,1], ",", H2[0,2], "]\n");
       print("H2[1,:] = [", H2[1,0], ",", H2[1,1], ",", H2[1,2], "]\n");
       print("H2[2,:] = [", H2[2,0], ",", H2[2,1], ",", H2[2,2], "]\n\n");
-      /* RSN: indexing with K[i,j,k] */
-      /* RSN: printing tensors with: print("K = ", K, "\n"); */
+      // RSN: indexing with K[i,j,k]
+      // RSN: printing tensors with: print("K = ", K, "\n");
+
 
       out = dummy; // surpress warning about unused dummy
       stabilize;
