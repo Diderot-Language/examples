@@ -72,7 +72,7 @@ function vec3 func(vec3 pos) {
    if (0 == which) {        // 0: identity
       ret = [x,y,z];
    } else if (1 == which) { // 2: with Jacobian = [parm0, parm1, parm2]
-      mat3 jac = [parm0, parm1, parm2];
+      tensor[3,3] jac = [parm0, parm1, parm2];
       ret = jac•pos;
    } else if (2 == which) { // 1: something with predictable derivatives
       // Note: this is used by another example ../tensor/tensor.diderot
