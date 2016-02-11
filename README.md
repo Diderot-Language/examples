@@ -266,14 +266,14 @@ Once the build of the Diderot compiler is finished, you can check that it worked
 	cd $DDRO_ROOT
 	git clone https://github.com/Diderot-Language/examples.git
 
-#### (5) Try running the "hello world" example
+#### (5) Try compiling and running the "hello world" example
 
 	cd $DDRO_ROOT/examples/hello
 	../../vis12/bin/diderotc --exec hello.diderot
 	./hello
 
-Running <code>hello</code> should print "hello, world".  Every Diderot program,
-even this trivial one, produces an output file. `hello` created <code>out.nrrd</code>,
+Running `./hello` should print "hello, world".  Every Diderot program,
+even this trivial one, produces an output file. `hello` created `out.nrrd`,
 a container for a single int.  We can check its contents with:
 
 	unu save -f text -i out.nrrd
