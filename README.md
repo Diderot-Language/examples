@@ -11,7 +11,7 @@ You can help by testing and improving the instructions below on how
 to build Diderot compiler, trying out the example
 programs and reporting any problems or confusion, or
 contributing new example programs.
-Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate.
+Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate with us.
 
 The example programs are listed here in order from simple to more complex:
 
