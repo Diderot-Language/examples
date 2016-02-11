@@ -20,16 +20,16 @@ The example programs are listed here in order from simple to more complex:
 Demonstrates input variables, the stabilize method, and 5-argument lerp().
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
-* [`tensor`](tensor/): Demonstrates printing, indexing, and multiplication of
-tensors, including differentiation.
-* [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
-initialization-time, user-defined function, and printing.
+* [`tensor`](tensor/): Demonstrates printing, user-defined functions, indexing and multiplication of
+tensors, and differentiation of a vector field.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
 of an image or of some of its derived attributes. Demonstrates
 having an image dataset as an input variable,
 univariate colormapping,
 a single-expression function defined with `=`,
 and use of `evals` and `evecs` for eigenvalues and eigenvectors.
+* [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
+initialization-time and chained else-if conditionals.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
 strands calling `die`,
