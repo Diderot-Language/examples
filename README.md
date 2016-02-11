@@ -2,21 +2,18 @@
 
 These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu),
 recently described in a [VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).
-
-If you want to use Diderot, adapting and modifying these examples may
-be easier than writing your own programs entirely from scratch.  You
-can help by fixing issues that arise, and contributing new example
-programs.  Diderot is a fairly new language, so the best practices for
-packaging up these examples and their associated files is still
-evolving.  Patience and/or constructive engagement is appreciated.
-
-The [diderot-language](https://goo.gl/kXpxhV) Google group is the place to
-discuss the language and its use.
-
+New examples are being added here to help you learn about what you can do in Diderot,
+and to provide starting points for writing your own Diderot programs.
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
-Here are the examples written so far, listed in the order we suggest you read through
-them in (going from simpler to more complex programs):
+Diderot is a new language, so patience and constructive engagement is appreciated.
+You can help by testing and improving the instructions below on how
+to build Diderot compiler, trying out the example
+programs and reporting any problems or confusion, or
+contributing new example programs.
+Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate.
+
+The example programs are listed here in order from simple to more complex:
 
 * [`hello`](hello/): Hello world in Diderot
 * [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
