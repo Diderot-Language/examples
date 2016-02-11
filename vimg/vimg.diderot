@@ -27,7 +27,7 @@ for `(0 == which)` below to see the start of the function definitions.
 Assuming the symbolic links given above (of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
 respectively), some examples usages are:
-* Grayscale image of reconstructed field:  
+* Grayscale image of reconstructed field:
    `./vimg -cent 290 414 -fov 45 -which 0`
 * Grayscale image of gradient magnitude: `./vimg -cent 290 414 -fov 45 -which 1`
 * Color image of gradient vector (blue is always zero): `./vimg -cent 290 414 -fov 45 -which 2`
