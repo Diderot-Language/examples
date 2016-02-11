@@ -23,7 +23,8 @@ would conventionally be written as:
 	g h i
 
 This program also demonstrates how differentiation increases tensor rank
-with the help of a small 3-vector dataset `vec.nrrd`, created via:
+with the help of a small 3-vector dataset `vec.nrrd`, created with the
+help of a [program in a later example, `fs3d-vec`](../fs3d):
 
 	../fs3d/fs3d-vec -width 10 -angle 30 -axis 1 2 3 -which 2 -sz0 30 -sz1 25 -sz2 20 |
 	unu save -f nrrd -o vec.nrrd
