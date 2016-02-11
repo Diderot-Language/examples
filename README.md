@@ -20,8 +20,8 @@ The example programs are listed here in order from simple to more complex:
 Demonstrates input variables, the stabilize method, and 5-argument lerp().
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
-* [`tensor`](tensor/): Demonstrates printing, user-defined functions, indexing and multiplication of
-tensors, and differentiation of a vector field.
+* [`tensor`](tensor/): Demonstrates printing, indexing, and multiplication of
+tensors, user-defined functions, and differentiation of a vector field.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
 of an image or of some of its derived attributes. Demonstrates
 having an image dataset as an input variable,
