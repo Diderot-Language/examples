@@ -27,17 +27,26 @@ for `(0 == which)` below to see the start of the function definitions.
 Assuming the symbolic links given above (of `img.nrrd`
 and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
 respectively), some examples usages are:
-* Grayscale image of reconstructed field:
+* Grayscale image of reconstructed field:  
    `./vimg -cent 290 414 -fov 45 -which 0`
-* Grayscale image of gradient magnitude: `./vimg -cent 290 414 -fov 45 -which 1`
-* Color image of gradient vector (blue is always zero): `./vimg -cent 290 414 -fov 45 -which 2`
-* Colormapped field, with naive pseudo-isocontour: `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 20`
-* Colormapped field, with smarter pseudo-isocontour: `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.2`
-* Colormapped field, with ridge lines: `./vimg -cent 290 414 -fov 45 -which 5 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
-* Colormapped field, with valley lines: `./vimg -cent 290 414 -fov 45 -which 6 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
-* Colormapped field, with blue maxima: `./vimg -cent 290 414 -fov 45 -which 7 -cmin -500 -cmax 1900 -th 0.25 -sthr 25 -fcol 0 0 0.8`
-* Colormapped field, with green saddle points: `./vimg -cent 290 414 -fov 45 -which 8 -cmin -500 -cmax 1900 -th 0.25 -fcol 0 1 0`
-* Colormapped field, with cyan minima: `./vimg -cent 290 414 -fov 45 -which 9 -cmin -500 -cmax 1900 -th 0.25 -sthr 25 -fcol 0 1 1`
+* Grayscale image of gradient magnitude:  
+   `./vimg -cent 290 414 -fov 45 -which 1`
+* Color image of gradient vector (blue is always zero):  
+   `./vimg -cent 290 414 -fov 45 -which 2`
+* Colormapped field, with naive pseudo-isocontour:  
+   `./vimg -cent 290 414 -fov 45 -which 3 -cmin -500 -cmax 1900 -iso 1210 -th 20`
+* Colormapped field, with smarter pseudo-isocontour:  
+   `./vimg -cent 290 414 -fov 45 -which 4 -cmin -500 -cmax 1900 -iso 1210 -th 0.2`
+* Colormapped field, with ridge lines:  
+   `./vimg -cent 290 414 -fov 45 -which 5 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
+* Colormapped field, with valley lines:  
+   `./vimg -cent 290 414 -fov 45 -which 6 -cmin -500 -cmax 1900 -th 0.2 -sthr 2`
+* Colormapped field, with blue maxima:  
+   `./vimg -cent 290 414 -fov 45 -which 7 -cmin -500 -cmax 1900 -th 0.25 -sthr 25 -fcol 0 0 0.8`
+* Colormapped field, with green saddle points:  
+   `./vimg -cent 290 414 -fov 45 -which 8 -cmin -500 -cmax 1900 -th 0.25 -fcol 0 1 0`
+* Colormapped field, with cyan minima:  
+   `./vimg -cent 290 414 -fov 45 -which 9 -cmin -500 -cmax 1900 -th 0.25 -sthr 25 -fcol 0 1 1`
 
 Each command can be followed by `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
