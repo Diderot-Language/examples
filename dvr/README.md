@@ -25,11 +25,11 @@ https://github.com/Diderot-Language/examples, with:
 
 Some example invocations, organized according to dataset examples above:
 * Sphere:  
-   `../fs3d/fs3d-scl -which 4 -width 3 | unu save -f nrrd -o vol.nrrd`
+   `./dvr ...`
 * Ellipse:  
-   `../fs3d/fs3d-scl -which 5 -parm 0 3 8 0 | unu save -f nrrd -o vol.nrrd`
+   `./dvr ...`
 * Three-lobed thing:  
-   `../fs3d/fs3d-scl -which 9 -width 2 | unu save -f nrrd -o vol.nrrd`
+   `./dvr ...`
 
 Note that things commented out and tagged with `RSN` refer to capabilities
 that should be working hopefully real soon now.
