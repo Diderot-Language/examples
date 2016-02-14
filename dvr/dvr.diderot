@@ -24,7 +24,8 @@ https://github.com/Diderot-Language/examples, with:
 
 	../../vis12/bin/diderotc --exec dvr.diderot
 
-Some example invocations, organized according to dataset examples above:
+Some example invocations, organized according to dataset examples above
+(still in-progress...):
 * Sphere:  
    `./dvr ...`
 * Ellipse:  
