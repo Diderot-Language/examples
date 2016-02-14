@@ -8,7 +8,7 @@ The instructions below end with cloning these examples, and compiling them with 
 
 Diderot is a new language, so patience and constructive engagement is appreciated.
 You can help by testing and improving the instructions below on how
-to build Diderot compiler, trying out the example
+to build the Diderot compiler, trying out the example
 programs and reporting any problems or confusion, or
 contributing new example programs.
 Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate with us.
