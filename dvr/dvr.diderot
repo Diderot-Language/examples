@@ -19,7 +19,7 @@ to demonstrate how one could be used.  For example:
 
 	ln -s ../cmap/isobow.nrrd cmap.nrrd
 
-Notes that things commented out and tagged with `RSN` refer to things
+Note that things commented out and tagged with `RSN` refer to capabilities
 that should be working hopefully real soon now.
 ========================================== */
 

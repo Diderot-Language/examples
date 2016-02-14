@@ -39,5 +39,5 @@ The vector-valued function sampled by this field over (x,y,z) should be:
 This function has an intentionally non-symmetric Jacobian, and some isolated
 elements in the second derivative, for the testing purposes here.
 
-Notes that things commented out and tagged with `RSN` refer to things
+Note that things commented out and tagged with `RSN` refer to capabilitites
 that should be working hopefully real soon now.
