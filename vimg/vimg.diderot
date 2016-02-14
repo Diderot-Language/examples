@@ -4,7 +4,7 @@
 This program needs a dataset to render, and a colormap, for example:
 
 	ln -s ../data/sscand.nrrd img.nrrd
-	ln -s ../cmap/spiralch.nrrd cmap.nrrd
+	ln -s ../cmap/spiral.nrrd cmap.nrrd
 
 Then compile this program; assuming the directions at
 https://github.com/Diderot-Language/examples you can:
@@ -25,7 +25,7 @@ for `cmap.nrrd` to link to a colormap.
 The `-which` option will determine which function is sampled; look
 for `(0 == which)` below to see the start of the function definitions.
 Assuming the symbolic links given above (of `img.nrrd`
-and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiralch.nrrd`
+and `cmap.nrrd` to `../data/sscand.nrrd` and `../cmap/spiral.nrrd`
 respectively), some examples usages are:
 * Grayscale image of reconstructed field:  
    `./vimg -cent 290 414 -fov 45 -which 0`
