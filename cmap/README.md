@@ -20,7 +20,6 @@ between two samples for positions between 0 and 1.
 
 You can make a picture of the univariate colormaps with `unu`, for example:
 
-	unu axinsert -i spiral.nrrd -a 2 -s 40 |
-	unu quantize -b 8 -min 0 -max 1 -o spiral.png
+	unu axinsert -i spiral.nrrd -a 2 -s 40 | unu quantize -b 8 -min 0 -max 1 -o spiral.png
 
 More colormaps will be added as more example programs need them.
