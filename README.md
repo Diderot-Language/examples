@@ -1,8 +1,8 @@
 # Diderot Examples
 
-These examples demonstrate the various features of the [Diderot language](http://diderot-language.cs.uchicago.edu),
+These examples demonstrate [Diderot language](http://diderot-language.cs.uchicago.edu),
 recently described in a [VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).
-New examples are being added here to help you learn about what you can do in Diderot,
+New examples are being added here to help you learn how to use Diderot,
 and to provide starting points for writing your own Diderot programs.
 The instructions below end with cloning these examples, and compiling them with Diderot.
 
@@ -225,7 +225,7 @@ submission in mind. That never happened, and the
 [VIS'13](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected.
 Still, this has become the most mature branch, though it lacks some features from other branches.
 
-	svn co --username anonsvn --password=anonsvn -r3606 https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
 The **vis12-cl** branch is the only one with a working OpenCL backend.  The `diderotc`
 compiler from the other branches may advertise a `--target=cl` option, but actually
