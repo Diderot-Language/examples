@@ -270,7 +270,7 @@ Once the build of the Diderot compiler is finished, you can check that it worked
 	cd $DDRO_ROOT
 	git clone https://github.com/Diderot-Language/examples.git
 
-#### (5) Try compiling and running the "hello world" example
+#### (5) Try compiling and running the "hello world" example [`hello`](hello/):
 
 	cd $DDRO_ROOT/examples/hello
 	../../vis12/bin/diderotc --exec hello.diderot
@@ -284,3 +284,16 @@ a container for a single int.  We can check its contents with:
 
 which should show "42".  If you've gotten this far, you have successfully
 built Diderot, and compiled and run a Diderot program!
+
+#### (6) Try the rest of the examples
+
+The beginning of this README.md lists the examples in a sensible order for
+reading and experimenting, from simple to complex (after [`hello`](hello/)
+is [`heron`](heron/)).  The idea is that later
+examples build on ideas and features shown in earlier examples.
+
+If you use Diderot for your own research or teaching, please share it with
+the [diderot-language](https://goo.gl/kXpxhV) Google group, and consider
+adding some new examples here.
+
+
