@@ -34,7 +34,7 @@ input vec3 axisrgb = [0.8,0.8,0.9];
 input vec3 tickrgb = [0.7,0.7,0.8];
 
 // function has to be at least C^1 (slope used for graphing)
-field#1(1)[] F = tent#1 ⊛ img;
+field#1(1)[] F = c4hexic ⊛ img;
 
 // aspect ratio of pixels in world-space
 real asp = ((ysize-1)/(ymm[1]-ymm[0])) / ((xsize-1)/(xmm[1]-xmm[0]));
@@ -93,7 +93,7 @@ strand plot(int xi, int yi) {
 
       // convert strand X position from index to world
       real xw = xi2w(xi);
-      if (true /* inside(xw, F) */) { // BUG: this should work
+      if (inside(xw, F)) {
          // convert F(x) to index-space Y
          real fxi = yw2i(F(xw));
          real mm = asp*∇F(xw);
