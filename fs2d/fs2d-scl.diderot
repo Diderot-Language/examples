@@ -57,7 +57,7 @@ vec2 orig = -(edge0*(size0-1) + edge1*(size1-1))/2 + off;
 /*
 The function to evaluate at each grid point The usage of the parm[]
 vector elements is just as a tuple of numbers, rather than a geometric
-vector, and is made somewhat confusing by the intent that the the
+vector, and is made somewhat confusing by the intent that the
 function be useful with the default all-zero parm
 */
 function real func(vec2 pos) {
