@@ -39,7 +39,7 @@ input real width ("approx width of world-space region sampled") = 1;
 input vec2 off ("translation offset from origin-centered grid") = [0,0];
 input real shear ("amount of shear in sampling grid") = 0;
 input real angle ("orientation (in degrees) of faster axis") = 0;
-input int which ("which function to sample, currently from 0 to 5") = 0;
+input int which ("which function to sample, currently from 0 to 6") = 0;
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
 real theta = angle*π/180;
@@ -50,7 +50,7 @@ vec2 spc = [width/(size0-1), width/(size1-1)];
 // inter-sample vector on faster axis
 vec2 edge0 = rot•[spc[0], 0];
 // inter-sample vector on slower axis
-vec2 edge1 = rot•[0, spc[1]] + shear*edge0;
+vec2 edge1 = rot•[0, spc[1]] + shear*spc[1]*normalize(edge0);
 // location of first sample
 vec2 orig = -(edge0*(size0-1) + edge1*(size1-1))/2 + off;
 
@@ -82,6 +82,8 @@ function real func(vec2 pos) {
       // expects width of about 4
       ret = lerp(1, 0, -1, erf((r - (1 + parm[0]))*(8*(1+parm[1]))), 1)
             + parm[2]*x + parm[3]*y;
+   } else if (6 == which) { // 6: scaled parabola
+      ret = x*x*(1 + parm[0]) + y*y*(1 + parm[1]);
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
