@@ -217,15 +217,15 @@ function real func(vec3 pos0) {
          (it doesn't set much in the negative X, Y, or Z half-spaces) */
       // big ball at origin, so local maxima at [0,0,0]
       ret = max(ret, ball(0.3, pos));
-      // cylinder along X axis
-      ret = max(ret, ball(0.2,  [0,y,z])*trpz(0.1,0,x,1,1));
-      // cone at end of X axis w/ local maxima at [1,0,0]
-      ret = max(ret, cone(0.25, pos - [1,0,0]));
-      // conical-ish thing along Y axis w/ local maxima at [0,1,0]
+      // Along X axis: a cylinder with ...
+      ret = max(ret, ball(0.17,  [0,y,z])*trpz(0.1,0,x,1,1));
+      // ... a cone at end (w/ local maxima at [1,0,0])
+      ret = max(ret, cone(0.26, pos - [1,0,0]));
+      // Along Y axis: conical-ish thing, local maxima at [0,1,0]
       ret = max(ret, ball(0.25, [x,0,z])*trpz(0.1,0,y,1,0.5));
-      // short rod along Z axis
+      // Along Z axis: short rod, with ...
       ret = max(ret, ball(0.2,  [x,y,0])*trpz(0.1,0,z,0.7,1));
-      // ball centered at [0,0,1]
+      // ... a separate ball centered at [0,0,1]
       ret = max(ret, ball(0.25, pos - [0,0,1]));
       // so that isovalue at 1 looks as intended
       ret *= 10;
