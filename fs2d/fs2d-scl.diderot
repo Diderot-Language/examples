@@ -39,12 +39,20 @@ input real width ("approx width of world-space region sampled") = 1;
 input vec2 off ("translation offset from origin-centered grid") = [0,0];
 input real shear ("amount of shear in sampling grid") = 0;
 input real angle ("orientation (in degrees) of faster axis") = 0;
-input int which ("which function to sample, currently from 0 to 6") = 0;
+input real wangle ("orientation (in degrees) of world coords") = 0;
+/* When a input global variable is not initialized, the command-line
+   interface has no default value for the variable, so it becomes a
+   required option instead of an optional option. In this case,
+   the "-which" flag must be used to choose a function to sample */
+input int which ("which function to sample, currently from 0 to 7");
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
-real theta = angle*π/180;
-// rotation by theta of [1,0] towards [0,1]
-tensor[2,2] rot = [[cos(theta),-sin(theta)],[sin(theta),cos(theta)]];
+real θ = angle*π/180;
+// rotation by θ of [1,0] towards [0,1]
+tensor[2,2] rot = [[cos(θ),-sin(θ)],[sin(θ),cos(θ)]];
+// repeating for world coords
+real wθ = wangle*π/180;
+tensor[2,2] wrot = [[cos(wθ),-sin(wθ)],[sin(wθ),cos(wθ)]];
 // sample spacing on faster and (unsheared) slower axis
 vec2 spc = [width/(size0-1), width/(size1-1)];
 // inter-sample vector on faster axis
@@ -60,7 +68,8 @@ vector elements is just as a tuple of numbers, rather than a geometric
 vector, and is made somewhat confusing by the intent that the
 function be useful with the default all-zero parm
 */
-function real func(vec2 pos) {
+function real func(vec2 pos0) {
+   vec2 pos = wrot•pos0;
    real x = pos[0];
    real y = pos[1];
    real ret = 0;
@@ -84,6 +93,8 @@ function real func(vec2 pos) {
             + parm[2]*x + parm[3]*y;
    } else if (6 == which) { // 6: scaled parabola
       ret = x*x*(1 + parm[0]) + y*y*(1 + parm[1]);
+   } else if (7 == which) { // 7: cosine waves
+      ret = cos((1 + parm[0])*|pos|)*(1 + parm[1]) + parm[2];
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
