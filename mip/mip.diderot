@@ -197,7 +197,7 @@ field#1(3)[] F = vol ⊛ ctmr;
 // (boilerplate) computing ray parameters and view-space basis
 vec3 camN = normalize(camAt - camEye);  // N: away from eye
 vec3 camU = normalize(camN × camUp);    // U: right
-vec3 camV = camN × camU;                // V: down
+vec3 camV = camN × camU;                // V: down (right-handed frame)
 real camDist = |camAt - camEye|;
 real camVmax = tan(camFOV*π/360)*camDist;
 real camUmax = camVmax*iresU/iresV;
@@ -206,7 +206,8 @@ real camFarVsp = camFar + camDist;   // far clip, view space
 
 // how to compute MIP of ray through (rayU,rayV) on view plane
 strand raycast(real rayU, real rayV) {
-   real rayN = camNearVsp;
+   // ray start, accounting for initial rayStep increment
+   real rayN = camNearVsp - rayStep;
    // offset from view-plane center to where ray hits it
    vec3 UV = rayU*camU + rayV*camV;
    // where ray starts (ray position at N=0)
@@ -217,15 +218,16 @@ strand raycast(real rayU, real rayV) {
    output real out = out0;
 
    update { // how to compute one sample of a MIP
-      vec3 pos = rayOrig + rayN*rayVec;  // pos = ray sample position
-      if (inside(pos,F)     // can only query field inside its domain
-          && (!inSphere || |pos| < 1)) { // and maybe only in unit sphere
-         out = max(out, F(pos));  // update output based on last sample
-      }
-      if (rayN > camFarVsp) {  // ray hit the far clipping plane
+      rayN += rayStep;          // increment ray position
+      if (rayN > camFarVsp) {   // ray hit the far clipping plane
          stabilize;
       }
-      rayN += rayStep;  // increment ray position
+      vec3 pos = rayOrig + rayN*rayVec;  // pos = ray sample position
+      if (!inside(pos,F)                 // If not inside field domain,
+          || (inSphere && |pos| > 1)) {  // or not inside required sphere,
+         continue;                       // then move onto next iteration
+      }
+      out = max(out, F(pos));  // update output based on last sample
    }
 }
 
