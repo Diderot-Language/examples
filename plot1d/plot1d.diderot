@@ -3,20 +3,31 @@
 
 example usage:
 
-	echo 1 | unu reshape -s 1 | unu dnorm -o - | unu pad -min -10 -max M+10 -b pad -v 0 -o data.nrrd
+	echo 1 | unu reshape -s 1 | unu dnorm -o - | unu pad -min -5 -max M+5 -b pad -v 0 -o data.nrrd
 	./plot1d -xsize 800 -ysize 400 -xmm -4 4 -ymm -0.3 1.1 -pthick 5 -athick 3 -twidth 25
 	unu quantize -b 8 -i rgb.nrrd -o plot.png
 	open plot.png
 
+echo "0 1" | unu reshape -s 2 | unu resample -s 3 -k tent -c node | unu dnorm -o - | unu resample -s 5 -o data.nrrd
+
 This is the place to try different kernels:
-tent, (c1tent, c2tent moot with continuity assertions)
-ctmr, (c2ctmr moot with continuity assertions)
+tent, c1tent, c2tent
+ctmr, c2ctmr
 bspln3
 bspln5
 c4hexic
 ========================================== */
 
+/* This ensures that wrap() border control is used for all input,
+   even if a different dataset is supplied via -img */
 input image(1)[] img = image("data.nrrd"); // data to plot
+image(1)[] wimg = wrap(img);
+
+/* This isn't valid, because while the compiler knows that wrap()
+border control applies to "data.nrrd", it wouldn't know if it applies
+to some different input supplied at runtime via -wimg. The production
+of of border control code is done statically, not dynamically.
+input image(1)[] wimg = wrap(image("data.nrrd")); */
 
 // way of specifying the grid on which sampling is done
 input vec2 xmm = [-4,4];    // [min,max] along horizontal
@@ -34,7 +45,7 @@ input vec3 axisrgb = [0.8,0.8,0.9];
 input vec3 tickrgb = [0.7,0.7,0.8];
 
 // function has to be at least C^1 (slope used for graphing)
-field#1(1)[] F = c4hexic ⊛ img;
+field#1(1)[] F = c4hexic ⊛ wimg;
 
 // aspect ratio of pixels in world-space
 real asp = ((ysize-1)/(ymm[1]-ymm[0])) / ((xsize-1)/(xmm[1]-xmm[0]));
@@ -93,11 +104,10 @@ strand plot(int xi, int yi) {
 
       // convert strand X position from index to world
       real xw = xi2w(xi);
-      if (inside(xw, F)) {
+      if (true || inside(xw, F)) {
          // convert F(x) to index-space Y
          real fxi = yw2i(F(xw));
          real mm = asp*∇F(xw);
-         //real mm = asp*(F(xw+0.001) - F(xw-0.001))/0.002; // hack to get derivative
          rgb = lerp(rgb, plotrgb, pline((yi - fxi)/sqrt(1 + mm^2)));
       }
       stabilize;
