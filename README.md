@@ -22,19 +22,21 @@ Demonstrates input variables, the stabilize method, and 5-argument lerp().
 with information about the operators that they represent.
 * [`tensor`](tensor/): Demonstrates printing, indexing, and multiplication of
 tensors, user-defined functions, and differentiation of a vector field.
+* [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates
+computing on globals at initialization-time,
+uninitialized global inputs,
+chained else-if conditionals to emulate a switch, and
+single-expression functions defined with `=`.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
 of an image or of some of its derived attributes. Demonstrates
 having an image dataset as an input variable,
 univariate colormapping,
-a single-expression function defined with `=`,
+finding gradients with ∇,
 and use of `evals` and `evecs` for eigenvalues and eigenvectors.
-* [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates computing on globals at
-initialization-time and chained else-if conditionals.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration. Demonstrates
 strands calling `die`,
-the `inside` and `normalize` functions,
-and finding gradients with ∇.
+and the `inside` and `normalize` functions.
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
