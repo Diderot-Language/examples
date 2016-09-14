@@ -1,4 +1,3 @@
-#version 1.0
 /* ==========================================
 ## dvr.diderot: basic direct volume rendering of a scalar field
 
