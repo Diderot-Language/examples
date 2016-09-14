@@ -1,15 +1,22 @@
 /* ==========================================
 ## dvr.diderot: basic direct volume rendering of scalar field
 
-Note that this example is heavily based on the [`mip`](../mip) example;
+Note that this example is heavily based on the [`mip`](../mip)
+example, especially for the basic set-up of camera, rays, and strands;
 some of the variables and code are better documented there.
 
 This program needs a dataset `vol.nrrd` to render; [`fs3d-scl`](../fs3d) is one
 way to generate this.  Some examples:
 * Sphere:  
    `../fs3d/fs3d-scl -which 4 -width 3 | unu save -f nrrd -o vol.nrrd`
-* XYZ Coordinate frame:  
-   `../fs3d/fs3d-scl -which 12 -width 3.5 -sz0 83 -sz1 84 -sz2 85 | unu save -f nrrd -o vol.nrrd`
+* XYZ axes indicator:  
+   `../fs3d/fs3d-scl -which 12 -width 3.5 -sz0 93 -sz1 94 -sz2 95 | unu crop -min 30 30 30 -max M M M -o vol.nrrd`
+
+The program also uses a univariate colormap `cmap.nrrd` (not for any
+important purpose, just to show how it could be used). This can be created
+via:
+
+	cp ../cmap/isobow.nrrd cmap.nrrd
 
 The program can be compiled, assuming the directions at
 https://github.com/Diderot-Language/examples, with:
@@ -20,8 +27,14 @@ Some example invocations, organized according to dataset examples above
 (still in-progress...):
 * Sphere:  
    `./dvr ...`
-* Coordinate frame:  
-   `./dvr ...`
+* XYZ axes indicator:  
+   `./dvr -camEye 3.1 4.0 2.1 \
+      -camAt 0.2 0.0 0.4 \
+      -camUp 0 0 1 \
+      -camNear -0.7 -camFar 0.5 \
+      -camFOV 20 -iresU 560 -iresV 480 \
+      -thick 0.03 -rayStep 0.005 -maxAlpha 1 -transp0 0.01 \
+      -isoval 1 -litdir -1 -2 -1 -mcnear 1.2 1.0 0.8 -mcfar 0.5 0.7 0.9`
 ========================================== */
 
 input image(3)[] vol ("volume dataset to render") = image("vol.nrrd");
@@ -35,7 +48,7 @@ input real camFOV ("field-of-view angle (in degrees) subtended vertically by vie
 input bool camOrtho ("whether to use orthographic, instead of perspective, projection") = false;
 input int iresU ("# samples on horizontal axis of image") = 640;
 input int iresV ("# samples on vertical axis of image") = 480;
-input real rayStep ("inter-sample step along view direction") = 0.1;
+input real rayStep ("inter-sample distance along view direction") = 0.1;
 
 input real refStep ("reference (unit) step length, for normalizing opacities") = 0.1;
 input real transp0 ("transparency close enough to 0 to terminate ray") = 0.01;
@@ -49,22 +62,24 @@ input real phongSp ("Blinn-Phong specularity exponent") = 60;
 input vec3 litdir ("direction (non-normalized) towards light source, in (U,V,N) view-space") = [0, 0, -4];
 input vec3 mcnear ("material color at near clipping plane (for depth cuing)") = [1,1,1];
 input vec3 mcfar ("material color at far clipping plane") = [1,1,1];
+/* this fog has no practical value except as a way to get an indication
+   of the extent and shape of the volume data domain */
 input vec4 fog ("fog RGBA inside volume data domain") = [1,1,1,0];
 input image(1)[3] cmap ("univariate colormap") = image("cmap.nrrd");
-input real zmin ("Z coord mapped to min end of colormap") = 0;
-input real zmax ("Z coord mapped to max end of colormap") = 1;
+input real cmin ("value mapped to min end of colormap") = 0;
+input real cmax ("value mapped to max end of colormap. By default cmin==cmax==0, which disables this colormapping") = 0;
 
 /* Convolve volume data with one of various possible kernels;
    see ../mip/mip.diderot for more info */
 //field#0(3)[] V = tent ⊛ vol;
-field#1(3)[] V = ctmr ⊛ vol;
-//field#2(3)[] V = bspln3 ⊛ vol;
+//field#1(3)[] V = ctmr ⊛ vol;
+field#2(3)[] V = bspln3 ⊛ vol;
 //field#4(3)[] V = c4hexic ⊛ vol;
 
 /* create a field to render from the original volume data field */
 field#1(3)[] F = V - isoval;
 
-/* create a field to render from the original volume data field */
+/* create a 1-D field around the colormap */
 field#0(1)[3] CM = tent ⊛ clamp(cmap);
 
 // (boilerplate) computing ray parameters and view-space basis
@@ -83,11 +98,6 @@ vec3 litwsp = transpose([camU,camV,camN])•normalize(litdir);
   that there is a segment of positions receiving maximum opacity. */
 function real alpha(real v, real g) = maxAlpha*clamp(0, 1, 1.4 - |v|/(g*thick));
 
-/* normalize opacity aa according to ray step length rsl, so attenuation
-   happens in world-space rather than ray sample index space */
-function real opacNorm(real aa, real rsl)
-   = 1 - pow(1 - aa, rayStep*rsl/refStep);
-
 // how to render ray through (rayU,rayV) on view plane
 strand raycast(int ui, int vi /* real rayU, real rayV */) {
    // cell-centered sampling of view plane (intersects look-at)
@@ -98,6 +108,10 @@ strand raycast(int ui, int vi /* real rayU, real rayV */) {
    vec3 UV = rayU*camU + rayV*camV;
    vec3 rayOrig = camEye + (UV if camOrtho else [0,0,0]);
    vec3 rayVec = camN + ([0,0,0] if camOrtho else UV/camDist);
+   /* alphaFix is used for opacity correction, so attenuation
+   happens in world-space rather than ray sample index space.
+   The actual distance between samples on this ray is |rayVec|*rayStep */
+   real alphaFix = |rayVec|*rayStep/refStep;
    vec3 eyeDir = -normalize(rayVec);
    // output for this ray
    output vec4 rgba = [0,0,0,0];
@@ -105,9 +119,9 @@ strand raycast(int ui, int vi /* real rayU, real rayV */) {
    vec3 rgb = [0,0,0];
    // ... and current tranparency
    real transp = 1;
-   /* example of turning on debuging for one pixel;
-      can can then have "if (verb) { print(...); }" */
-   //bool verb = 369==ui && 242==vi;
+   /* example of turning on debuging for one strand (pixel);
+      can can then have "if (verb) { print(...); }"
+   bool verb = 369==ui && 242==vi; */
 
    update {
       rayN += rayStep;          // increment ray position
@@ -121,7 +135,7 @@ strand raycast(int ui, int vi /* real rayU, real rayV */) {
       // compute fog contribution
       real aa = fog[3];
       if (aa > 0) {
-         aa = opacNorm(aa, |rayVec|);
+         aa = 1 - (1 - aa)^alphaFix;
          rgb += transp*aa*[fog[0],fog[1],fog[2]];
          transp *= 1 - aa;
       }
@@ -132,7 +146,7 @@ strand raycast(int ui, int vi /* real rayU, real rayV */) {
       if (aa == 0) {
          continue;
       }
-      aa = opacNorm(aa, |rayVec|);
+      aa = 1 - (1 - aa)^alphaFix;
       // Note: not standard Phong diffuse (no dark hemisphere)
       real dcomp = lerp(0, 1, -1, normalize(grad)•litwsp, 1)^2;
       // Slightly faster as this conditional expression
@@ -141,9 +155,12 @@ strand raycast(int ui, int vi /* real rayU, real rayV */) {
       // simple depth-cueing
       vec3 dcol = lerp(mcnear, mcfar, camNearVsp, rayN, camFarVsp);
       // lots of things could be basis for material color; this
-      // is contrived to show off some univariate mappgin
-      vec3 mcol = CM(lerp(0, 1, zmin, pos[2], zmax))
-                  if zmin < zmax else [1,1,1];
+      // is contrived to show off some univariate mapping
+      vec3 mcol = [1,1,1];
+      if (cmin != cmax) {
+         mcol = CM(lerp(0, 1, cmin, pos[2], cmax));
+      }
+      // light color is currently [1,1,1]
       rgb += transp*aa*((phongKa + phongKd*dcomp)*modulate(dcol,mcol)
                         + phongKs*scomp*[1,1,1]);
       transp *= 1 - aa;
