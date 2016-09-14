@@ -31,14 +31,14 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 	real rad = degrees*π/180;
 * Unicode: U+03C0 (Greek Small Letter Pi)
-* LaTeX: `pi`
+* LaTeX: `\pi`
 * This is currently the only finite real constant in Diderot.
 
 #### ∞ means infinity, as in
 
 	output real out = -∞;
 * Unicode: U+221E (Infinity)
-* LaTeX: `infty`
+* LaTeX: `\infty`
 * The above line of code is how the output of maximum-intensity projection might be intialized;
   from then on subsequent use might be like `out = max(out, F(pos))`.
 
@@ -46,7 +46,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
 * Unicode: U+229B (Circled Asterisk Operator)
-* LaTeX: `circledast` is probably typical, but `varoast` (with `usepackage{stmaryrd}`)
+* LaTeX: `\circledast` is probably typical, but `\varoast` (with `\usepackage{stmaryrd}`)
   is slightly more legible
 * This commutes; you could also write `image("img.nrrd") ⊛ bspln3`.
 
@@ -54,7 +54,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 	vec3 camU = normalize(camN × camUp);
 * Unicode: U+00D7 (Multiplication Sign)
-* LaTeX: `times`
+* LaTeX: `\times`
 * As the cross-product, this is only defined for `vec3` variables.
   It also works for the curl of a vector field; see below.
 
@@ -62,7 +62,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 	tensor[3,3] Proj = identity[3] - norm⊗norm
 * Unicode: U+2297 (Circled Times)
-* LaTeX: `otimes`.
+* LaTeX: `\otimes`.
 * As an operator on coordinate vectors, this is typically called the outer product.
   It is also used to define the Jacobian of a vector field; see below.
 
@@ -70,8 +70,8 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 	real ld = norm • lightDir;
 * Unicode: U+2022 (Bullet)
-* LaTeX: `bullet`, which is more consistently visible than
-  the `cdot` that more typical for dot products.
+* LaTeX: `\bullet`, which is more consistently visible than
+  the `\cdot` that more typical for dot products.
 * The meaning of `•` is really (in tensor-speak) "contract out the
   last index of the first argument with the first index of the second argument".
   Note that tensor double-dot product (which contracts out two indices
@@ -91,6 +91,6 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 	field#2(2)[2] U = ...;
 	field#1(2)[] vort = ∇×U;
 * Unicode: U+2207 (Nabla)
-* LaTeX: `nabla`.
+* LaTeX: `\nabla`.
 * See above for the different uses of `∇`.  Note that `∇×` applied to a 2D vector field
   gives you a scalar, but `∇×` applied to a 3D vector field gives you another 3D vector field.

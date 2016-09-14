@@ -36,7 +36,7 @@ for exdir in $examples; do
   printing=0
   echo "  ... processing $got to create $exdir/README.md"
   IFS='' # to preserve spaces and tabs when reading lines of README.md
-  cat $got | while read line; do
+  cat $got | while read -r line; do
     if [[ "$line" =~ $flag ]]; then
       # toggle whether we print
       printing=$((1 - $printing))
