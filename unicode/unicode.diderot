@@ -73,7 +73,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 	real ld = norm • lightDir;
 * Unicode: U+2022 (Bullet)
 * LaTeX: `\bullet`, which is more consistently visible than
-  the `\cdot` that more typical for dot products.
+  the `\cdot` that is more typical for dot products.
 * The meaning of `•` is really (in tensor-speak) "contract out the
   last index of the first argument with the first index of the second argument".
   Note that tensor double-dot product (which contracts out two indices
