@@ -56,22 +56,39 @@ XYZ axes indicator dataset (via `fs3d-scl -which 12`) this should produce
 Volume rendering is one setting in which we can make sure Diderot is doing
 all the right transformations for measuring derivatives: derivatives measured
 in volume index-space have to be transformed to get the derivative in
-world-space.
+world-space.  The following generates three different samplings of a
+rotationally symmetric paraboloid dataset, and then renders each of them
+with the same parameters, including a little fog to see the shape of the
+volume domain itself.  *For this to work as intended*, one must comment
+out `field#2(3)[] V = bspln3 ⊛ vol;` and uncomment `field#1(3)[] V = ctmr ⊛ vol;`:
+the Catmull-Rom accurately reconstructs quadratic functions, but the cubic
+B-spline does not.
 
-	../fs3d/fs3d-scl -which 4 -width 5 -sz0 30 -sz1 32 -sz2 35 | unu save -f nrrd -o sphere-0.nrrd
-	../fs3d/fs3d-scl -which 4 -width 5 -sz0 55 -sz1 29 -sz2 12 -angle -30 | unu save -f nrrd -o sphere-1.nrrd
-	../fs3d/fs3d-scl -which 4 -width 5 -sz0 30 -sz1 80 -sz2 19 -angle -30 -axis 1 -1 1 -shear 0.5 -0.6 0.9 | unu save -f nrrd -o sphere-2.nrrd
+	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 20 -sz1 22 -sz2 25 | unu save -f nrrd -o sphere-0.nrrd
+	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 55 -sz1 29 -sz2 12 -angle -30 | unu save -f nrrd -o sphere-1.nrrd
+	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 30 -sz1 80 -sz2 19 -angle -30 -axis 1 -1 1 -shear 0.5 -0.6 0.9 | unu save -f nrrd -o sphere-2.nrrd
 	for I in 0 1 2; do
 	   cp sphere-$I.nrrd vol.nrrd
-	   (recompile)
+	   echo "compiling with sphere-$I.nrrd ..."
+	   ../../vis12/bin/diderotc --exec dvr.diderot
+	   echo "rendering with sphere-$I.nrrd ..."
 	   ./dvr -camEye 10 20 5 -camAt 0 0 0 -camUp 0 0 1 \
-	      -camNear -4 -camFar 4 -camFOV 25 -iresU 450 -iresV 300 \
+	      -camNear -4 -camFar 4 -camFOV 12 -iresU 400 -iresV 300 \
 	      -phongKa 0 -phongKd 0.8 -phongKs 0.3 \
-	      -thick 0.06 -refStep 0.06 -rayStep 0.01 \
-	      -isoval 0.0 -fog 0.5 0.5 0.5 0.01 -o rgba-$I.nrrd
+	      -thick 0.03 -rayStep 0.01 \
+	      -isoval 0.0 -fog 0.5 0.5 0.5 0.012 -o rgba-$I.nrrd
 	   overrgb -i rgba-$I.nrrd -b 1 1 1 -g 1.2 -o sphere-$I.png
 	done
-	unu join -i sphere-?.png -a 2 -o sphere-compare.png
+	unu join -i sphere-?.png -a 0 -incr | unu slice -a 1 -p 0 -o sphere-compare.png
+
+Looking at the individual `sphere-?.png`, one should see the same sphere
+(with the same shading and same specular hightlight), surrounded by different
+foggy regions.  These show how `sphere-1.nrrd` is sampled on a rotated grid,
+and how `sphere-2.nrrd` is sampled on a rotated and sheared grid.  The
+[sphere-compare.png](sphere-compare.png) image puts these three images into
+the red, green, and blue channels, providing another way to confirm that
+the sphere itself is the same in each.  Try changing the reconstruction kernel
+to `c1tent` to see the results of inaccurate reconstruction.
 
 Note that this program approximates the volume rendering integral by updating two
 variables at each sample along the ray (going front to back):
@@ -122,7 +139,7 @@ input real cmax ("value mapped to max end of colormap. By default cmin==cmax==0,
 
 /* Convolve volume data with one of various possible kernels;
    see ../mip/mip.diderot for more info */
-//field#0(3)[] V = tent ⊛ vol;
+//field#1(3)[] V = c1tent ⊛ vol;
 //field#1(3)[] V = ctmr ⊛ vol;
 field#2(3)[] V = bspln3 ⊛ vol;
 //field#4(3)[] V = c4hexic ⊛ vol;
