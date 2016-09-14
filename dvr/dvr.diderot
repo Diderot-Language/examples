@@ -60,7 +60,7 @@ for this kind of invariance in reconstruction of values, but not
 derivatives. The following generates three different samplings of a
 rotationally symmetric paraboloid dataset, and then renders each of
 them with the same parameters, including a little fog to see the shape
-of the volume domain itself.  *For this to work as intended*, one must
+of the volume domain itself.  **For this to work as intended**, one must
 comment out `field#2(3)[] V = bspln3 ⊛ vol;` and uncomment
 `field#1(3)[] V = ctmr ⊛ vol;`: the Catmull-Rom accurately
 reconstructs quadratic functions, but the cubic B-spline does not.
