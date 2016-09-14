@@ -58,6 +58,7 @@ all the right transformations for measuring derivatives: derivatives measured
 in volume index-space have to be transformed to get the derivative in
 world-space.
 
+<pre>
 	../fs3d/fs3d-scl -which 4 -width 5 -sz0 30 -sz1 32 -sz2 35 | unu save -f nrrd -o sphere-0.nrrd
 	../fs3d/fs3d-scl -which 4 -width 5 -sz0 55 -sz1 29 -sz2 12 -angle -30 | unu save -f nrrd -o sphere-1.nrrd
 	../fs3d/fs3d-scl -which 4 -width 5 -sz0 30 -sz1 80 -sz2 19 -angle -30 -axis 1 -1 1 -shear 0.5 -0.6 0.9 | unu save -f nrrd -o sphere-2.nrrd
@@ -72,6 +73,7 @@ world-space.
 	   overrgb -i rgba-$I.nrrd -b 1 1 1 -g 1.2 -o sphere-$I.png
 	done
 	unu join -i sphere-?.png -a 2 -o sphere-compare.png
+</pre>
 
 Note that this program approximates the volume rendering integral by updating two
 variables at each sample along the ray (going front to back):
