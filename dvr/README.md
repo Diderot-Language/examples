@@ -51,16 +51,18 @@ For the sphere dataset (via `fs3d-scl -which 4`), this should produce
 XYZ axes indicator dataset (via `fs3d-scl -which 12`) this should produce
 [axes.png](axes.png); make sure you get the same.
 
-Volume rendering is one setting in which we can make sure Diderot is doing
-all the right transformations for measuring derivatives: derivatives measured
-in volume index-space have to be transformed to get the derivative in
-world-space.  The following generates three different samplings of a
-rotationally symmetric paraboloid dataset, and then renders each of them
-with the same parameters, including a little fog to see the shape of the
-volume domain itself.  *For this to work as intended*, one must comment
-out `field#2(3)[] V = bspln3 ⊛ vol;` and uncomment `field#1(3)[] V = ctmr ⊛ vol;`:
-the Catmull-Rom accurately reconstructs quadratic functions, but the cubic
-B-spline does not.
+Volume rendering is one setting in which we can make sure Diderot is
+doing all the right transformations for measuring derivatives:
+derivatives measured in volume index-space have to be transformed to
+get the derivative in world-space.  The [../mip](`mip`) example tested
+for this kind of invariance in reconstruction of values, but not
+derivatives. The following generates three different samplings of a
+rotationally symmetric paraboloid dataset, and then renders each of
+them with the same parameters, including a little fog to see the shape
+of the volume domain itself.  *For this to work as intended*, one must
+comment out `field#2(3)[] V = bspln3 ⊛ vol;` and uncomment
+`field#1(3)[] V = ctmr ⊛ vol;`: the Catmull-Rom accurately
+reconstructs quadratic functions, but the cubic B-spline does not.
 
 	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 20 -sz1 22 -sz2 25 | unu save -f nrrd -o sphere-0.nrrd
 	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 55 -sz1 29 -sz2 12 -angle -30 | unu save -f nrrd -o sphere-1.nrrd
