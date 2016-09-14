@@ -30,17 +30,9 @@ is required to operate on new input data with different sizes or type.
 Some example invocations, organized according to dataset examples above
 (still in-progress...):
 * Sphere:  
-   `./dvr -camEye 10 20 5 -camAt 0 0 0 -camUp 0 0 1 \
-    -camNear -2 -camFar 2 \
-    -camFOV 8 -iresU 400 -iresV 400 \
-    -thick 0.1 -refStep 0.1 -rayStep 0.01 \
-    -isoval 0.0 -cmin -1 -cmax 1`
+   `./dvr -camEye 10 20 5 -camAt 0 0 0 -camUp 0 0 1 -camNear -2 -camFar 2 -camFOV 8 -iresU 400 -iresV 400 -thick 0.1 -refStep 0.1 -rayStep 0.01 -isoval 0.0 -cmin -1 -cmax 1`
 * XYZ axes indicator:  
-   `./dvr -camEye 3.1 4.0 2.1 -camAt 0.2 0.0 0.4 -camUp 0 0 1 \
-      -camNear -0.7 -camFar 0.5 \
-      -camFOV 20 -iresU 560 -iresV 480 \
-      -thick 0.015 -rayStep 0.005 -maxAlpha 0.95 \
-      -isoval 1 -mcnear 1.1 0.9 0.7 -mcfar 0.5 0.7 0.9`
+   `./dvr -camEye 3.1 4.0 2.1 -camAt 0.2 0.0 0.4 -camUp 0 0 1 -camNear -0.7 -camFar 0.5 -camFOV 20 -iresU 560 -iresV 480 -thick 0.015 -rayStep 0.005 -maxAlpha 0.95 -isoval 1 -mcnear 1.1 0.9 0.7 -mcfar 0.5 0.7 0.9`
 
 All of these will generate an RGBA image as saved as `rgba.nrrd`, which can be
 viewed with another Teem utility (peer to `unu`) called `overrgb`:
