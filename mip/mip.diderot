@@ -174,7 +174,11 @@ input real camFOV ("field-of-view angle (in degrees) subtended vertically by vie
 input bool camOrtho ("whether to use orthographic, instead of perspective, projection") = false;
 input int iresU ("# samples on horizontal axis of image") = 640;
 input int iresV ("# samples on vertical axis of image") = 480;
-input real rayStep ("inter-sample step along view direction") = 0.1;
+/* With perspective projection, rayStep is distance between sampling planes
+   through the volume, not actually the step along the ray. For a ray
+   parallel to camAt-camEye, these are the same; for other rays the
+   step along the ray is (slightly) larger than rayStep. */
+input real rayStep ("inter-sample distance along view direction") = 0.1;
 // Currently, Unicode is not allowed in Diderot strings,
 // hence using "-inf" instead of "-∞" in this usage info.
 input real out0 ("value at which to initilize output max accumulator; using -inf ensures that output will stay -inf if ray misses volume entirely") = -∞;
