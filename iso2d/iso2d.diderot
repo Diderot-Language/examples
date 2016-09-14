@@ -13,16 +13,10 @@ https://github.com/Diderot-Language/examples you can:
 You should try `./iso2d --help` to see the available input variables.
 Note that if a Diderot program refers to an image file, that image
 file needs to exist at compile time (so that the compiler can generate
-instructions specific to the data type and the image
-orientation). Hence the need to create cubic.nrrd before running
-diderotc.  If a needed .nrrd file is missing, the error message looks
-like:
-
-	uncaught exception Fail [Fail: Nrrd file "cubic.nrrd" does not exist]
-	  raised at common/phase-timer.sml:78.50-78.52
-	  raised at common/phase-timer.sml:78.50-78.52
-	  raised at nrrd/nrrd-info.sml:146.15-146.74
-
+code specific to the data type and the array dimension and sizes).
+Hence the need to create cubic.nrrd before running diderotc.  If a
+named input file is missing at the point of compilation, the resulting
+error message will include something like `file "cubic.nrrd" does not exist`.
 
 To now run the isocontour sampling (starting with a 100x100 grid of points),
 at the default isovalue 0:
