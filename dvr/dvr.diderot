@@ -55,7 +55,7 @@ XYZ axes indicator dataset (via `fs3d-scl -which 12`) this should produce
 Volume rendering is one setting in which we can make sure Diderot is
 doing all the right transformations for measuring derivatives:
 derivatives measured in volume index-space have to be transformed to
-get the derivative in world-space.  The [../mip](`mip`) example tested
+get the derivative in world-space.  The [`mip`](../mip) example tested
 for this kind of invariance in reconstruction of values, but not
 derivatives. The following generates three different samplings of a
 rotationally symmetric paraboloid dataset, and then renders each of
