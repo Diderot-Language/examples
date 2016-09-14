@@ -111,6 +111,16 @@ function real cone(real R, vec3 pos) {
    return ret;
 }
 
+// radius R code pointing along positive x
+function real pyra(real R, vec3 pos) {
+   real x = pos[0];
+   real y = pos[1];
+   real z = pos[2];
+   real ret = max(0, R - (max(|y|,|z|) + x/2));
+   ret *= 1 if (x > 0) else 0;
+   return ret;
+}
+
 // trapezoid function at b in [a,c], with ramp R
 function real trpz(real R, real a, real b, real c, real scl) {
    real ww = (b-a)/(c-a);
@@ -219,10 +229,10 @@ function real func(vec3 pos0) {
          (it doesn't set much in the negative X, Y, or Z half-spaces) */
       // big ball at origin, so local maxima at [0,0,0]
       ret = max(ret, ball(0.3, pos));
-      // Along X axis: a cylinder with ...
-      ret = max(ret, ball(0.17,  [0,y,z])*trpz(0.1,0,x,1,1));
+      // Along X axis: a square rod with ...
+      ret = max(ret, ball(0.18,  [0,0,max(|y|,|z|)])*trpz(0.1,0,x,1,1));
       // ... a cone at end (w/ local maxima at [1,0,0])
-      ret = max(ret, cone(0.26, pos - [1,0,0]));
+      ret = max(ret, pyra(0.26, pos - [1,0,0]));
       // Along Y axis: conical-ish thing, local maxima at [0,1,0]
       ret = max(ret, ball(0.25, [x,0,z])*trpz(0.1,0,y,1,0.5));
       // Along Z axis: short rod, with ...
