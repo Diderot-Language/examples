@@ -71,7 +71,7 @@ strand sqroot (real val) {
          // no work to be done
          stabilize;
       }
-      iter += 1;
+      iter += 1; // "iter++;" is not in the syntax
       root = (root + val/root) / 2.0;
       if (|root^2 - val|/val < eps) {
          stabilize;
