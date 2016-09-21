@@ -2,10 +2,11 @@
 ## tensor.diderot: demo of some details of how tensors work
 
 In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and
-tensors generally are objects with some number of ordered indices.
-This program demonstrates indexing and contraction, with either
-`•` or `:`. The printed results can be used to determine how these
-depend on index ordering.
+tensors generally are objects with some number of ordered indices.  This
+program demonstrates how indexing, contracting with either `•` or `:`, and
+differentiation fields works with tensors. You can read through the what
+this program prints out to ensure you understand how tensors in Diderot
+work.
 
 Assuming the directions at https://github.com/Diderot-Language/examples
 this program can be compiled with:
@@ -40,8 +41,9 @@ The vector-valued function sampled by this field over (x,y,z) should be:
 	0.2*x + 0.5*x*x + 2*y,
 	0.1*x + y*z + 4*z]
 
-This function has an intentionally non-symmetric Jacobian, and some isolated
-elements in the second derivative, for the testing purposes here.
+This function has an intentionally non-symmetric Jacobian, and some
+isolated elements in the second derivative (an order-3 tensor), for the
+testing purposes here.
 
 Note that things commented out and tagged with `RSN` refer to capabilitites
 that should be working hopefully real soon now.
