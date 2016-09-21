@@ -11,16 +11,19 @@ this program can be compiled with:
 
 	../../vis12/bin/diderotc --exec tensor.diderot
 
-Like Mathematica, Diderot doesn't enforce a semantic distinction
-between row and column vectors, but the following assumptions should
-not create any surprises. In a rank-2 tensor, i.e. a matrix, the first
-index is into the rows, and the second index is into the columns.
-A matrix is created by `mm = [[a,b,c],[d,e,f],[g,h,i]]`
-would conventionally be written as:
+Like Mathematica, Diderot doesn't enforce a semantic distinction between
+row and column vectors; tensor indices are ordered, and the semantics of
+tensor operations depends on that order. Still, we can assume for the sake
+of familiarity that in a rank-2 tensor, i.e. a matrix, the first index
+selects the row, and the second index selects the column.  A matrix created
+by `mm = [[a,b,c],[d,e,f],[g,h,i]]` would conventionally be written as:
 
 	a b c
 	d e f
 	g h i
+
+The first row is `mm[0,:]`, the first column is `mm[:,0]`, and
+`b == mm[0,1]` (row 0 and column 1).
 
 This program also demonstrates how differentiation increases tensor rank
 with the help of a small 3-vector dataset `vec.nrrd`, created with the
@@ -33,8 +36,8 @@ help of a [program in a later example, `fs3d-vec`](../fs3d):
 The vector-valued function sampled by this field over (x,y,z) should be:
 
 	[1.4*x,
-	2*y + 0.2*x + 0.4*x*x,
-	4*z + 0.1*x + y*z]
+	0.2*x + 0.4*x*x + 2*y,
+	0.1*x + y*z + 4*z]
 
 This function has an intentionally non-symmetric Jacobian, and some isolated
 elements in the second derivative, for the testing purposes here.
