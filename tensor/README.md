@@ -36,7 +36,7 @@ help of a [program in a later example, `fs3d-vec`](../fs3d):
 The vector-valued function sampled by this field over (x,y,z) should be:
 
 	[1.4*x,
-	0.2*x + 0.4*x*x + 2*y,
+	0.2*x + 0.5*x*x + 2*y,
 	0.1*x + y*z + 4*z]
 
 This function has an intentionally non-symmetric Jacobian, and some isolated
