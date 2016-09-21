@@ -14,12 +14,18 @@ The output can be checked with:
 which should produce "42".
 ========================================== */
 
-strand hello (int ii) {
+/* Strands normally have parameters, so that different strands can be
+   initialized with different values. This unusual case, with only a
+   single strand, does not need parameters; having one would produce a
+   warning */
+strand hello () {
    output int out = 42;
 
    update {
       print("hello, world\n");
+      /* the strand runs for only its initial iteration, then stops
+         by stabilizing, which stores its final output value. */
       stabilize;
    }
 }
-initially [ hello(ii) | ii in 0..0 ];  // only one strand
+initially [ hello() | ii in 0..0 ];  // only one strand
