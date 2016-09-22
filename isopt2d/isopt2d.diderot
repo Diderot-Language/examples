@@ -23,8 +23,8 @@ input real angle ("orientation (in counter-clockwise degrees) of grid") = 0;
 
 // compute the index-to-world transform for the initial sampling grid
 real wdth = fov*sz0/sz1;
-real θ = angle*π/180;
-tensor[2,2] rot = [[cos(θ),sin(θ)],[-sin(θ),cos(θ)]];
+real th = angle*π/180;
+tensor[2,2] rot = [[cos(th),sin(th)],[-sin(th),cos(th)]];
 vec2 spc = [wdth/(sz0-1), fov/(sz1-1)];
 vec2 dir0 = rot•[spc[0], 0];
 vec2 dir1 = rot•[0, spc[1]];
@@ -40,7 +40,7 @@ function real phi'(real x) = -4*(1 - |x|)^3 if |x| < 1 else 0.0;
 //function real phi'(real x) = 3 - 1/(x^2) - 2*|x| if |x| < 1 else 0.0;
 
 int iter = 0;
-int iterLimit = 500;
+int iterLimit = 100;
 
 /*
 The ID argument is not actually used, but it is included here as an
