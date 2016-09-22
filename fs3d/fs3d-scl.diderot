@@ -56,9 +56,9 @@ input vec3 waxis ("axis (non-normalized) of rotation of world space") = [1,-1,1]
 input real wangle ("angle (in degrees) of rotation of world space") = 0;
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
-// create rotation matrix by converstion from quaternion
-// (which aren't currently natively supported in Diderot)
-// Note how a function may be defined by equality with a single expression
+// Create rotation matrix by conversion from the given quaternion,
+// which aren't currently natively supported in Diderot.  Note how a
+// function may be defined by equality with a single expression
 function tensor[3,3] q2rot(vec4 qq) = [[qq[0]*qq[0] + qq[1]*qq[1] - qq[2]*qq[2] - qq[3]*qq[3],
                                         2*(qq[1]*qq[2] - qq[0]*qq[3]),
                                         2*(qq[1]*qq[3] + qq[0]*qq[2])],
@@ -101,7 +101,8 @@ function real gauss(real stdv, real x) =
 // distance inside sphere of radius r
 function real ball(real r, vec3 pos) = max(0, r - |pos|);
 
-// radius R code pointing along positive x
+/*
+// radius R cone pointing along positive x
 function real cone(real R, vec3 pos) {
    real x = pos[0];
    real y = pos[1];
@@ -110,8 +111,9 @@ function real cone(real R, vec3 pos) {
    ret *= 1 if (x > 0) else 0;
    return ret;
 }
+*/
 
-// radius R code pointing along positive x
+// width R pyramid pointing along positive x
 function real pyra(real R, vec3 pos) {
    real x = pos[0];
    real y = pos[1];
@@ -141,6 +143,7 @@ function real trpz(real R, real a, real b, real c, real scl) {
 }
 
 // rounds v to nearest integer
+// May become a built-in function in vis15 branch
 function real round(real v) = (v+0.5 - fmod(v+0.5, 1)
                                if (v > 0) else
                                -(-v+0.5 - fmod(-v+0.5, 1)));
