@@ -63,6 +63,10 @@ vec2 edge1 = rot•[0, spc[1]] + shear*spc[1]*normalize(edge0);
 // location of first sample
 vec2 orig = -(edge0*(size0-1) + edge1*(size1-1))/2 + off;
 
+// univariate normal distribution
+function real gauss(real stdv, real x) =
+   exp(-(x*x)/(2*stdv^2))/(stdv*sqrt(2*π)); // have some π
+
 /*
 The function to evaluate at each grid point The usage of the parm[]
 vector elements is just as a tuple of numbers, rather than a geometric
@@ -73,6 +77,8 @@ function real func(vec2 pos0) {
    vec2 pos = wrot•pos0;
    real x = pos[0];
    real y = pos[1];
+   real t = atan2(y,x);
+   real r = |pos|;
    real ret = 0;
    if (0 == which) {        // 0: x ramp
       ret = x;
@@ -96,6 +102,9 @@ function real func(vec2 pos0) {
       ret = x*x*(1 + parm[0]) + y*y*(1 + parm[1]);
    } else if (7 == which) { // 7: cosine waves
       ret = cos((1 + parm[0])*|pos|)*(1 + parm[1]) + parm[2];
+   } else if (8 == which) { // 8: something with a convoluted isosurface
+      ret = 0.5 + r*(sin(3.5*t)^2 - 7*r) - 0.18*gauss(0.04,r-0.18)*cos(3.5*t)^2
+            + 0.06*gauss(0.08,r-0.35)*sin(3.5*t)^2;
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
