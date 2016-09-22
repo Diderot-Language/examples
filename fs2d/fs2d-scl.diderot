@@ -102,9 +102,9 @@ function real func(vec2 pos0) {
       ret = x*x*(1 + parm[0]) + y*y*(1 + parm[1]);
    } else if (7 == which) { // 7: cosine waves
       ret = cos((1 + parm[0])*|pos|)*(1 + parm[1]) + parm[2];
-   } else if (8 == which) { // 8: something with a convoluted isosurface
-      ret = 0.5 + r*(sin(3.5*t)^2 - 7*r) - 0.18*gauss(0.04,r-0.18)*cos(3.5*t)^2
-            + 0.06*gauss(0.08,r-0.35)*sin(3.5*t)^2;
+   } else if (8 == which) { // 8: something with a convoluted zero-levelset
+      ret = 0.5 + r*(sin(4.5*t)^2 - 7*r) - 0.18*gauss(0.04,r-0.18)*cos(4.5*t)^2
+            + 0.11*gauss(0.08,r-0.35)*sin(4.5*t)^2;
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
