@@ -53,22 +53,42 @@ There are also command-line options that are unrelated to input variables:
 	           -v , --verbose = enable runtime-system messages
 	           -t , --timing = enable execution timing
 
-heron.diderot shows the value of `-l` option. If you try to increase the precision
+heron.diderot shows the utility of `-l` option. If you try to increase the precision
 of the result by lowering `eps`, as with:
 
-	./heron -eps 1e-7
+	./heron -eps 1e-8
 
 The program may not ever finish, because the limited precision of 32-bit
 floats prevents the computation from reaching sufficient accuracy. So, noting
 from above that at most 7 iterations were needed with the default `eps`, we
 can run:
 
-	./heron -eps 1e-7 -l 20
+	./heron -eps 1e-8 -l 20
 
-which will finish promptly. On the other hand, we can also increase the precision
-of a Diderot `real` itself by making reals into a C `double`.  This is possible
-by compiling with:
+which will finish promptly because the computation is limited to 20
+super-steps (the Diderot name for a program iteration, which can include
+global computations that follow the per-strand `update`). However, the way
+output variable `vrie` is initialized makes clear which strands never
+stabilized because they were halted by the `-l 20` limit, visible with the
+`-1`s in the text view of the output from `unu save -f text -i vrie.nrrd`
+(try this!).
+
+The consequences of active strands being halted by a super-step limit is
+different for strand **collections** vs strand **arrays**.  If the program runs
+as a collection of strands, i.e. the last line of the program is instead
+
+	initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };
+
+then running `./heron -eps 1e-8 -l 20` will still finish after 20 super-steps,
+but no values will be saved for the strands that didn't stabilize.
+`unu save -f text -i vrie.nrrd` will produce less than 100 lines of text,
+showing only the values for which the algorithm converged.
+
+On the other hand, we can also increase the precision of a Diderot
+`real` itself by making reals into a C `double`.  This is possible by
+compiling with:
 
 	diderotc --double --exec heron.diderot
 
-at which point `./heron -eps 1e-7` will finish.
+at which point `./heron -eps 1e-8` will finish, producing roots for all values
+in the [minval,maxval] range.
