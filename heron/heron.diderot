@@ -110,7 +110,6 @@ strand sqroot (real val) {
    stabilize {
       // We use the sqrt() builtin to report actual relative error
       vrie = [val, root, iter, (root-sqrt(val))/sqrt(val)];
-      print("stabilizing root(", val, ") = ", root, " after ", iter, " iters\n");
    }
 }
 
