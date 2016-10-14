@@ -28,7 +28,8 @@ later examples assumes you've read earlier examples.  Enjoy!
 
 * [`hello`](hello/): Hello world in Diderot
 * [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
-Demonstrates input variables, the stabilize method, and 5-argument `lerp()`.
+Demonstrates input variables, `stabilize` method, 5-argument `lerp()`, `-l` option
+to limit iterations, and ability to compile with `--double`.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
 * [`tensor`](tensor/): Demonstrates printing, indexing, and multiplication of
