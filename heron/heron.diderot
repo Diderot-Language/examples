@@ -5,7 +5,7 @@ This program finds square roots of numval reals between minval and maxval
 using Heron's method (aka the Babylonion method)
 https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
 
-After compiling, his program is run with:
+After compiling, you can run this program with:
 
 	./heron
 
