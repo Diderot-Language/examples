@@ -1,16 +1,11 @@
 ## tensor.diderot: demo of some details of how tensors work
 
 In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and
-tensors generally are objects with some number of ordered indices.  This
-program demonstrates how indexing, contracting with either `•` or `:`, and
-differentiation fields works with tensors. You can read through the what
-this program prints out to ensure you understand how tensors in Diderot
-work.
-
-Assuming the directions at https://github.com/Diderot-Language/examples
-this program can be compiled with:
-
-	../../vis12/bin/diderotc --exec tensor.diderot
+tensors generally are objects with some number of ordered indices.
+This program demonstrates how indexing, contracting with either `•` or
+`:`, and differentiation fields works with tensors. You can read through
+this program's source, and what it prints out, to build your understanding
+of how tensors in Diderot work.
 
 Like Mathematica, Diderot doesn't enforce a semantic distinction between
 row and column vectors; tensor indices are ordered, and the semantics of
@@ -26,23 +21,8 @@ by `mm = [[a,b,c],[d,e,f],[g,h,i]]` would conventionally be written as:
 The first row is `mm[0,:]`, the first column is `mm[:,0]`, and
 `b == mm[0,1]` (row 0 and column 1).
 
-This program also demonstrates how differentiation increases tensor rank
-with the help of a small 3-vector dataset `vec.nrrd`, created with the
-help of a [program in a later example, `fs3d-vec`](../fs3d):
+Note that Diderot does not currently support distinguishing between
+covariant and contravariant indices; the assumption is that all tensor
+coefficients are measured with respect to an orthonormal coordinate
+frame.
 
-	../fs3d/fs3d-vec -width 10 -angle 30 -axis 1 2 3 -which 2 -sz0 30 -sz1 25 -sz2 20 |
-	unu save -f nrrd -o vec.nrrd
-	rm -f out.nrrd
-
-The vector-valued function sampled by this field over (x,y,z) should be:
-
-	[1.4*x,
-	0.2*x + 0.5*x*x + 2*y,
-	0.1*x + y*z + 4*z]
-
-This function has an intentionally non-symmetric Jacobian, and some
-isolated elements in the second derivative (an order-3 tensor), for the
-testing purposes here.
-
-Note that things commented out and tagged with `RSN` refer to capabilitites
-that should be working hopefully real soon now.
