@@ -1,14 +1,9 @@
 /* ==========================================
 ## hello.diderot: The usual greeting, in Diderot
 
-Assuming the directions at https://github.com/Diderot-Language/examples
-this program can be compiled and run with:
+After compiling `hello.diderot`, you run it and check its output with:
 
-	../../vis12/bin/diderotc --exec hello.diderot
 	./hello
-
-The output can be checked with:
-
 	unu save -f text -i out.nrrd
 
 which should produce "42".
@@ -16,15 +11,25 @@ which should produce "42".
 
 /* Strands normally have parameters, so that different strands can be
    initialized with different values. This unusual case, with only a single
-   strand, does not need parameters; having one would produce a warning */
+   strand, does not need parameters; having one would produce a warning.  */
 strand hello () {
-   /* every Diderot program must have at least one output */
+   /* Every Diderot program must have at least one output variable. */
    output int out = 42;
 
    update {
       print("hello, world\n");
-      /* the strand runs for only its initial iteration, then stops
-         by stabilizing, which stores the final value of the output */
+
+      /* this minimal program can be repurposed as a simple expression
+         debugging tool. For example, if you were uncertain about the
+         order of arguments to atan2(), you could use:
+
+      real a = 0; real b = 1;
+      print("atan2(", a, ",", b, ") = ", atan2(a,b), "\n");
+
+         to learn that atan2(0,1) = 0, so its atan2(y,x), line in C. */
+
+      /* The strand runs for only its initial iteration, then stops
+         by stabilizing, which stores the final value of the output. */
       stabilize;
    }
 }
