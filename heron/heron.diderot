@@ -95,8 +95,8 @@ strand sqroot (real val) {
          // No work to do
          stabilize;
       }
-      iter += 1; // "iter++;" is not in the syntax
       root = (root + val/root) / 2.0;
+      iter += 1; // "iter++;" is not in the syntax
       /* The convergence test expression below is a manual re-write of
          (|root^2 - val|/val < eps) to increase numerical precision. However
          that expression would compile too because ^ is exponentiation. */
