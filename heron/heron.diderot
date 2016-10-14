@@ -80,14 +80,15 @@ as a collection of strands, i.e. the last line of the program is instead
 
 	initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };
 
-then running `./heron -eps 1e-8 -l 20` will still finish after 20 super-steps,
-but no values will be saved for the strands that didn't stabilize.
-`unu save -f text -i vrie.nrrd` will produce less than 100 lines of text,
-showing only the values for which the algorithm converged.
+(note `initially {}` instead of `initially []`), then running `./heron -eps
+1e-8 -l 20` will still finish after 20 super-steps, but no output values will
+be saved for those strands that didn't stabilize in time.  That is, `unu save -f text
+-i vrie.nrrd` will produce less than 100 lines of text, including only the
+values for which the algorithm converged before 20 super-steps.
 
 On the other hand, we can also increase the precision of a Diderot
-`real` itself by making reals into a C `double`.  This is possible by
-compiling with:
+`real` itself by using a C `double` to store a `real`, instead of a (single-precision) `float`,
+the default.  We do this by compiling with:
 
 	diderotc --double --exec heron.diderot
 
