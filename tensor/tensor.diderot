@@ -1,12 +1,10 @@
 /* ==========================================
 ## tensor.diderot: demo of some details of how tensors work
 
-In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and
-tensors generally are objects with some number of ordered indices.
-This program demonstrates how indexing, contracting with either `•` or
-`:`, and differentiation fields works with tensors. You can read through
-this program's source, and what it prints out, to build your understanding
-of how tensors in Diderot work.
+In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and tensors
+generally are objects with some number of ordered indices.  This program
+demonstrates tensor construction, indexing, and contracting with either `•` or
+`:`.
 
 Like Mathematica, Diderot doesn't enforce a semantic distinction between
 row and column vectors; tensor indices are ordered, and the semantics of
@@ -22,11 +20,16 @@ by `mm = [[a,b,c],[d,e,f],[g,h,i]]` would conventionally be written as:
 The first row is `mm[0,:]`, the first column is `mm[:,0]`, and
 `b == mm[0,1]` (row 0 and column 1).
 
+Reading through this program's source alongside what it prints out can help
+build understanding of how tensors in Diderot work, which is basically the
+same way they work in other languages that support higher-order tensors. The
+program ends with a demonstration of how, when saved out to files, tensor
+indices are ordered slow to fast.
+
 Note that Diderot does not currently support distinguishing between
 covariant and contravariant indices; the assumption is that all tensor
 coefficients are measured with respect to an orthonormal coordinate
 frame.
-
 ========================================== */
 
 // vec3 means tensor[3]
@@ -34,18 +37,17 @@ input vec3 r0 ("1st test vector") = [3,5,7];
 input vec3 r1 ("2nd test vector") = [4,9,2];
 input vec3 r2 ("3rd test vector") = [8,1,6];
 
-/* This utility function is mostly because matrices can be passed directly to
-   print(), but this has the value of putting the rows on different lines.
-   All functions in Diderot must return a value. */
+/* Tensors can be passed directly to print(), but this function has the puts
+   rows on different lines. All functions in Diderot must return a value. */
 function real pmat(tensor[3,3] m) {
    print(" ", m[0,0], "   ", m[0,1], "   ", m[0,2], "\n");
    print(" ", m[1,0], "   ", m[1,1], "   ", m[1,2], "\n");
    print(" ", m[2,0], "   ", m[2,1], "   ", m[2,2], "\n");
-   return 0;
+   return 1;
 }
 
 strand go () { // no need for a strand parameter
-   output real out = 0;
+   output tensor[3,3,3] out = zeros[3,3,3];
    update {
       print("\nGiven vec3 r0, r1, r2:\n");
       // Indexing starts at 0
@@ -53,33 +55,34 @@ strand go () { // no need for a strand parameter
       print("r1 = [", r1[0], ",", r1[1], ",", r1[2], "] = ", r1, "\n");
       print("r2 = [", r2[0], ",", r2[1], ",", r2[2], "] = ", r2, "\n");
 
-      // The new index created by assembling the vectors comes *before*
-      // the index into the constituent vectors.
       print("\ntensor[3,3] mm=[r0,r1,r2]:\n");
       // There is no "mat3" type in this version of the syntax
       tensor[3,3] mm=[r0,r1,r2];
-      print("mm[0,:] = [", mm[0,0], ",", mm[0,1], ",", mm[0,2], "] = ", mm[0,:], "\n");
-      print("mm[1,:] = [", mm[1,0], ",", mm[1,1], ",", mm[1,2], "] = ", mm[1,:], "\n");
-      print("mm[2,:] = [", mm[2,0], ",", mm[2,1], ",", mm[2,2], "] = ", mm[2,:], "\n");
+      /* The *new* index created by assembling the vectors (with comma)
+         comes *before* the existing index into the constituent vectors. */
+      print("mm[0,:] = [", mm[0,0], ",", mm[0,1], ",", mm[0,2], "] = ", mm[0,:], " = ", r0, "\n");
+      print("mm[1,:] = [", mm[1,0], ",", mm[1,1], ",", mm[1,2], "] = ", mm[1,:], " = ", r1, "\n");
+      print("mm[2,:] = [", mm[2,0], ",", mm[2,1], ",", mm[2,2], "] = ", mm[2,:], " = ", r2, "\n");
       // Note that mm[0] is not valid syntax for slicing
-      print("mm = ", mm, " = \n"); // can print matrices directly
-      real dummy = pmat(mm);
+      print("mm[:,:] = ", mm[:,:], " = ", mm, " =\n"); // can print matrices directly
+      real foo = pmat(mm);
+      print("(foo=", foo, ")\n"); // use foo to supress "unused" warning
 
       print("\nNon-square tensor[2,3] ll=[r0,r1]:\n");
       tensor[2,3] ll=[r0,r1];
-      print("ll[0,:] = ", ll[0,:], "\n");
-      print("ll[1,:] = ", ll[1,:], "\n");
-      print("ll = ", ll, " = \n");
+      print("ll[0,:] = ", ll[0,:], " = ", r0, "\n");
+      print("ll[1,:] = ", ll[1,:], " = ", r1, "\n");
+      print("ll = ", ll, "\n");
 
-      /* Can also recover original vectors by contracting on the left with
+      /* Can also recover original (row) vectors by contracting on the left with
          vectors that select one element */
       print("\nContracting out and selecting on first index:\n");
       vec3 rr0 = [1,0,0]•mm;
       vec3 rr1 = [0,1,0]•mm;
       vec3 rr2 = [0,0,1]•mm;
-      print("rr0 = ", rr0, "\n");
-      print("rr1 = ", rr1, "\n");
-      print("rr2 = ", rr2, "\n");
+      print("rr0 = [1,0,0] (*) mm = ", rr0, "\n");
+      print("rr1 = [0,1,0] (*) mm = ", rr1, "\n");
+      print("rr2 = [0,0,1] (*) mm = ", rr2, "\n");
 
       // Diderot doesn't currently support assigning to individual tensor
       // elements, so
@@ -92,42 +95,66 @@ strand go () { // no need for a strand parameter
       vec3 cc0 = mm•[1,0,0];
       vec3 cc1 = mm•[0,1,0];
       vec3 cc2 = mm•[0,0,1];
-      print("cc0 = ", cc0, "\n");
-      print("cc1 = ", cc1, "\n");
-      print("cc2 = ", cc2, "\n");
+      print("cc0 = mm (*) [1,0,0] = ", cc0, "\n");
+      print("cc1 = mm (*) [0,1,0] = ", cc1, "\n");
+      print("cc2 = mm (*) [0,0,1] = ", cc2, "\n");
 
-      print("\nContracting out two indices to get a scalar:\n");
+      print("\nContracting out two indices to get a scalar, and matrix-matrix multiplication\n");
       tensor[3,3] ss = zeros[3,3];
       print("ss = zeros[3,3] = ", ss, "\n");
       print("mm:zeros[3,3] = ", mm:ss, "\n");
 
       ss = [[1,0,0],[0,0,0],[0,0,0]];
-      print("\nMatrix-matrix multiplication:\n");
       print("Now ss[0,0] = ", ss[0,0], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
-      /* printing Unicode is not currently possible */
-      print("mm.ss = ", mm•ss, " = \n"); dummy = pmat(mm•ss);
-      print("ss.mm = ", ss•mm, " = \n"); dummy = pmat(ss•mm);
+      /* unfortunately printing Unicode is not currently possible */
+      print("mm (*) ss = ", mm•ss, " = \n"); foo = pmat(mm•ss);
+      print("ss (*) mm = ", ss•mm, " = \n"); foo = pmat(ss•mm);
       ss = [[0,1,0],[0,0,0],[0,0,0]];
       print("\nNow ss[0,1] = ", ss[0,1], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
-      print("mm.ss = ", mm•ss, " = \n"); dummy = pmat(mm•ss);
-      print("ss.mm = ", ss•mm, " = \n"); dummy = pmat(ss•mm);
+      print("mm (*) ss = ", mm•ss, " = \n"); foo = pmat(mm•ss);
+      print("ss (*) mm = ", ss•mm, " = \n"); foo = pmat(ss•mm);
       ss = [[0,0,1],[0,0,0],[0,0,0]];
       print("\nNow ss[0,2] = ", ss[0,2], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
-      print("mm.ss = ", mm•ss, " = \n"); dummy = pmat(mm•ss);
-      print("ss.mm = ", ss•mm, " = \n"); dummy = pmat(ss•mm);
+      print("mm (*) ss = ", mm•ss, " = \n"); foo = pmat(mm•ss);
+      print("ss (*) mm = ", ss•mm, " = \n"); foo = pmat(ss•mm);
       ss = [[0,0,0],[0,0,0],[1,0,0]];
       print("\nNow ss[2,0] = ", ss[2,0], " => mm:ss = ", mm:ss, " => ss:mm = ", ss:mm, "\n");
-      print("mm.ss = ", mm•ss, " = \n"); dummy = pmat(mm•ss);
-      print("ss.mm = ", ss•mm, " = \n"); dummy = pmat(ss•mm);
+      print("mm (*) ss = ", mm•ss, " = \n"); foo = pmat(mm•ss);
+      print("ss (*) mm = ", ss•mm, " = \n"); foo = pmat(ss•mm);
 
-      print("\nTensor (outer) product of two vectors:\n");
+      print("\nTensor (outer) product of two or three vectors:\n");
       vec3 aa = [0,1,2];
       vec3 bb = [2,3,4];
+      vec3 cc = [1,0.5,0.25];
       tensor[3,3] ab = aa⊗bb;
-      print("aa = ", aa, "; bb = ", bb, "; aa (x) bb = ", ab, " =\n"); dummy = pmat(ab);
+      print("aa = ", aa, "; bb = ", bb, "; aa (x) bb = ", ab, " =\n"); foo = pmat(ab);
       print("ab[1,2] = ", ab[1,2], "\n"); // ab[i,j] = aa[i]*bb[j]
+      tensor[3,3,3] abc = aa⊗bb⊗cc;
+      print("cc = ", cc, "; aa (x) bb (x) cc = ", abc, "\n");
+      /* From the line above, abc will be printed as:
+         [[[0,0,0],[0,0,0],[0,0,0]],[[2,1,0.5],[3,1.5,0.75],[4,2,1]],[[4,2,1],[6,3,1.5],[8,4,2]]]
+         Just to belabor this, and putting aside "rows" and "columns"
+         terminology, the ordering of Diderot tensor indices is from
+         *least*-nested to *most*-nested. The matrix
+         [[0,0,0],[0,0,0],[0,0,0]], the first element of abc viewed as a
+         3-vector, is selected by the first index into abc (0 is the first
+         element of aa, the first factor in the tensor product). The vectors
+         like [4,2,1], the most deeply []-nested, are selected by the last
+         index (descending by factors of 2 is due to cc, the last factor in
+         the tensor product). */
 
-      out = dummy; // suppress warning about unused "dummy"
+      out = abc;
+      /* looking at the output with "unu save -f text -i out.nrrd" will show:
+         0 0 0 0 0 0 0 0 0 2 1 0.5 3 1.5 0.75 4 2 1 4 2 1 6 3 1.5 8 4 2 which
+         matches the coefficient order seen above.  Seeing a linear ordering
+         of elements on disk or in memory, we can say that the tensor indices
+         are ordered *slow* to *fast*. The *fastest* axis in the
+         linearization, along which we see the sets of three contiguous
+         numbers descending by factors of two, is the *last* axis into the
+         tensor. Going from "0 0 0 0 0 0 0 0 0" to the next set of nine
+         numbers (that is, the *slowest* axis in the linearization) is
+         associated with incrementing the *first* tensor index. */
+
       stabilize;
    }
 }
