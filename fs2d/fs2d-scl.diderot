@@ -43,12 +43,12 @@ input real angle ("orientation (in degrees) of faster axis") = 0;
 input real wangle ("orientation (in degrees) of world coords") = 0;
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
-real θ = angle*π/180; // π means what you think
-// rotation by θ of [1,0] towards [0,1]
-tensor[2,2] rot = [[cos(θ),-sin(θ)],[sin(θ),cos(θ)]];
+real phi = angle*π/180; // π means what you think
+// rotation by phi of [1,0] towards [0,1]
+tensor[2,2] rot = [[cos(phi),-sin(phi)],[sin(phi),cos(phi)]];
 // repeating for world coords
-real wθ = wangle*π/180;
-tensor[2,2] wrot = [[cos(wθ),-sin(wθ)],[sin(wθ),cos(wθ)]];
+real wphi = wangle*π/180;
+tensor[2,2] wrot = [[cos(wphi),-sin(wphi)],[sin(wphi),cos(wphi)]];
 // sample spacing on faster and (unsheared) slower axis
 vec2 spc = [width/(size0-1), width/(size1-1)];
 // inter-sample vector on faster axis
