@@ -37,8 +37,10 @@ input vec3 r0 ("1st test vector") = [3,5,7];
 input vec3 r1 ("2nd test vector") = [4,9,2];
 input vec3 r2 ("3rd test vector") = [8,1,6];
 
-/* Tensors can be passed directly to print(), but this function has the puts
-   rows on different lines. All functions in Diderot must return a value. */
+/* This creates a user-defined function, though this is an atypical function,
+   since it is only a printing utility. Tensors can also be passed directly
+   to print(), but this puts the rows on different lines. All functions in
+   Diderot must return a value. */
 function real pmat(tensor[3,3] m) {
    print(" ", m[0,0], "   ", m[0,1], "   ", m[0,2], "\n");
    print(" ", m[1,0], "   ", m[1,1], "   ", m[1,2], "\n");
@@ -46,7 +48,7 @@ function real pmat(tensor[3,3] m) {
    return 1;
 }
 
-strand go () { // no need for a strand parameter
+strand go () { // only one strand to run; no need for strand parameter
    output tensor[3,3,3] out = zeros[3,3,3];
    update {
       print("\nGiven vec3 r0, r1, r2:\n");
