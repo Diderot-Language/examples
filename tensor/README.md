@@ -1,9 +1,9 @@
 ## tensor.diderot: demo of some details of how tensors work
 
-In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and tensors
-generally are objects with some number of ordered indices.  This program
-demonstrates tensor construction, indexing, and contracting with either `•` or
-`:`.
+In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and
+tensors generally are objects with some number of ordered indices.
+This program demonstrates tensor construction, indexing, slicing with
+`:`, and contracting with either `•` or `:`.
 
 Like Mathematica, Diderot doesn't enforce a semantic distinction between
 row and column vectors; tensor indices are ordered, and the semantics of

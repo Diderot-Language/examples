@@ -1,10 +1,10 @@
 /* ==========================================
 ## tensor.diderot: demo of some details of how tensors work
 
-In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and tensors
-generally are objects with some number of ordered indices.  This program
-demonstrates tensor construction, indexing, and contracting with either `•` or
-`:`.
+In Diderot, vectors (rank-1 tensors), matrices (rank-2 tensors), and
+tensors generally are objects with some number of ordered indices.
+This program demonstrates tensor construction, indexing, slicing with
+`:`, and contracting with either `•` or `:`.
 
 Like Mathematica, Diderot doesn't enforce a semantic distinction between
 row and column vectors; tensor indices are ordered, and the semantics of
@@ -67,6 +67,9 @@ strand go () { // no need for a strand parameter
       print("mm[:,:] = ", mm[:,:], " = ", mm, " =\n"); // can print matrices directly
       real foo = pmat(mm);
       print("(foo=", foo, ")\n"); // use foo to supress "unused" warning
+      /* Currently the only way to use ":" in indexing is to select all
+         values for that index. There is no support for the other uses of
+         ":" that python supports, like "a[low:high]" or "a[low:stride:high]" */
 
       print("\nNon-square tensor[2,3] ll=[r0,r1]:\n");
       tensor[2,3] ll=[r0,r1];
@@ -132,12 +135,14 @@ strand go () { // no need for a strand parameter
       tensor[3,3,3] abc = aa⊗bb⊗cc;
       print("cc = ", cc, "; aa (x) bb (x) cc = ", abc, "\n");
       /* From the line above, abc will be printed as:
+
          [[[0,0,0],[0,0,0],[0,0,0]],[[2,1,0.5],[3,1.5,0.75],[4,2,1]],[[4,2,1],[6,3,1.5],[8,4,2]]]
+
          Just to belabor this, and putting aside "rows" and "columns"
-         terminology, the ordering of Diderot tensor indices is from
-         *least*-nested to *most*-nested. The matrix
-         [[0,0,0],[0,0,0],[0,0,0]], the first element of abc viewed as a
-         3-vector, is selected by the first index into abc (0 is the first
+         terminology: the ordering of Diderot tensor indices is from
+         *least*-nested to *most*-nested, just like in other languages. The
+         matrix [[0,0,0],[0,0,0],[0,0,0]], the first element of abc viewed as
+         a 3-vector, is selected by the first index into abc (0 is the first
          element of aa, the first factor in the tensor product). The vectors
          like [4,2,1], the most deeply []-nested, are selected by the last
          index (descending by factors of 2 is due to cc, the last factor in
@@ -145,15 +150,18 @@ strand go () { // no need for a strand parameter
 
       out = abc;
       /* looking at the output with "unu save -f text -i out.nrrd" will show:
-         0 0 0 0 0 0 0 0 0 2 1 0.5 3 1.5 0.75 4 2 1 4 2 1 6 3 1.5 8 4 2 which
-         matches the coefficient order seen above.  Seeing a linear ordering
-         of elements on disk or in memory, we can say that the tensor indices
-         are ordered *slow* to *fast*. The *fastest* axis in the
-         linearization, along which we see the sets of three contiguous
-         numbers descending by factors of two, is the *last* axis into the
-         tensor. Going from "0 0 0 0 0 0 0 0 0" to the next set of nine
-         numbers (that is, the *slowest* axis in the linearization) is
-         associated with incrementing the *first* tensor index. */
+
+            0 0 0 0 0 0 0 0 0 2 1 0.5 3 1.5 0.75 4 2 1 4 2 1 6 3 1.5 8 4 2
+
+         which matches the coefficient order seen above.  Seeing the linear
+         ordering of elements in the output file, we can say that the tensor
+         indices are ordered *slow* to *fast*, like in C (sometimes called
+         "row-major" order). The *fastest* axis in the linearization, along
+         which we see the sets of three contiguous numbers descending by
+         factors of two, is the *last* axis into the tensor. Going from "0 0 0
+         0 0 0 0 0 0" to the next set of nine numbers (that is, the *slowest*
+         axis in the linearization) is associated with incrementing the
+         *first* tensor index. */
 
       stabilize;
    }
