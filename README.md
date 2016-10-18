@@ -301,13 +301,14 @@ Once the build of the Diderot compiler is finished, you can check that it worked
 	bin/diderotc --help
 
 One technical note: `bin/diderotc` is not a stand-alone executable; it is a
-shell script that depends on the installed location of `sml` and where
+shell script that assumes working paths to the `sml` installation and to where
 Diderot was compiled. Also, when `bin/diderotc` compiles `.cxx` C++
-files (which it generates), it depends on the relative location of the `include` directory
+files (which it generates), it depends on the relative location of an `include` directory
 (peer to `bin`) created by `make local-install`.
 
-For the purposes of these examples, it is easiest to add the new `diderotc` to your path.
-Assuming you only want to use the latest branch (vis15), you can do this with:
+To compile these examples or any other Didorot programs you write, you
+should add the new `diderotc` to your path.  Assuming you only want to
+use the latest (vis15) branch of the compiler, you can do this with:
 
 	export PATH=$DDRO_ROOT/vis15/bin:${PATH}
 
