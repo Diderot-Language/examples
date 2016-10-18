@@ -15,7 +15,7 @@ The output stores four numbers for each value processed (by index along fast axi
 <li> the number of iterations taken to compute it
 <li> the error, relative to Diderot's sqrt() function
 </ol>
-To see the values (one set of 4 numbers per line):
+To see the output (four numbers per line):
 
 	unu save -f text -i vrie.nrrd
 
@@ -28,7 +28,7 @@ usage infomation. Try:
 
 	./heron --help
 
-to see how to set the input values and output filename stem.  Note
+to see how to set the input values and output filename.  Note
 that the input variables self-document their purpose with ("...")
 annotations, which are in turn included in the generated `--help`
 usage information.  So the declarations:
@@ -53,7 +53,8 @@ There are also command-line options that are unrelated to input variables:
 	           -v , --verbose = enable runtime-system messages
 	           -t , --timing = enable execution timing
 
-heron.diderot shows the utility of `-l` option. If you try to increase the precision
+heron.diderot shows the utility of `-l` option to limit the number of iterations
+(called "super-steps" in Diderot) for which the computation can run. If you try to increase the precision
 of the result by lowering `eps`, as with:
 
 	./heron -eps 1e-8
@@ -61,29 +62,34 @@ of the result by lowering `eps`, as with:
 The program may not ever finish, because the limited precision of 32-bit
 floats prevents the computation from reaching sufficient accuracy. So, noting
 from above that at most 7 iterations were needed with the default `eps`, we
-can run:
+can try limiting the computation at something higher than 7:
 
 	./heron -eps 1e-8 -l 20
 
-which will finish promptly because the computation is limited to 20
-super-steps (the Diderot name for a program iteration, which can include
-global computations that follow the per-strand `update`). However, the way
-output variable `vrie` is initialized makes clear which strands never
-stabilized because they were halted by the `-l 20` limit, visible with the
-`-1`s in the text view of the output from `unu save -f text -i vrie.nrrd`
-(try this!).
+This will finish promptly, after 20 iterations. The initialization of the program output variable
+with:
 
-The consequences of active strands being halted by a super-step limit is
+	output vec4 vrie = [val,-1,-1,-1];
+makes clear which strands never stabilized because they were halted by the `-l
+20` limit. When you view the output from the command above with `unu save -f
+text -i vrie.nrrd`, you'll see lines like:
+
+	89 -1 -1 -1
+	90 -1 -1 -1
+	91 -1 -1 -1
+
+for the values where the algorithm didn't converge.
+The consequences of active strands being halted by an iteration limit is
 different for strand **collections** vs strand **arrays**.  If the program runs
 as a collection of strands, i.e. the last line of the program is instead
 
 	initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };
 
 (note `initially {}` instead of `initially []`), then running `./heron -eps
-1e-8 -l 20` will still finish after 20 super-steps, but no output values will
+1e-8 -l 20` will still finish after 20 iterations, but no output values will
 be saved for those strands that didn't stabilize in time.  That is, `unu save -f text
 -i vrie.nrrd` will produce less than 100 lines of text, including only the
-values for which the algorithm converged before 20 super-steps.
+values for which the algorithm converged with 20 iterations or less.
 
 On the other hand, we can also increase the precision of a Diderot
 `real` itself by using a C `double` to store a `real`, instead of a (single-precision) `float`,
@@ -91,5 +97,5 @@ the default.  We do this by compiling with:
 
 	diderotc --double --exec heron.diderot
 
-at which point `./heron -eps 1e-8` will finish, producing roots for all values
-in the [minval,maxval] range.
+at which point `./heron -eps 1e-8` will finish, with every strand producing a
+more accurate answer.
