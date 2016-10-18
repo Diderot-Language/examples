@@ -4,6 +4,7 @@ The [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
 is really not the sort of algorithm that Diderot is designed for, and this is not a particularly
 efficient implementation. However, this is a simple way to demonstrate
 three Diderot language feaures not shown in previous examples:
+
 1. By executing `die`, strands exit the computation without saving their output.
 2. The `global` update block contains code to run between per-strand updates.
 3. The `global` update can use global reductions to compute properties of the set of extent strands.
