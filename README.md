@@ -52,7 +52,8 @@ single-expression functions defined with `=`.
 how strands can `die` (in a strand collection) and the `global` update block,
 which can compute on globals and strand states between per-strand updates.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
-Newton-Raphson iteration. Demonstrates and the `inside` and `normalize` functions.
+Newton-Raphson iteration, which is legible as such because of Diderot's mathematical notation.
+Also demonstrates the `inside` and `normalize` functions,
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to

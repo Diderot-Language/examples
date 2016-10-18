@@ -1,24 +1,19 @@
 /* ==========================================
 ## iso2d.diderot: 2D isocontour sampling by independent (non-interacting) particles
 
-First make a little dataset, using ../fs2d/fs2d-scl:
+The previous [`fs2d-scl.diderot`](../fs2d) program makes a little dataset
+in which we can try to find isosurfaces:
 
 	../fs2d/fs2d-scl -size0 50 -size1 50 -which 3 -width 8 | unu save -f nrrd -o cubic.nrrd
 
-Then compile this program; assuming the directions at
-https://github.com/Diderot-Language/examples you can:
+Then compile this program:
 
-	../../vis12/bin/diderotc --exec iso2d.diderot
+	diderotc --exec iso2d.diderot
 
-You should try `./iso2d --help` to see the available input variables.
-Note that if a Diderot program refers to an image file, that image
-file needs to exist at compile time (so that the compiler can generate
-code specific to the data type and the array dimension and sizes).
-Hence the need to create cubic.nrrd before running diderotc.  If a
-named input file is missing at the point of compilation, the resulting
-error message will include something like `file "cubic.nrrd" does not exist`.
+and try `./iso2d --help` to see the available input variables.  See
+the info with [`vimg.diderot`](../vimg) about how Diderot handles input arrays.
 
-To now run the isocontour sampling (starting with a 100x100 grid of points),
+To run isocontour sampling (starting with a 100x100 grid of points),
 at the default isovalue 0:
 
 	./iso2d -cmin -4 -4 -cmax 4 4 -size 100
@@ -34,7 +29,7 @@ of their X and Y coordinates:
 
 	unu jhisto -i pos.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos.png
 
-Make sure your pos.png looks like [`pos-ref.png`](pos-ref.png); it may
+Make sure your `pos.png` looks like [`pos-ref.png`](pos-ref.png); it may
 not be an exact pixel match but it should be close.  If `pos.png`
 looks very different (or blank), your Teem checkout may be old (a new
 fix was committed Nov 5 2015).  Assuming your PNG viewer uses
@@ -42,10 +37,10 @@ conventional display orientation, the `-min -4 4 -max 4 -4` arguments
 to `unu jhisto` should make the first coordinate ("x") increase to the
 right, and the second coordinate ("y") increase towards up.
 
-Even though you had to supply the input image at compile-time, you can
-supply a different image at run-time, if the image is noted as an
-"input" (as below), and provided that the new image exactly matches
-the type and shape of the compile-time image.  We can add some noise
+As noted with the [`vimg.diderot`](../vimg) example, even if you compiled
+with one proxy file, you can
+supply a different file at run-time, as long as the new file matches
+the type and shape of the proxy image.  We can add some noise
 to the dataset, and then add a little ramp along the Y axis (to explicitly
 break the over-all symmetry of the isocontour):
 
@@ -81,11 +76,9 @@ input int size ("# samples on both axes of sampling grid") = 30;
 // field is defined so that isocontour of interest is the zero levelset
 field#1(2)[] F = c4hexic ⊛ img - isoval;
 
-/*
-The ID argument is not actually used, but it is included here as an
-example of a way of identifying strands that can be useful for
-debugging.
-*/
+/* The ID argument is not actually used, but it is included here as an
+   example of a way of identifying strands that can be useful for
+   debugging. */
 strand iso(int ID, vec2 pos0) { // vec2 is a synonym for tensor[2]
    output vec2 pos = pos0;
    int steps = 0;
@@ -112,12 +105,10 @@ strand iso(int ID, vec2 pos0) { // vec2 is a synonym for tensor[2]
    }
 }
 
-/*
-** This generates a node-centered sampling of the region;
-** a cell-centered sampling would be created with:
+/* This generates a node-centered sampling of the region;
+   a cell-centered sampling would be created with:
                 [lerp(cmin[0], cmax[0], -0.5, idx0, size-0.5),
-                 lerp(cmin[1], cmax[1], -0.5, idx1, size-0.5)])
-*/
+                 lerp(cmin[1], cmax[1], -0.5, idx1, size-0.5)]) */
 initially { iso(idx0 + size*idx1,
                 [lerp(cmin[0], cmax[0], 0, idx0, size-1),
                  lerp(cmin[1], cmax[1], 0, idx1, size-1)])
