@@ -5,21 +5,54 @@ This program needs a dataset to render, and a colormap, for example:
 	ln -s ../data/sscand.nrrd img.nrrd
 	ln -s ../cmap/spiral.nrrd cmap.nrrd
 
-Then compile this program; assuming the directions at
-https://github.com/Diderot-Language/examples you can:
+When you compile this program (with `diderotc --exec vimg.diderot`)
+the compiler will see that specific datafiles are named in the declaration
+of the input image and colormap data:
 
-	../../vis12/bin/diderotc --exec vimg.diderot
+	input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
+	input image(1)[3] cmimg ("colormap to use") = image("cmap.nrrd");
 
-If the needed `img.nrrd` file is missing, the error message looks something like:
+and the compiler will specialize some of the generated code according
+to properties of that data in those files (which is why we wanted to
+get those files in place before running the compiler).  In talking
+about the action of the Diderot compiler, the named data files are
+called *proxy files*. It is an error for a proxy file to not exist at
+compilation. Without creating the `img.nrrd` file prior to
+compilation, the compiler would exit with:
 
-	uncaught exception Fail [Fail: Nrrd file "img.nrrd" does not exist]
-	  raised at common/phase-timer.sml:78.50-78.52
-	  raised at common/phase-timer.sml:78.50-78.52
-	  raised at nrrd/nrrd-info.sml:146.15-146.74
+	[vimg.diderot] Error: proxy-image file "cmap.nrrd" does not exist
 
-in which case you should run the `ln -s` command above, or link `img.nrrd`
-to some other 2D scalar nrrd file to view.  The same applies to the need
-for `cmap.nrrd` to link to a colormap.
+Currently, for arrays, the Diderot compiler specializes on the sample
+type (the `type:` NRRD header field in `unu head img.nrrd`) and the array
+axis sizes (`sizes:`). The compiler does not currently
+specialize on array orientation (`space origin:` and `space directions:`).
+The compiler will also check that the array dimension
+(`dimension:`) and sample type (scalar, in this case) matches that of the
+the array type declaration `image(2)[]`: `(2)` means a 2-D domain and
+the shape `[]` means scalar-valued samples.  For the colormap, given the type
+`image(1)[3]`, the compiler will check that `cmap.nrrd` is 1-D (`(1)`)
+array of 3-vectors (`[3]`), which will be stored in NRRD as a 2-D 3-by-N array.
+Multivariate samples always have their constituent values on the fastest
+axis of the array. In the NRRD, the axes are tagged with a `kind` that can
+disambiguate their purpose. `unu head cmap.nrrd` will show
+
+	kinds: 3-vector space
+
+which means that the 3-vectors components are on the faster axis, while
+the sampling of 3-vectors over the 1-D domain happens on the slower axis.
+
+In the generated command-line executable, the default value for the `-img`
+option will be the filename `img.nrrd`, but other data can be supplied at
+runtime (e.g. `-img otherimg.nrrd`) as long as the other data matches the
+sample type, array dimension, and axis sizes of the proxy file.
+
+If there is no proxy file named with the input image declaration, as with:
+
+	input image(2)[] img ("2D image dataset to view");
+
+then the compiler will assume `float` sample type, and will generate code that
+checks that whatever array is supplied at runtime has the correct array
+dimension and sample type, but will be general with respect to axis sizes.
 
 The `-which` option will determine which function is sampled; look
 for `(0 == which)` below to see the start of the function definitions.
