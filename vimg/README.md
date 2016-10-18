@@ -16,19 +16,19 @@ and the compiler will specialize some of the generated code according
 to properties of that data in those files (which is why we wanted to
 get those files in place before running the compiler).  In talking
 about the action of the Diderot compiler, the named data files are
-called *proxy files*. It is an error for a proxy file to not exist at
+called *proxy files*. It is an error for a named proxy file to not exist at
 compilation. Without creating the `img.nrrd` file prior to
 compilation, the compiler would exit with:
 
 	[vimg.diderot] Error: proxy-image file "cmap.nrrd" does not exist
 
-Currently, for arrays, the Diderot compiler specializes on the sample
+Currently, for input arrays, the Diderot compiler specializes on the sample
 type (the `type:` NRRD header field in `unu head img.nrrd`) and the array
 axis sizes (`sizes:`). The compiler does not currently
 specialize on array orientation (`space origin:` and `space directions:`).
 The compiler will also check that the array dimension
-(`dimension:`) and sample type (scalar, in this case) matches that of the
-the array type declaration `image(2)[]`: `(2)` means a 2-D domain and
+(`dimension:`) and sample type (scalar, in this case) match that of the
+the array type declaration "`image(2)[]`": `(2)` means a 2-D domain and
 the shape `[]` means scalar-valued samples.  For the colormap, given the type
 `image(1)[3]`, the compiler will check that `cmap.nrrd` is 1-D (`(1)`)
 array of 3-vectors (`[3]`), which will be stored in NRRD as a 2-D 3-by-N array.
@@ -50,9 +50,9 @@ If there is no proxy file named with the input image declaration, as with:
 
 	input image(2)[] img ("2D image dataset to view");
 
-then the compiler will assume `float` sample type, and will generate code that
+then the compiler will assume `float` sample type, and will generate code to
 checks that whatever array is supplied at runtime has the correct array
-dimension and sample type, but will be general with respect to axis sizes.
+dimension and sample type, while being general with respect to axis sizes.
 
 The `-which` option will determine which function is sampled; look
 for `(0 == which)` below to see the start of the function definitions.
