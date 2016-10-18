@@ -18,9 +18,11 @@ Once you've built the `diderotc` compiler with the instructions below,
 you can create executable `foo` from Diderot program `foo.diderot` with
 
 	diderotc --exec foo.diderot
+
 You can then run the program with:
 
 	./foo
+
 Some examples benefit from different compilation or execution options, as noted.
 
 All of the examples below have an introductory README.md (generated from the first
@@ -74,7 +76,7 @@ Some other directories contain supporting files:
 
 #### (0) Create $DDRO_ROOT, a place for everything to go in
 
-To keep things contained, you should create a directory (perhaps <code>~/ddro</code>)
+To keep things contained, you should create a directory (perhaps `~/ddro`)
 to contain all the other software directories referred to below,
 and set `$DDRO_ROOT` to refer to it:
 
@@ -84,7 +86,7 @@ and set `$DDRO_ROOT` to refer to it:
 
 Note: **All shell commands used here assume sh/bash syntax (rather than csh/tcsh).**
 
-#### (1) Get Cmake and autoconf
+#### (1) Prerequisites: Cmake, autoconf, C++11
 
 [Cmake](https://cmake.org) is needed to build Teem, and
 [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
@@ -99,13 +101,18 @@ To get Cmake:
 page includes "Binary distributions" that have the executable
 `cmake` you'll need.
 
-To get the autoconf tools (specifically <code>autoconf</code> and <code>autoheader</code>):
+To get the autoconf tools (specifically `autoconf` and `autoheader`):
 * Linux: `sudo apt-get install autoconf`
 * OSX: `brew install autoconf`
 
+The Diderot runtime system is written in C++11 and the code generator
+also produces C++ code, so you will need to have a modern C++ compiler
+installed.
+
 #### (2) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  **You need at least version 110.80 to build Diderot.**
+need to install that first.  **You need at least version 110.80 to build
+the current version of Diderot.**
 You can learn the version of the executable `sml` by running
 
 	sml @SMLversion
@@ -135,16 +142,16 @@ page, go to the topmost "Sofware links: files" link
 (currently 110.80) to get files needed to install SML/NJ on your platform.
 On OSX there is an installer package to get executables.
 
-Or, you can compile smlnj from source. Doing this on a modern 64-bit
+Or, you can compile smlnj from source yourself. Doing this on a modern 64-bit
 Linux machine requires support for 32-bit executables, since
-`sml` is available only as a 32-bit program. You will know you're missing
+`sml` is itself a 32-bit program. You will know you're missing
 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you fix this will vary between different versions of Linux.
 This is documented in the
-[TROUBLESHOOTING section at the bottom of the SML/NJ Installation Notes](http://smlnj.org/install/index.html).
+[at the very bottom of the SML/NJ Installation Instructions](http://www.smlnj.org/dist/working/110.80/INSTALL).
 
-Then, to compile `sml` from files at http://smlnj.org (the `wget` command
+Then, to compile `sml` from source files at http://smlnj.org (the `wget` command
 is specific to version 110.80; there may now be a newer version):
 
 	mkdir $DDRO_ROOT/smlnj
@@ -164,7 +171,7 @@ This is required for subsequent Diderot compilation.
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
 Teem is overdue for a release, but in the mean time you should build
 it from source with CMake, because Diderot (and these examples) assume
-the current source, rather than any previously released Teem version.
+the current source (revision **r6294** or later).
 
 It is best to build a Teem for Diderot that has *none* of the optional
 libraries (PNG, zlib, etc) enabled. Experience has shown that
@@ -236,22 +243,31 @@ by piping into `unu head -`) on your own data to see exactly what it
 will do, or to normalize the meta-data prior to compiling the Diderot
 program (the normalization is idempotent by definition).
 
-#### (4) Getting Diderot (the various branches)
+#### (4) Getting Diderot itself.
 
-**NOTE: As Diderot branches are merged, the names and URLs for these may change**
+With the publication our [VIS'15](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015)
+paper, work began on merging the various branches of the compiler that had been
+created to support the new functionalities described in the paper, relative to
+the earlier [PLDI'12](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012) paper.
+The ongoing merge effort is available in the vis15 branch, but the earlier
+branches are also available, as described here.
 
-At this point there are different branches with different functionalities;
-work on merging them is ongoing.  Any or all of them should be within `$DDRO_ROOT`:
+Any of the branches you might try should be within `$DDRO_ROOT`:
 
 	cd $DDRO_ROOT
 
 Every branch is available via an "svn co" command below.
 
+The **vis15** branch contains functionality from other branches listed below, and is the
+focus of ongoing merge work.  The source is available via:
+
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
+
 The **vis12** branch was created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
-submission in mind. That never happened, and the
-[VIS'13](http://ieeevis.org/year/2013/info/vis-welcome/welcome) submission was rejected.
-Still, this has become the most mature branch, though it lacks some features from other branches.
+submission in mind.
+Until the vis15 branch, vis12 was the most stable branch (though it lacks some features).
+It is currently the only branch with pthread support.
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
@@ -261,17 +277,13 @@ it only works in the vis12-cl branch.
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
 
-The **lamont** branch includes the implementation of strand communication.
-
-	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/lamont
-
-The **charisee** branch includes field "lifting", based on the EIN internal representation.
-
-	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/charisee
+The **lamont** and **charisee** branches support strand communication
+(for particle systems) and tensor field operators (based on the EIN internal representation),
+respectively, but these functionalities have been merged into the vis15 branch.
 
 **To configure and build** any of these branches, the steps are
 the same. Run these commands inside any of the per-branch directories
-(such as `$DDRO_ROOT/vis12/`):
+(such as `$DDRO_ROOT/vis15/`):
 
 	autoheader -Iconfig
 	autoconf -Iconfig
@@ -279,15 +291,25 @@ the same. Run these commands inside any of the per-branch directories
 	make local-install
 
 Note the use of the `$TEEMDDRO` variable set above, and the possible
-(implicit) use of the <code>$SMLNJ_CMD</code> variable also described above.
-As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
+(implicit) use of the `$SMLNJ_CMD` variable also described above.
 If your build fails with an error message `anchor $ml-lpt-lib.cm not defined`, you're missing
-the ml-lpt library, which you can get through your package manager (such as `sudo apt-get install ml-lpt`) or from the
-[SML/NJ](http://smlnj.org/) download page.
+the ml-lpt library, which you can get through your package manager (such as `sudo apt-get install ml-lpt`)
+or from the [SML/NJ Distribution Files page](http://smlnj.org/dist/working/110.80/index.html).
 
 Once the build of the Diderot compiler is finished, you can check that it worked by trying:
 
 	bin/diderotc --help
+
+One technical note: `bin/diderotc` is not a stand-alone executable; it is a
+shell script that depends on the installed location of `sml` and where
+Diderot was compiled. Also, when `bin/diderotc` compiles `.cxx` C++
+files (which it generates), it depends on the relative location of the `include` directory
+(peer to `bin`) created by `make local-install`.
+
+For the purposes of these examples, it is easiest to add the new `diderotc` to your path.
+Assuming you only want to use the latest branch (vis15), you can do this with:
+
+	export PATH=$DDRO_ROOT/vis15/bin:${PATH}
 
 #### (5) Get the examples:
 
@@ -297,7 +319,7 @@ Once the build of the Diderot compiler is finished, you can check that it worked
 #### (6) Try compiling and running the "hello world" example [`hello`](hello/):
 
 	cd $DDRO_ROOT/examples/hello
-	../../vis12/bin/diderotc --exec hello.diderot
+	diderotc --exec hello.diderot
 	./hello
 
 Running `./hello` should print "hello, world".  Every Diderot program,
@@ -319,5 +341,3 @@ examples build on ideas and features shown in earlier examples.
 If you use Diderot for your own research or teaching, please share it with
 the [diderot-language](https://goo.gl/kXpxhV) Google group, and consider
 adding some new examples here.
-
-
