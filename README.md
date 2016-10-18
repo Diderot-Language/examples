@@ -34,23 +34,25 @@ Demonstrates input variables, `stabilize` method, 5-argument `lerp()`, limit sup
 with the `-l` option, and compiling with `--double`.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
-* [`tensor`](tensor/): Demonstrates printing, indexing, and multiplication of
-tensors and user-defined functions.
-* [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates
-computing on globals at initialization-time,
-uninitialized global inputs,
-chained else-if conditionals to emulate a switch, and
-single-expression functions defined with `=`.
+* [`tensor`](tensor/): Describes tensor shape, and demonstrates printing, indexing, and
+multiplication of tensors and user-defined functions.
 * [`vimg`](vimg/): Viewing, within a window of specified location and orientation,
 of an image or of some of its derived attributes. Demonstrates
 having an image dataset as an input variable,
 univariate colormapping,
 finding gradients with ∇,
-and use of `evals` and `evecs` for eigenvalues and eigenvectors.
+`inv` for matrix inverse,
+and `evals` and `evecs` for eigenvalues and eigenvectors.
+* [`fs2d`](fs2d/): For generating 2D synthetic datasets. Demonstrates
+computing on globals at initialization-time,
+uninitialized global inputs,
+chained else-if conditionals to emulate a switch, and
+single-expression functions defined with `=`.
+* [`sieve`](sieve/): Sieve of Eratosthenes for finding primes. Demonstrates
+how strands can `die` (in a strand collection) and the `global` update block,
+which can compute on globals and strand states between per-strand updates.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
-Newton-Raphson iteration. Demonstrates
-strands calling `die`,
-and the `inside` and `normalize` functions.
+Newton-Raphson iteration. Demonstrates and the `inside` and `normalize` functions.
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
