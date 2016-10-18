@@ -72,23 +72,7 @@ Some other directories contain supporting files:
 
 ## Building Diderot and these examples
 
-#### (0) Get Cmake, autoconf, and creating $DDRO_ROOT
-
-CMake is needed to build Teem, and autoconf is need to configure the compilation
-of Diderot.  These utilities can be obtained via `apt-get` on Ubuntu/Debian Linux,
-or via [Homebrew `brew`](http://brew.sh) on OSX.
-
-To get [Cmake](https://cmake.org):
-* Linux: `sudo apt-get install cmake`
-* OSX: `brew install cmake`
-* In any case, the [CMake download](https://cmake.org/download/)
-page includes "Binary distributions" that have the executable
-`cmake` you'll need.
-
-To get the [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
-tools (specifically <code>autoconf</code> and <code>autoheader</code>):
-* Linux: `sudo apt-get install autoconf`
-* OSX: `brew install autoconf`
+#### (0) Create $DDRO_ROOT, a place for everything to go in
 
 To keep things contained, you should create a directory (perhaps <code>~/ddro</code>)
 to contain all the other software directories referred to below,
@@ -98,11 +82,30 @@ and set `$DDRO_ROOT` to refer to it:
 	cd ddro
 	export DDRO_ROOT=`pwd`
 
-**All shell commands used here assume sh/bash syntax (rather than csh/tcsh).**
+Note: **All shell commands used here assume sh/bash syntax (rather than csh/tcsh).**
 
-#### (1) Get SML/NJ
+#### (1) Get Cmake and autoconf
+
+[Cmake](https://cmake.org) is needed to build Teem, and
+[GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
+is need to configure the compilation of Diderot.
+These utilities can be obtained via `apt-get` on Ubuntu/Debian Linux,
+or via [Homebrew `brew`](http://brew.sh) on OSX.
+
+To get Cmake:
+* Linux: `sudo apt-get install cmake`
+* OSX: `brew install cmake`
+* In any case, the [CMake download](https://cmake.org/download/)
+page includes "Binary distributions" that have the executable
+`cmake` you'll need.
+
+To get the autoconf tools (specifically <code>autoconf</code> and <code>autoheader</code>):
+* Linux: `sudo apt-get install autoconf`
+* OSX: `brew install autoconf`
+
+#### (2) Get SML/NJ
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  **You need at least version 110.77 to build Diderot.**
+need to install that first.  **You need at least version 110.80 to build Diderot.**
 You can learn the version of the executable `sml` by running
 
 	sml @SMLversion
@@ -110,7 +113,7 @@ You can learn the version of the executable `sml` by running
 There are different ways of getting `sml`.
 
 **On OSX**, (using [Homebrew](https://brew.sh)). Assuming that `brew info smlnj`
-mentions version 110.77 or higher, then
+mentions version 110.80 or higher, then
 
 	brew install smlnj
 
@@ -118,7 +121,7 @@ mentions version 110.77 or higher, then
 
 **On Ubuntu or Debian Linux**, `apt-get` may work to install a sufficiently recent
 version.  `apt-cache policy smlnj` reports what version you can get;
-if that's at or above version 110.77, you can:
+if that's at or above version 110.80, you can:
 
 	sudo apt-get install smlnj
 	sudo apt-get install ml-lpt
@@ -129,7 +132,7 @@ like `driver/sources.cm:16.3-16.18 Error: anchor $ml-lpt-lib.cm not defined`.
 **To install from files at http://smlnj.org**:
 On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
-(currently 110.79) to get files needed to install SML/NJ on your platform.
+(currently 110.80) to get files needed to install SML/NJ on your platform.
 On OSX there is an installer package to get executables.
 
 Or, you can compile smlnj from source. Doing this on a modern 64-bit
@@ -137,17 +140,16 @@ Linux machine requires support for 32-bit executables, since
 `sml` is available only as a 32-bit program. You will know you're missing
 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
-How you fix this will vary between different versions of Linux;
-please tell us any specific steps you learn for your specific Linux flavor.
-
-* On Ubuntu: [`sudo apt-get install gcc-multilib`](http://stackoverflow.com/questions/23182765/how-to-install-ia32-libs-in-ubuntu-14-04-lts-trusty-tahr)  (tested on 14.04 and 15.10)
+How you fix this will vary between different versions of Linux.
+This is documented in the
+[TROUBLESHOOTING section at the bottom of the SML/NJ Installation Notes](http://smlnj.org/install/index.html).
 
 Then, to compile `sml` from files at http://smlnj.org (the `wget` command
-is specific to version 110.79; there may now be a newer version):
+is specific to version 110.80; there may now be a newer version):
 
 	mkdir $DDRO_ROOT/smlnj
 	cd $DDRO_ROOT/smlnj
-	wget http://smlnj.cs.uchicago.edu/dist/working/110.79/config.tgz
+	wget http://smlnj.cs.uchicago.edu/dist/working/110.80/config.tgz
 	tar xzf config.tgz
 	config/install.sh
 	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
@@ -158,11 +160,11 @@ with the steps immediately above:
 	export SMLNJ_CMD=/path/to/your/sml
 This is required for subsequent Diderot compilation.
 
-#### (2) Get Teem
+#### (3) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
 Teem is overdue for a release, but in the mean time you should build
 it from source with CMake, because Diderot (and these examples) assume
-the current source.
+the current source, rather than any previously released Teem version.
 
 It is best to build a Teem for Diderot that has *none* of the optional
 libraries (PNG, zlib, etc) enabled. Experience has shown that
@@ -170,7 +172,7 @@ additional library dependencies from Teem will complicate the linking that the
 Diderot compiler must do to create executables.
 
 To get the Teem source and set the
-<code>TEEMDDRO</code> variable needed later, run:
+`TEEMDDRO` variable needed later, run:
 
 	cd $DDRO_ROOT
 	svn co https://svn.code.sf.net/p/teem/code/teem/trunk teem-src
@@ -192,7 +194,7 @@ To make sure your build works, try:
 
 	$DDRO_ROOT/teem-ddro/bin/unu --version
 
-Note that we do **not** recommend adding this <code>teem-ddro/bin</code> to your path;
+Note that we do **not** recommend adding this `teem-ddro/bin` to your path;
 its not very useful.
 
 Instead, post-processing of Diderot output often generates PNG images, which means you'll
@@ -234,7 +236,7 @@ by piping into `unu head -`) on your own data to see exactly what it
 will do, or to normalize the meta-data prior to compiling the Diderot
 program (the normalization is idempotent by definition).
 
-#### (3) Getting Diderot (the various branches)
+#### (4) Getting Diderot (the various branches)
 
 **NOTE: As Diderot branches are merged, the names and URLs for these may change**
 
@@ -276,7 +278,7 @@ the same. Run these commands inside any of the per-branch directories
 	./configure --with-teem=$TEEMDDRO
 	make local-install
 
-Note the use of the <code>$TEEMDDRO</code> variable set above, and the possible
+Note the use of the `$TEEMDDRO` variable set above, and the possible
 (implicit) use of the <code>$SMLNJ_CMD</code> variable also described above.
 As long as there are multiple branches in play, "make local-install" makes more sense than "make install".
 If your build fails with an error message `anchor $ml-lpt-lib.cm not defined`, you're missing
@@ -287,12 +289,12 @@ Once the build of the Diderot compiler is finished, you can check that it worked
 
 	bin/diderotc --help
 
-#### (4) Get the examples:
+#### (5) Get the examples:
 
 	cd $DDRO_ROOT
 	git clone https://github.com/Diderot-Language/examples.git
 
-#### (5) Try compiling and running the "hello world" example [`hello`](hello/):
+#### (6) Try compiling and running the "hello world" example [`hello`](hello/):
 
 	cd $DDRO_ROOT/examples/hello
 	../../vis12/bin/diderotc --exec hello.diderot
@@ -307,7 +309,7 @@ a container for a single int.  We can check its contents with:
 which should show "42".  If you've gotten this far, you have successfully
 built Diderot, and compiled and run a Diderot program!
 
-#### (6) Try the rest of the examples
+#### (7) Try the rest of the examples
 
 The beginning of this README.md lists the examples in a sensible order for
 reading and experimenting, from simple to complex (after [`hello`](hello/)
