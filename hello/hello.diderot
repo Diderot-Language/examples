@@ -26,7 +26,7 @@ strand hello () {
       real a = 0; real b = 1;
       print("atan2(", a, ",", b, ") = ", atan2(a,b), "\n");
 
-         to learn that atan2(0,1) = 0, so its atan2(y,x), line in C. */
+         to learn that atan2(0,1) = 0, so its atan2(y,x), like in C. */
 
       /* The strand runs for only its initial iteration, then stops
          by stabilizing, which stores the final value of the output. */
