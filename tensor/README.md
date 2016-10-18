@@ -5,6 +5,17 @@ tensors generally are objects with some number of ordered indices.
 This program demonstrates tensor construction, indexing, slicing with
 `:`, and contracting with either `•` or `:`.
 
+The type of a tensor is determined by its *shape*: a `[]`-enclosed
+list of how many values each of its indices can take on.  The `real`
+type for scalars can also be expressed as `tensor[]` (no indices). A
+3-vector has type `tensor[3]`: one index can take on 3 values, for the
+three possible dimensions. Diderot also supports the `vec3` synonym.
+A 3x3 matrix has type `tensor[3,3]`. Each of the shape dimensions must
+be 2 or greater. Note that Diderot does not currently support
+distinguishing between covariant and contravariant indices; the
+assumption is that all tensor coefficients are measured with respect
+to an orthonormal coordinate frame.
+
 Like Mathematica, Diderot doesn't enforce a semantic distinction between
 row and column vectors; tensor indices are ordered, and the semantics of
 tensor operations depends on that order. Still, we can assume for the sake
@@ -25,7 +36,4 @@ same way they work in other languages that support higher-order tensors. The
 program ends with a demonstration of how, when saved out to files, tensor
 indices are ordered slow to fast.
 
-Note that Diderot does not currently support distinguishing between
-covariant and contravariant indices; the assumption is that all tensor
-coefficients are measured with respect to an orthonormal coordinate
-frame.
+
