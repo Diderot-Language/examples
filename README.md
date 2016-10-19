@@ -245,45 +245,47 @@ program (the normalization is idempotent by definition).
 
 #### (4) Getting Diderot itself.
 
-With the publication our [VIS'15](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015)
-paper, work began on merging the various branches of the compiler that had been
-created to support the new functionalities described in the paper, relative to
-the earlier [PLDI'12](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012) paper.
+With the [VIS'15 Diderot paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015),
+work began on merging the various branches of the compiler that had been
+created to implement the new functionalities described in the paper, relative to
+the earlier [PLDI'12 paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).
 The ongoing merge effort is available in the vis15 branch, but the earlier
 branches are also available, as described here.
 
-Any of the branches you might try should be within `$DDRO_ROOT`:
+The source for any Diderot branch should be within `$DDRO_ROOT`:
 
 	cd $DDRO_ROOT
 
-Every branch is available via an "svn co" command below.
+An `svn co` command gets the source for a branch; the only difference
+in the `svn co` commands below is the branch name at the end of the URL.
 
 The **vis15** branch contains functionality from other branches listed below, and is the
-focus of ongoing merge work.  The source is available via:
+focus of ongoing merge work. Pthread support is coming soon. The source is available via:
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
 
-The **vis12** branch was created with a
+Before the vis15 branch, the vis12 branch (created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
-submission in mind.
-Until the vis15 branch, vis12 was the most stable branch (though it lacks some features).
-It is currently the only branch with pthread support.
+submission in mind) was the most reliable. It lacks some newer features
+in vis15, but it does have pthread support.
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
-The **vis12-cl** branch is the only one with a working OpenCL backend.  The `diderotc`
-compiler from the other branches may advertise a `--target=cl` option, but actually
-it only works in the vis12-cl branch.
+The **vis12-cl** branch is the only one with a working OpenCL backend.  The vis12 branch's
+`diderotc` also advertises a `--target=cl` option, but it only works in the vis12-cl branch.
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
 
-The **lamont** and **charisee** branches support strand communication
+The **lamont** and **charisee** branches were created to support strand communication
 (for particle systems) and tensor field operators (based on the EIN internal representation),
 respectively, but these functionalities have been merged into the vis15 branch.
 
-**To configure and build** any of these branches, the steps are
-the same. Run these commands inside any of the per-branch directories
-(such as `$DDRO_ROOT/vis15/`):
+**To configure and build** any of these branches, the steps are the same. First go into
+the source directory for the branch, for example:
+
+	cd vis15
+
+And then run:
 
 	autoheader -Iconfig
 	autoconf -Iconfig
@@ -292,18 +294,26 @@ the same. Run these commands inside any of the per-branch directories
 
 Note the use of the `$TEEMDDRO` variable set above, and the possible
 (implicit) use of the `$SMLNJ_CMD` variable also described above.
-If your build fails with an error message `anchor $ml-lpt-lib.cm not defined`, you're missing
-the ml-lpt library, which you can get through your package manager (such as `sudo apt-get install ml-lpt`)
+
+If the configure fails with:
+
+	checking for nrrdMetaDataNormalize... no
+	configure: error: "please update your teem installation"
+
+it means that your Teem source checkout is not recent enough; `nrrdMetaDataNormalize`
+was added with Teem revision r6294.
+If the build fails with an error message `anchor $ml-lpt-lib.cm not defined`, it means
+the ml-lpt library is missing. This is availble through your package manager (such as `sudo apt-get install ml-lpt`)
 or from the [SML/NJ Distribution Files page](http://smlnj.org/dist/working/110.80/index.html).
 
-Once the build of the Diderot compiler is finished, you can check that it worked by trying:
+Once the configure and build of the Diderot compiler is finished, you can check that it worked by trying:
 
 	bin/diderotc --help
 
-One technical note: `bin/diderotc` is not a stand-alone executable; it is a
+One technical note: `bin/diderotc` is not a stand-alone executable. It is a
 shell script that assumes working paths to the `sml` installation and to where
-Diderot was compiled. Also, when `bin/diderotc` compiles `.cxx` C++
-files (which it generates), it depends on the relative location of an `include` directory
+Diderot was compiled. Also, when `bin/diderotc` compiles the C++
+files it generates, it depends on the relative location of an `include` directory
 (peer to `bin`) created by `make local-install`.
 
 To compile these examples or any other Didorot programs you write, you
