@@ -1,9 +1,7 @@
 ## sieve.diderot: Sieve of Eratosthenes
 
 The [Sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes)
-is really not the sort of algorithm that Diderot is designed for, and this is not a particularly
-efficient implementation. However, this is a simple way to demonstrate
-three Diderot language feaures not shown in previous examples:
+for finding prime numbers provides a way to demonstrate three Diderot language feaures:
 
 1. By executing `die`, strands exit the computation without saving their output.
 2. The `global` update block contains code to run between per-strand updates.
@@ -21,7 +19,12 @@ Try adding `print()` statements to the program (either within the strand
 for which iteration, and when they die off.
 
 After running the program with `./sieve` or, say, `./sieve -NN 1000`, the
-output can be shown with:
+output (one prime per line) can be shown with:
 
 	unu save -f text -i pp.nrrd
 
+or to put all the primes on one line:
+
+	unu axinsert -i pp.nrrd -a 1 | unu save -f text
+
+which can be checked against [lists of prime numbers](http://primos.mat.br/indexen.html).
