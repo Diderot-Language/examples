@@ -112,6 +112,7 @@ page includes "Binary distributions" that have the executable
 To get the autoconf tools (specifically `autoconf` and `autoheader`):
 * Linux: `sudo apt-get install autoconf`
 * OSX: `brew install autoconf`
+You will need autoconf version 2.64 or higher.
 
 The Diderot runtime system is written in C++11 and the code generator
 also produces C++ code, so you will need to have a modern C++ compiler
@@ -306,7 +307,11 @@ And then run:
 Note the use of the `$TEEMDDRO` variable set above, and the possible
 (implicit) use of the `$SMLNJ_CMD` variable also described above.
 
-If the configure fails with:
+If `autoheader` fails with something like:
+
+	configure.ac:82: error: Autoconf version 2.64 or higher is required
+you'll need to update your autoconf installation.
+If `configure` fails with:
 
 	checking for nrrdMetaDataNormalize... no
 	configure: error: "please update your teem installation"
