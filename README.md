@@ -26,7 +26,7 @@ You can then run the program with:
 
 Some examples benefit from different compilation or execution options, as noted.
 
-The examples below should work without modification with the "vis15" branch
+The examples below should compile with the "vis15" branch
 of the compiler, which is the focus of ongoing work.
 Each example has an introductory README.md (generated from the first
 comment in the program), and more explanatory comments within the source.
