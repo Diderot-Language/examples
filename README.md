@@ -145,7 +145,7 @@ page, go to the topmost "Sofware links: files" link
 (currently 110.80) to get files needed to install SML/NJ on your platform.
 On OSX there is an installer package to get executables.
 
-Or, you can compile smlnj from source yourself. Doing this on a modern 64-bit
+Or, you can compile `sml` from its source yourself. Doing this on a 64-bit
 Linux machine requires support for 32-bit executables, since
 `sml` is itself a 32-bit program. You will know you're missing
 32-bit support if the `config/install.sh` command below fails
