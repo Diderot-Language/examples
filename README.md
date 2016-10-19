@@ -309,15 +309,17 @@ If the build fails with an error message `anchor $ml-lpt-lib.cm not defined`, it
 the ml-lpt library is missing. This is availble through your package manager (such as `sudo apt-get install ml-lpt`)
 or from the [SML/NJ Distribution Files page](http://smlnj.org/dist/working/110.80/index.html).
 
-Once the configure and build of the Diderot compiler is finished, you can check that it worked by trying:
+Once the configure and build is finished, you can check that it worked by trying:
 
 	bin/diderotc --help
 
-One technical note: `bin/diderotc` is not a stand-alone executable. It is a
-shell script that assumes working paths to the `sml` installation and to where
-Diderot was compiled. Also, when `bin/diderotc` compiles the C++
-files it generates, it depends on the relative location of an `include` directory
-(peer to `bin`) created by `make local-install`.
+One technical note: Unlike the executables created by the Diderot compiler `bin/diderotc`,
+`bin/diderotc` is not itself a stand-alone executable. It is a
+shell script containing absolute paths to the `sml` installation and to
+an architecture-specific binary file in `bin/.heap` used by `sml` to compile Diderot.
+Also, when `bin/diderotc` compiles the C++
+files it generates, it depends on the relative locations of the `include` and `lib`
+directories (peer to `bin`) created by `make local-install`.
 
 To compile these examples or any other Didorot programs you write, you
 should add the new `diderotc` to your path.  Assuming you only want to
