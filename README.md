@@ -14,8 +14,9 @@ programs and reporting any problems or confusion, or
 contributing new example programs.
 Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate with us.
 
-Once you've built the `diderotc` compiler with the instructions below,
-you can create executable `foo` from Diderot program `foo.diderot` with
+Once you've built the `diderotc` compiler (and added it to your path) with the
+instructions below, you can create executable `foo` from Diderot program
+`foo.diderot` with
 
 	diderotc --exec foo.diderot
 
@@ -25,8 +26,10 @@ You can then run the program with:
 
 Some examples benefit from different compilation or execution options, as noted.
 
-All of the examples below have an introductory README.md (generated from the first
-comment in the program), as well as more explanatory comments within the source.
+The examples below should work without modification with the "vis15" branch
+of the compiler, which is the focus of ongoing work.
+Each example has an introductory README.md (generated from the first
+comment in the program), and more explanatory comments within the source.
 The example programs are listed here in order from simple to more complex;
 the later examples assume you've read through and run earlier examples.  Enjoy!
 
