@@ -34,6 +34,9 @@ the later examples assume you've read through and run earlier examples.  Enjoy!
 * [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
 Demonstrates input variables, `stabilize` method, 5-argument `lerp()`, limit super-steps
 with the `-l` option, and compiling with `--double`.
+* [`sieve`](sieve/): Sieve of Eratosthenes for finding primes. Demonstrates
+how strands can `die` (in a strand collection) and the `global` update block,
+which can compute on globals and strand states between per-strand updates.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
 * [`tensor`](tensor/): Describes tensor shape, and demonstrates printing, indexing, and
@@ -50,9 +53,6 @@ computing on globals at initialization-time,
 uninitialized global inputs,
 chained else-if conditionals to emulate a switch, and
 single-expression functions defined with `=`.
-* [`sieve`](sieve/): Sieve of Eratosthenes for finding primes. Demonstrates
-how strands can `die` (in a strand collection) and the `global` update block,
-which can compute on globals and strand states between per-strand updates.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration, which is legible as such because of Diderot's mathematical notation.
 Also demonstrates the `inside` and `normalize` functions,
