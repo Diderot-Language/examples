@@ -146,6 +146,14 @@ vec2 orig = cent - (dir0*(sz0-1) + dir1*(sz1-1))/2;
 // "tent" but that name is already taken by a kernel.
 function real bump(real z) = max(0, 1 - |z|/th);
 
+/* 2x2 matrix inversion with "inv" is part of Diderot in the vis15 branch,
+   In the vis12 branch, this user-defined function does the same thing.
+function tensor[2,2] inv(tensor[2,2] m) {
+  real d = m[0,0]*m[1,1] - m[0,1]*m[1,0];
+  return [[m[1,1],-m[0,1]],[-m[1,0],m[0,0]]]/d;
+}
+*/
+
 strand sample(int ui, int vi) {
    // The output type for a Diderot program is fixed at compile-time,
    // regardless of input variable values or execution outcomes. So
