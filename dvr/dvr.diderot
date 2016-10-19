@@ -18,12 +18,11 @@ via (here we are desaturating the `isobow.nrrd` colormap):
 
 	unu 3op lerp 0.5 ../cmap/isobow.nrrd 1 -o cmap.nrrd
 
-The program can be compiled, assuming the directions at
-https://github.com/Diderot-Language/examples, with:
+The program can then be compiled with:
 
-	../../vis12/bin/diderotc --exec dvr.diderot
+	diderotc --exec dvr.diderot
 
-Because the program names a default input volume (`vol.nrrd`), compilation
+Because the program names a proxy volume (`vol.nrrd`), compilation
 is specialized on the volume data sizes and sample type.  Recompilation
 is required to operate on new input data with different sizes or type.
 
