@@ -174,7 +174,8 @@ Once you believe you have `sml` installed, it should either be in your path
 with the steps immediately above:
 
 	export SMLNJ_CMD=/path/to/your/sml
-This is required for subsequent Diderot compilation.
+Subsequent Diderot compilation depends on `$SMLNJ_CMD` being set
+if `sml` is not in your path.
 
 #### (3) Get Teem
 The Diderot run-time depends on [Teem](http://teem.sourceforge.net).
