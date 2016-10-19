@@ -1,11 +1,13 @@
 # Diderot Examples
 
-These examples demonstrate [Diderot language](http://diderot-language.cs.uchicago.edu),
-recently described in a [VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).
-A much simpler version of the language
-was described in a [PLDI 2012 paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).
-The example programs have been written to help you learn how to use Diderot,
-and to provide starting points for writing your own Diderot programs.
+These examples demonstrate [Diderot
+language](http://diderot-language.cs.uchicago.edu), recently described in a
+[VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).  A much
+simpler version of the language was described in a [PLDI 2012
+paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).  The example
+programs have been written by [Gordon
+Kindlmann](http://people.cs.uchicago.edu/~glk) to help you learn how to use
+Diderot, and to provide starting points for writing your own Diderot programs.
 
 Diderot is a new language; constructive engagement is appreciated.
 You can help by testing and improving the instructions below on how
@@ -31,15 +33,19 @@ of the compiler, which is the focus of ongoing work.
 Each example has an introductory README.md (generated from the first
 comment in the program), and more explanatory comments within the source.
 The example programs are listed here in order from simple to more complex;
-the later examples assume you've read through and run earlier examples.  Enjoy!
+the later examples assume you've read through and run earlier examples.  The
+first few examples do not exemplify the kinds of algorithms for which Diderot
+is designed, but do demonstrate various basic language features. Enjoy!
 
 * [`hello`](hello/): Hello world in Diderot
 * [`heron`](heron/): A non-trivial program to find square roots, via Heron's method.
-Demonstrates input variables, `stabilize` method, 5-argument `lerp()`, limit super-steps
+Demonstrates input variables, `stabilize` method, 5-argument `lerp()`, limiting iterations
 with the `-l` option, and compiling with `--double`.
 * [`sieve`](sieve/): Sieve of Eratosthenes for finding primes. Demonstrates
 how strands can `die` (in a strand collection) and the `global` update block,
 which can compute on globals and strand states between per-strand updates.
+* [`life`](life/): Conway's Game of Life.  Demonstrates strand communication
+and snapshots for watching how strand state changes.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
 with information about the operators that they represent.
 * [`tensor`](tensor/): Describes tensor shape, and demonstrates printing, indexing, and
