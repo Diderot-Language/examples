@@ -49,5 +49,6 @@ We can use some `unu` to turn these into an image sequence:
 
 [ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
 
-	convert -delay 2 state*.png [gosperglidergun.gif](gosperglidergun.gif)
+	convert -delay 2 state*.png gosperglidergun.gif
 
+The resulting [gosperglidergun.gif](gosperglidergun.gif) looks as expected.
