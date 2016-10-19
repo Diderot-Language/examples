@@ -1,0 +1,112 @@
+/* ==========================================
+life.diderot Conway's Game of Life
+
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+is not in the target domain of the Diderot DSL, but it is a simple
+program for demonstrating **strand communication**, a new feature relative
+to previous examples. Strands are located in their domain according to a
+special variable named `pos`, and strands can learn about nearby strands
+via the `sphere` query. Strands have read-only access to the values of
+other strands' variables *as they were at the start of the iteration*.
+It would take two iterations for information to get from strand, to another,
+and back.
+
+Diderot's strand communication was primarily intended for running particle
+systems, in which particles are moving around in some domain, dynamically
+changing which other strands they interact with, and the program output is a
+1-D sequence (or set) of values. In this example, strands do not move,
+and do not change their interacting neighbors, and the output is a rectangular
+array. The `sphere` query (to find strands within some radius) will always
+return the same 8 neighbors.
+========================================== */
+
+/* The game will be computed on an NN x NN grid. Real Conway Life programs can
+   compute on an effectively infinite grid, but this is not currently possible
+   in Diderot (at least not with this program). The grid will centered at the
+   origin (see "initially" below) only because the initialization patterns
+   available at http://www.conwaylife.com/wiki/Category:Patterns in the "Life
+   1.06" format seem to center their patterns around the origin. */
+input int NN ("size of (square) simulation grid") = 200;
+
+/* The initial pattern is read in as a field, sampled on an integer grid with
+   linear (tent) interpolation). NOTE: By *not* specifying an named input file
+   here (called a "proxy" file in Diderot), the compiler currently produces a
+   program that is general with respect to input image size, but specialized
+   to sample type float (which happens to be what we're using here). */
+input image(2)[] init ("initial pattern");
+field#0(2)[] initF = tent ⊛ init;
+
+/* Using a variable to cap (in the global update below) the number of
+   iterations to compute means that the state at that point can be saved out,
+   even if snapshots are not being used to monitor the computation state.  The
+   "-l" (or "--limit") command-line option can be also be used to stop a
+   program at some number of iterations, but strands are not stabilized, and
+   hence the output is not saved, if the program is stopped that way. */
+input int iterMax ("maximum number of iterations to run (if > 0)") = 0;
+
+int iter = 0; // counts how many iterations have finished
+
+// Each strand represents one cell in the grid
+strand cell (vec2 pos0) {
+   /* "pos" is a special strand variable: the type indicates the dimension of
+       the spatial domain over which strand communication happens, and the
+       value is the strand position in that domain. Currently, only a variable
+       named "pos" satisfies this role. In this case, pos is learned from the
+       strand initialization, and then never changed. */
+   vec2 pos = pos0;
+   /* "state" is either 1 or 0, initialized by querying the initF field at the
+      strand position. Diderot currently has no casting mechanism to convert a
+      real to an int, hence the "1 if initF(pos) > 0.5 else 0" conditional
+      expression that produces an int from real-valued initF(pos).  */
+   output int state = 0 if !inside(pos, initF) else
+                      1 if initF(pos) > 0.5 else
+                      0;
+
+   /* This update method computes the new state of this strand's cell from
+      its previous state and the previous state of its 8 neighbors */
+   update {
+      /* Count living neighbors. The cells are at integral grid positions, so
+         the 8 closest neighbors (use for Life) are either distance 1 away
+         (up, down, left, right), or distance sqrt(2) away (the diagonals). A
+         little extra is added to sqrt(2) for safety. */
+      int nn = 0;
+      foreach (cell c in sphere(sqrt(2)+0.001)) {
+         nn += c.state;
+      }
+      // Here are the rules of Life
+      state = 1 if (3 == nn) else
+              state if (2 == nn) else
+              0;
+   }
+}
+
+/* This global update code runs after all the individual strands have run
+   their update{} methods.  This is where global variables (like iter) may be
+   modified. Determining when the computation is done may not be something
+   that strands can do individually. In this example the program is deemed
+   finished when iter reaches iterMax, at which point the global "stabilize"
+   is called. That results in all active strands being stabilized (their
+   stabilize{} methods are executed). */
+global {
+   print("iter ", iter, " done.\n"); // progress indication
+   iter += 1;
+   if (iterMax > 0 && iter >= iterMax) {
+      print("All done!\n");
+      stabilize;
+   }
+   /* Note: if the program is compiled with snapshot generation enabled
+     ("--snapshot") and the program is run to save a snapshot at every
+     iteration ("-s 1"), then it will save "snap-0000.nrrd" to indicate strand
+     state after strands have been initialization but before the first
+     iteration runs (before any per-strand updates), and thereafter
+     "snap-NNNN.nrrd" will indicate state after the NNNNth iteration has
+     finished. With 0-based numbering (as used here), the NNNNth iteration is
+     numbered NNNN-1. In this program, using "-iterMax 5" will lead to six
+     snapshot files being saved "snap-000{0,1,2,3,4,5}.nrrd", as well as the
+     final output "state.nrrd". */
+}
+
+initially [ cell([ii, jj])
+               // these index ranges center the grid on the origin
+             | jj in (-NN/2)..(-NN/2 + NN - 1),
+               ii in (-NN/2)..(-NN/2 + NN - 1) ];
