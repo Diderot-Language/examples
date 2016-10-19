@@ -1,12 +1,11 @@
 # Diderot Examples
 
-These examples demonstrate [Diderot
+These example programs demonstrate [Diderot
 language](http://diderot-language.cs.uchicago.edu), recently described in a
 [VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).  A much
 simpler version of the language was described in a [PLDI 2012
-paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).  The example
-programs have been written by [Gordon
-Kindlmann](http://people.cs.uchicago.edu/~glk) to help you learn how to use
+paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).  The
+programs have been written to help you learn how to use
 Diderot, and to provide starting points for writing your own Diderot programs.
 
 Diderot is a new language; constructive engagement is appreciated.
