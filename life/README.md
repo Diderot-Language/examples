@@ -17,3 +17,37 @@ changing which other strands they interact with, and the program output is a
 and do not change their interacting neighbors, and the output is a rectangular
 array. The `sphere` query (to find strands within some radius) will always
 return the same 8 neighbors.
+
+This example also shows off the **snapshot** mechanism that can be used to
+inspect the state of computation at each iteration, by saving the values of
+the output variable(s) during execution.  This is enabled by the `--snapshot`
+option to the compiler:
+
+	diderotc --snapshot --exec life.diderot
+
+This adds a new `-s` option to the `./life` executable, which controls the
+periodicity of snapshots being saved, i.e. `-s 1` means save at every iteration,
+`-s 10` means save at every tenth iteration. The default `-s 0` means that no
+snapshots are saved.
+
+We can run Life with one of the supplied initial patterns in the `patterns`
+subdirectory, like the [Gosper glider
+gun](http://www.conwaylife.com/w/index.php?title=Gosper_glider_gun) (as well
+as clean up any results from a previous run):
+
+	rm -f state*{nrrd,png}
+	./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd
+
+which generates many `state-NNNN.nrrd` files, one for each iteration, starting
+with `state-0000.nrrd` to record initialization state before the first iteration.
+We can use some `unu` to turn these into an image sequence:
+
+	unu join -i state-*.nrrd -a 2 |
+	unu quantize -b 8 |
+	unu resample -s x4 x4 = -k box -c cell |
+	unu dice -a 2 -ff state-%04d.png -o ./
+
+[ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
+
+	convert -delay 2 state*.png gosperglidergun.gif
+

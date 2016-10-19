@@ -18,6 +18,40 @@ changing which other strands they interact with, and the program output is a
 and do not change their interacting neighbors, and the output is a rectangular
 array. The `sphere` query (to find strands within some radius) will always
 return the same 8 neighbors.
+
+This example also shows off the **snapshot** mechanism that can be used to
+inspect the state of computation at each iteration, by saving the values of
+the output variable(s) during execution.  This is enabled by the `--snapshot`
+option to the compiler:
+
+	diderotc --snapshot --exec life.diderot
+
+This adds a new `-s` option to the `./life` executable, which controls the
+periodicity of snapshots being saved, i.e. `-s 1` means save at every iteration,
+`-s 10` means save at every tenth iteration. The default `-s 0` means that no
+snapshots are saved.
+
+We can run Life with one of the supplied initial patterns in the `patterns`
+subdirectory, like the [Gosper glider
+gun](http://www.conwaylife.com/w/index.php?title=Gosper_glider_gun) (as well
+as clean up any results from a previous run):
+
+	rm -f state*{nrrd,png}
+	./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd
+
+which generates many `state-NNNN.nrrd` files, one for each iteration, starting
+with `state-0000.nrrd` to record initialization state before the first iteration.
+We can use some `unu` to turn these into an image sequence:
+
+	unu join -i state-*.nrrd -a 2 |
+	unu quantize -b 8 |
+	unu resample -s x4 x4 = -k box -c cell |
+	unu dice -a 2 -ff state-%04d.png -o ./
+
+[ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
+
+	convert -delay 2 state*.png gosperglidergun.gif
+
 ========================================== */
 
 /* The game will be computed on an NN x NN grid. Real Conway Life programs can
@@ -35,14 +69,6 @@ input int NN ("size of (square) simulation grid") = 200;
    to sample type float (which happens to be what we're using here). */
 input image(2)[] init ("initial pattern");
 field#0(2)[] initF = tent ⊛ init;
-
-/* Using a variable to cap (in the global update below) the number of
-   iterations to compute means that the state at that point can be saved out,
-   even if snapshots are not being used to monitor the computation state.  The
-   "-l" (or "--limit") command-line option can be also be used to stop a
-   program at some number of iterations, but strands are not stabilized, and
-   hence the output is not saved, if the program is stopped that way. */
-input int iterMax ("maximum number of iterations to run (if > 0)") = 0;
 
 int iter = 0; // counts how many iterations have finished
 
@@ -80,30 +106,22 @@ strand cell (vec2 pos0) {
    }
 }
 
-/* This global update code runs after all the individual strands have run
-   their update{} methods.  This is where global variables (like iter) may be
-   modified. Determining when the computation is done may not be something
-   that strands can do individually. In this example the program is deemed
-   finished when iter reaches iterMax, at which point the global "stabilize"
-   is called. That results in all active strands being stabilized (their
-   stabilize{} methods are executed). */
+/* This program uses a global update just to print a progress indication.  The
+   assumption is that execution is being stopped via the "-l" limit on
+   iterations.  If the program is compiled with snapshot generation enabled
+   ("--snapshot") and the program is run to save a snapshot at every iteration
+   ("-s 1"), then it will save "snap-0000.nrrd" to indicate strand state after
+   strands have been initialization but before the first iteration runs
+   (before any per-strand updates), and thereafter "snap-NNNN.nrrd" will
+   indicate state after the NNNN iterations have finished. In this program,
+   running with "-l 5" will lead to six snapshot files being saved
+   "snap-000{0,1,2,3,4,5}.nrrd", as well as the final output "state.nrrd".
+   Had the program been run as a strand collection (with "initially {}"), the
+   final "state.nrrd" would not be saved when running with "-l 5", but each
+   snapshot would be a 1D array of ints, instead of a 2D array. */
 global {
    print("iter ", iter, " done.\n"); // progress indication
    iter += 1;
-   if (iterMax > 0 && iter >= iterMax) {
-      print("All done!\n");
-      stabilize;
-   }
-   /* Note: if the program is compiled with snapshot generation enabled
-     ("--snapshot") and the program is run to save a snapshot at every
-     iteration ("-s 1"), then it will save "snap-0000.nrrd" to indicate strand
-     state after strands have been initialization but before the first
-     iteration runs (before any per-strand updates), and thereafter
-     "snap-NNNN.nrrd" will indicate state after the NNNNth iteration has
-     finished. With 0-based numbering (as used here), the NNNNth iteration is
-     numbered NNNN-1. In this program, using "-iterMax 5" will lead to six
-     snapshot files being saved "snap-000{0,1,2,3,4,5}.nrrd", as well as the
-     final output "state.nrrd". */
 }
 
 initially [ cell([ii, jj])
