@@ -1,14 +1,9 @@
 /* fs3d-vec.diderot: function sampler, 3D vector synthetic fields
 
 This is based on fs3d-scl.diderot in this same directory, after much
-copy-and-pasting.  As with that program, the `-which` option will
-determine which function is sampled; look for `(0 == which)` in the
-code to see the start of the function definitions.
-
-Assuming the directions at https://github.com/Diderot-Language/examples
-this program can be compiled with:
-
-	../../vis12/bin/diderotc --exec fs3d-vec.diderot
+copy-and-pasting (with fewer comments).  As with that program, the
+`-which` option will determine which function is sampled; look for `(0
+== which)` in the code to see the start of the function definitions.
 
 This program's printed output needs to be captured to generate
 NRRD header with full orientation info. A vector-valued identity
@@ -39,42 +34,33 @@ input vec3 parm0 ("parameters that functions may use") = [0,0,0];
 input vec3 parm1 ("more parameters that functions may use") = [0,0,0];
 input vec3 parm2 ("even more parameters that functions may use") = [0,0,0];
 
-// Create rotation matrix by conversion from the given quaternion,
-// which aren't currently natively supported in Diderot.  Note how a
-// function may be defined by equality with a single expression
-function tensor[3,3] q2rot(vec4 qq) = [[qq[0]*qq[0] + qq[1]*qq[1] - qq[2]*qq[2] - qq[3]*qq[3],
-                                        2*(qq[1]*qq[2] - qq[0]*qq[3]),
-                                        2*(qq[1]*qq[3] + qq[0]*qq[2])],
-                                       [2*(qq[1]*qq[2] + qq[0]*qq[3]),
-                                        qq[0]*qq[0] - qq[1]*qq[1] + qq[2]*qq[2] - qq[3]*qq[3],
-                                        2*(qq[2]*qq[3] - qq[0]*qq[1])],
-                                       [2*(qq[1]*qq[3] - qq[0]*qq[2]),
-                                        2*(qq[2]*qq[3] + qq[0]*qq[1]),
-                                        qq[0]*qq[0] - qq[1]*qq[1] - qq[2]*qq[2] + qq[3]*qq[3]]];
+function tensor[3,3] q2rot(vec4 qq) = [
+   [ qq[0]*qq[0] + qq[1]*qq[1] - qq[2]*qq[2] - qq[3]*qq[3],
+     2*(qq[1]*qq[2] - qq[0]*qq[3]),
+     2*(qq[1]*qq[3] + qq[0]*qq[2]) ],
+   [ 2*(qq[1]*qq[2] + qq[0]*qq[3]),
+     qq[0]*qq[0] - qq[1]*qq[1] + qq[2]*qq[2] - qq[3]*qq[3],
+     2*(qq[2]*qq[3] - qq[0]*qq[1]) ],
+   [ 2*(qq[1]*qq[3] - qq[0]*qq[2]),
+     2*(qq[2]*qq[3] + qq[0]*qq[1]),
+     qq[0]*qq[0] - qq[1]*qq[1] - qq[2]*qq[2] + qq[3]*qq[3] ]
+];
 
-real θ = angle*π/180;
-// unit-length axis of rotation scaled by sin(θ/2)
-vec3 snax = sin(θ/2)*normalize(axis);
-// quaternion representing sampling grid rotation
-vec4 qq = [cos(θ/2), snax[0], snax[1], snax[2]];
+real tht = angle*π/180;
+vec3 snax = sin(tht/2)*normalize(axis);
+vec4 qq = [cos(tht/2), snax[0], snax[1], snax[2]];
 tensor[3,3] rot = q2rot(qq);
-// repeat of above for world-coordinates
-real wθ = wangle*π/180;
-vec3 wsnax = sin(wθ/2)*normalize(waxis);
-tensor[3,3] wrot = q2rot([cos(wθ/2), wsnax[0], wsnax[1], wsnax[2]]);
+real wtht = wangle*π/180;
+vec3 wsnax = sin(wtht/2)*normalize(waxis);
+tensor[3,3] wrot = q2rot([cos(wtht/2), wsnax[0], wsnax[1], wsnax[2]]);
 
-// per axis inter-sample edge vectors
 vec3 spc = width*[1.0/(sz0-1), 1.0/(sz1-1), 1.0/(sz2-1)];
 vec3 edge0 = rot•[spc[0], 0, 0];
 vec3 edir1 = rot•[0, spc[1], 0];
 vec3 edir2 = rot•[0, 0, spc[2]];
-// push axis1 torwards axis0 by shear[0]
 vec3 edge1 = edir1 + spc[1]*shear[0]*normalize(edge0);
-// push axis2 torwards axis0 by shear[1], and axis1 by shear[2]
 vec3 edge2 = edir2 + spc[2]*(shear[1]*normalize(edge0) + shear[2]*normalize(edir1));
-// offset in world space
 vec3 offws = [off[0]*spc[0], off[1]*spc[1], off[2]*spc[2]];
-// location of first sample point
 vec3 orig = -(edge0*(sz0-1) + edge1*(sz1-1) + edge2*(sz2-1))/2 + offws;
 
 function vec3 func(vec3 pos0) {
@@ -101,8 +87,6 @@ function vec3 func(vec3 pos0) {
 strand sample(int idx0, int idx1, int idx2) {
    output vec3 out = [0,0,0];
    update {
-      /* see comment in ../fs2d/fs2d-scl.diderot about the need for these
-         conditionals around the print statements */
       if (0 == idx0 && 0 == idx1 && 0 == idx2) {
          print("NRRD0004\n");
          print("# Complete NRRD file format specification at:\n");

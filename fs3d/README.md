@@ -1,24 +1,18 @@
 ## fs3d-scl.diderot: function sampler, 3D scalar synthetic fields
 
 `fs3d-scl.diderot` is based on [`fs2d-scl.diderot`](../fs2d); some
-copy-and-pasting was involved.  Like that program, the value of this
-is not so much as a model of what a good or typical Diderot program
-looks like, but as a utility for generating datasets for other Diderot
-programs to work on.  This same directory has a `fs3d-vec.diderot` for
-generating vector fields, and possibly other programs; the
-documentation below is for `fs3d-scl.diderot` though the other
-programs will have very similar structure and usage.
+copy-and-pasting was involved.  Like that program, the utility of this
+program is to generate datasets for other Diderot programs to work on.
+This same directory has a `fs3d-vec.diderot` for generating vector
+fields, and possibly other programs; the documentation below is for
+`fs3d-scl.diderot` though the other programs will have very similar
+structure and usage.
 
 This programs generates synthetic scalar 3D data on regular grids that
 are located and oriented in world space.  The input arguments here
 make it easy to sample the same underlying function on different
 grids.  Grid orientation is specified by the angle and axis of
 rotation.
-
-Assuming the directions at https://github.com/Diderot-Language/examples
-this program can be compiled with:
-
-	../../vis12/bin/diderotc --exec fs3d-scl.diderot
 
 The `-which` option will determine which function is sampled; look for
 `(0 == which)` in the code to see the start of the function

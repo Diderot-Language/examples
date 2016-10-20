@@ -2,24 +2,18 @@
 ## fs3d-scl.diderot: function sampler, 3D scalar synthetic fields
 
 `fs3d-scl.diderot` is based on [`fs2d-scl.diderot`](../fs2d); some
-copy-and-pasting was involved.  Like that program, the value of this
-is not so much as a model of what a good or typical Diderot program
-looks like, but as a utility for generating datasets for other Diderot
-programs to work on.  This same directory has a `fs3d-vec.diderot` for
-generating vector fields, and possibly other programs; the
-documentation below is for `fs3d-scl.diderot` though the other
-programs will have very similar structure and usage.
+copy-and-pasting was involved.  Like that program, the utility of this
+program is to generate datasets for other Diderot programs to work on.
+This same directory has a `fs3d-vec.diderot` for generating vector
+fields, and possibly other programs; the documentation below is for
+`fs3d-scl.diderot` though the other programs will have very similar
+structure and usage.
 
 This programs generates synthetic scalar 3D data on regular grids that
 are located and oriented in world space.  The input arguments here
 make it easy to sample the same underlying function on different
 grids.  Grid orientation is specified by the angle and axis of
 rotation.
-
-Assuming the directions at https://github.com/Diderot-Language/examples
-this program can be compiled with:
-
-	../../vis12/bin/diderotc --exec fs3d-scl.diderot
 
 The `-which` option will determine which function is sampled; look for
 `(0 == which)` in the code to see the start of the function
@@ -56,29 +50,31 @@ input vec3 waxis ("axis (non-normalized) of rotation of world space") = [1,-1,1]
 input real wangle ("angle (in degrees) of rotation of world space") = 0;
 input vec4 parm ("parameters that functions may use") = [0,0,0,0];
 
-// Create rotation matrix by conversion from the given quaternion,
-// which aren't currently natively supported in Diderot.  Note how a
-// function may be defined by equality with a single expression
-function tensor[3,3] q2rot(vec4 qq) = [[qq[0]*qq[0] + qq[1]*qq[1] - qq[2]*qq[2] - qq[3]*qq[3],
-                                        2*(qq[1]*qq[2] - qq[0]*qq[3]),
-                                        2*(qq[1]*qq[3] + qq[0]*qq[2])],
-                                       [2*(qq[1]*qq[2] + qq[0]*qq[3]),
-                                        qq[0]*qq[0] - qq[1]*qq[1] + qq[2]*qq[2] - qq[3]*qq[3],
-                                        2*(qq[2]*qq[3] - qq[0]*qq[1])],
-                                       [2*(qq[1]*qq[3] - qq[0]*qq[2]),
-                                        2*(qq[2]*qq[3] + qq[0]*qq[1]),
-                                        qq[0]*qq[0] - qq[1]*qq[1] - qq[2]*qq[2] + qq[3]*qq[3]]];
+/* Create rotation matrix by conversion from the given quaternion,
+   which aren't currently natively supported in Diderot.  Note how a
+   function may be defined by equality with a single expression */
+function tensor[3,3] q2rot(vec4 qq) = [
+   [ qq[0]*qq[0] + qq[1]*qq[1] - qq[2]*qq[2] - qq[3]*qq[3],
+     2*(qq[1]*qq[2] - qq[0]*qq[3]),
+     2*(qq[1]*qq[3] + qq[0]*qq[2]) ],
+   [ 2*(qq[1]*qq[2] + qq[0]*qq[3]),
+     qq[0]*qq[0] - qq[1]*qq[1] + qq[2]*qq[2] - qq[3]*qq[3],
+     2*(qq[2]*qq[3] - qq[0]*qq[1]) ],
+   [ 2*(qq[1]*qq[3] - qq[0]*qq[2]),
+     2*(qq[2]*qq[3] + qq[0]*qq[1]),
+     qq[0]*qq[0] - qq[1]*qq[1] - qq[2]*qq[2] + qq[3]*qq[3] ]
+];
 
-real θ = angle*π/180;
-// unit-length axis of rotation scaled by sin(θ/2)
-vec3 snax = sin(θ/2)*normalize(axis);
+real tht = angle*π/180;
+// unit-length axis of rotation scaled by sin(tht/2)
+vec3 snax = sin(tht/2)*normalize(axis);
 // quaternion representing sampling grid rotation
-vec4 qq = [cos(θ/2), snax[0], snax[1], snax[2]];
+vec4 qq = [cos(tht/2), snax[0], snax[1], snax[2]];
 tensor[3,3] rot = q2rot(qq);
 // repeat of above for world-coordinates
-real wθ = wangle*π/180;
-vec3 wsnax = sin(wθ/2)*normalize(waxis);
-tensor[3,3] wrot = q2rot([cos(wθ/2), wsnax[0], wsnax[1], wsnax[2]]);
+real wtht = wangle*π/180;
+vec3 wsnax = sin(wtht/2)*normalize(waxis);
+tensor[3,3] wrot = q2rot([cos(wtht/2), wsnax[0], wsnax[1], wsnax[2]]);
 
 // per axis inter-sample edge vectors
 vec3 spc = width*[1.0/(sz0-1), 1.0/(sz1-1), 1.0/(sz2-1)];
@@ -141,12 +137,6 @@ function real trpz(real R, real a, real b, real c, real scl) {
                              if ww < 1+rr
                              else 0.0))));
 }
-
-// rounds v to nearest integer
-// May become a built-in function in vis15 branch
-function real round(real v) = (v+0.5 - fmod(v+0.5, 1)
-                               if (v > 0) else
-                               -(-v+0.5 - fmod(-v+0.5, 1)));
 
 function real func(vec3 pos0) {
    vec3 pos = wrot•pos0;
