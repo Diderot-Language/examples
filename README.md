@@ -226,7 +226,7 @@ To make sure your build works, try:
 	$DDRO_ROOT/teem-ddro/bin/unu --version
 
 Note that we do **not** recommend adding this `teem-ddro/bin` to your path;
-its not very useful.
+it's not very useful.
 
 Instead, post-processing of Diderot output often generates PNG images, which means you'll
 want a **separate** Teem build that includes PNG and zlib. You get this with:
