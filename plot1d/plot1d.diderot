@@ -1,100 +1,137 @@
 /* ==========================================
-## plot1d.diderot: plot 1D scalar field (univariate function)
+## plot1d.diderot: simple univariate function plotting
 
-example usage:
+This example shows how it is possible, though not exactly convenient, to do 1D
+data plotting in Diderot. While such plotting done is normally done with a
+vector (not a raster) graphics display, this program is still useful to:
+* show exactly what the available reconstruction kernels look like
+* demonstrate the various "border controls" for how reconstruction behave at the boundaries of index space
+* demonstrate how functions can be "lifted" to fields
 
-	echo 1 | unu reshape -s 1 | unu dnorm -o - | unu pad -min -5 -max M+5 -b pad -v 0 -o data.nrrd
-	./plot1d -xsize 800 -ysize 400 -xmm -4 4 -ymm -0.3 1.1 -pthick 5 -athick 3 -twidth 25
-	unu quantize -b 8 -i rgb.nrrd -o plot.png
-	open plot.png
+The program as distributed here plots the reconstruction of data with the
+"ctmr" Catmull-Rom kernel, with "clamp" border-control. To learn more, try
+changing the program in all the places noted with "Choose ONE by
+uncommenting", then recompiling, running, and looking at the results.
 
-echo "0 1" | unu reshape -s 2 | unu resample -s 3 -k tent -c node | unu dnorm -o - | unu resample -s 5 -o data.nrrd
+To plot the `ctmr` reconstruction kernel itself, as the response to an impulse in the data:
 
-This is the place to try different kernels:
-tent, c1tent, c2tent
-ctmr, c2ctmr
-bspln3
-bspln5
-c4hexic
+	echo "0 0 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data.nrrd
+	./plot1d -img data.nrrd -ymm -0.3 1.3
+	unu quantize -b 8 -i rgb.nrrd -o ctmr.png
+
+(See [ctmr.png](ctmr.png)). To plot a function created within Diderot,
+uncomment and edit the "or write your own function of F0" line below. If
+playing with taking derivates, choose reconstruction with `c4hexic` for a high
+(C^4) continuity order. Be sure to recompile.  The following makes `data.nrrd`
+into a linear ramp from (-M,-M) to (M,M), with 4 samples of extra padding to account
+for kernel support. The number of samples (`unu resample -s 10`) is not
+related to M.
+
+	M=12;
+	echo "-$[M+4] $[M+4]" | unu axdelete -a -1 |
+	  unu resample -s 10 -k tent -c node |
+	  unu axinfo -a 0 -mm -$[M+4] $[M+4] | unu dnorm -o data.nrrd
+	./plot1d -img data.nrrd -xmm -$M $M -ymm -2 2
+	unu quantize -b 8 -i rgb.nrrd -o func.png
+
+Computing the plot as a raster image, with the thickness of plot elements
+defined in index space, requires conversions back and forth between world and
+index space, which are currently somewhat cumbersome in Diderot. Homogeneous
+coordinate transforms might simplify this.
 ========================================== */
 
-/* This ensures that wrap() border control is used for all input,
-   even if a different dataset is supplied via -img */
-input image(1)[] img = image("data.nrrd"); // data to plot
-image(1)[] wimg = wrap(img);
+/* Declare input sampled 1-D data. By not naming a data file here, the "-img"
+   option becomes required, and the sample-type is specialized to float */
+input image(1)[] img ("1D sampled data to plot");
 
-/* This isn't valid, because while the compiler knows that wrap()
-border control applies to "data.nrrd", it wouldn't know if it applies
-to some different input supplied at runtime via -wimg. The production
-of of border control code is done statically, not dynamically.
-input image(1)[] wimg = wrap(image("data.nrrd")); */
+/* Apply border control, which is currently one of clamp, wrap, or mirror.
+   Choose ONE by uncommenting */
+image(1)[] bcimg = clamp(img);
+//image(1)[] bcimg = wrap(img);
+//image(1)[] bcimg = mirror(img);
 
-// way of specifying the grid on which sampling is done
-input vec2 xmm = [-4,4];    // [min,max] along horizontal
-input vec2 ymm = [-0.9,1.1];  // [min,max] along vertical
-input int xsize = 800;      // # samples along horizontal
-input int ysize = 400;      // # samples along vertical
+/* Specify the grid on which plot image sampling is done. The xmm, ymm bounds
+   of the plotting cannot be discovered automatically, because Diderot
+   currently doesn't have a way of learning (within the language) the spatial
+   extent of input array data, or the range of values in data. */
+input vec2 xmm ("min,max extent along X axis") = [-4,4];
+input vec2 ymm ("min,max extent along Y axis") = [-0.9,1.1];
+input int xsize ("# samples along X") = 800;
+input int ysize ("# samples along Y") = 400;
 
-// size of things
-input real athick = 4;  // axis and tickmark thickness, in pixels
-input real pthick = 7;  // plot thickness, in pixels
-input real twidth = 20; // tickmark width, in pixels
+// size (in index-space) of things
+input real athick ("axis and tickmark thickness (in pixels)") = 3;
+input real pthick ("plot thickness") = 6;
+input real twidth ("tickmark width") = 20;
 // colors of things
-input vec3 plotrgb = [0.4,0,0];
-input vec3 axisrgb = [0.8,0.8,0.9];
-input vec3 tickrgb = [0.7,0.7,0.8];
+input vec3 plotrgb ("color of the data plot itself") = [0.4,0,0];
+input vec3 axisrgb ("color of axes") = [0.8,0.8,0.9];
+input vec3 tickrgb ("color of tickmarks") = [0.7,0.7,0.8];
 
-// function has to be at least C^1 (slope used for graphing)
-field#1(1)[] F = c4hexic ⊛ wimg;
+/* The data function created by convolving data samples with various kernels.
+   Choose ONE by uncommenting */
+//field#1(1)[] F0 = c1tent ⊛ bcimg;  // linear "tent" is only C^0
+//field#1(1)[] F0 = ctmr ⊛ bcimg;    // Catmull-Rom
+//field#2(1)[] F0 = bspln3 ⊛ bcimg;  // 3rd-order B-spline
+//field#4(1)[] F0 = bspln5 ⊛ bcimg;  // 5th-order B-spline
+field#4(1)[] F0 = c4hexic ⊛ bcimg; // C^4 6-support piecewise hexic
 
-// aspect ratio of pixels in world-space
+/* The function to actually plot.  Here we can apply functions on reals that
+   have been "lifted" to real-valued functions, which is a strength of Diderot
+   (including the ability to differentiate such functions, as used to compute
+   plot "slope" below). Choose ONE by uncommenting, or try writing your own. */
+field#1(1)[] F = F0;
+//field#1(1)[] F = -F0;
+//field#1(1)[] F = 1-F0;
+//field#1(1)[] F = |F0|;
+//field#1(1)[] F = F0^2;
+//field#1(1)[] F = sin(F0);
+//field#1(1)[] F = ∇F0; // 1st deriv; need at least C^2 F0 (type field#2(1)[])
+//field#1(1)[] F = ∇∇F0; // 2nd deriv; need at least C^3 F0 (type field#3(1)[])
+//field#1(1)[] F = ∇∇∇F0; // 3rd deriv; need at least C^4 F0 (type field#4(1)[])
+//field#1(1)[] F = ∇(sin(F0)); // or write your own function of F0
+
+// world-space aspect ratio of pixels
 real asp = ((ysize-1)/(ymm[1]-ymm[0])) / ((xsize-1)/(xmm[1]-xmm[0]));
 
-// plot is a trapezoid, centered at origin, at height 1 for width th,
-// with sides going down to zero over unit interval on either side
+/* tzoid is a trapezoid, centered at origin, at height 1 for width th,
+   with sides going down to zero over unit interval on either side. */
 function real tzoid (real d, real th) {
    real ret = 0;
    if (|d| < th/2) {
       ret = 1;
    } else {
-      ret = max(0, lerp(1, 0, th/2, |d|, th/2 + 1)); // HEY use clerp
+      ret = max(0, lerp(1, 0, th/2, |d|, th/2 + 1));
    }
    return ret;
 }
 
-// indicates partial membership in a line of given thickness,
-// at distance d away from the line
+/* indicates partial membership in plot curve, axis line, or tickmark line
+   (each with their own thickness), at distance d away from the line */
 function real aline(real d) = tzoid(d, athick);
 function real pline(real d) = tzoid(d, pthick);
-
-// indicates partial membership in 0-centered tickmark,
-// at distance d from axis
 function real tick(real d) = tzoid(d, twidth);
 
-// rounds v to nearest integer
-function real round(real v) = (v+0.5 - fmod(v+0.5, 1)
-                               if (v > 0) else
-                               -(-v+0.5 - fmod(-v+0.5, 1)));
-
-/*
-** For converting between index and world, along X and Y. Note
-** that the function inverse is obtained by switching the input
-** interval (args 3 and 5) with the output interval (args 1 and 2).
-*/
+/* For converting between index and world, along X and Y. Note
+   that the function inverse is obtained by switching the input
+   interval (args 3 and 5) with the output interval (args 1 and 2). */
 function real xw2i(real w) = lerp(-0.5, xsize-0.5, xmm[0], w, xmm[1]);
 function real xi2w(real i) = lerp(xmm[0], xmm[1], -0.5, i, xsize-0.5);
 function real yw2i(real w) = lerp(-0.5, ysize-0.5, ymm[1], w, ymm[0]);
 function real yi2w(real i) = lerp(ymm[1], ymm[0], -0.5, i, ysize-0.5);
 
+/* convert world-space origin (0,0) to index-space (x0i,y0i) */
+real x0i = xw2i(0);
+real y0i = yw2i(0);
+
+/* Each strand computes one pixel of the plot image, a cell-centered
+   sampling of world-space (xmm[0],xmm[1]) × (ymm[0],ymm[1]) */
 strand plot(int xi, int yi) {
+   /* the output color starts as white, and then colored by a sequence
+      of lerps between existing color and various objects' color */
    output vec3 rgb = [1,1,1];
    update {
-      // image is cell-centered sampling of world-space
-      // [xmm[0],xmm[1]] × [ymm[0],ymm[1]]
-
-      // convert (0,0) from world to index, and draw axes
-      real y0i = yw2i(0);
-      real x0i = xw2i(0);
+      // draw axes
       rgb = lerp(rgb, axisrgb, aline(y0i - yi));
       rgb = lerp(rgb, axisrgb, aline(x0i - xi));
 
@@ -104,16 +141,27 @@ strand plot(int xi, int yi) {
 
       // convert strand X position from index to world
       real xw = xi2w(xi);
-      if (true || inside(xw, F)) {
-         // convert F(x) to index-space Y
-         real fxi = yw2i(F(xw));
-         real mm = asp*∇F(xw);
-         rgb = lerp(rgb, plotrgb, pline((yi - fxi)/sqrt(1 + mm^2)));
-      }
+      // convert F(x) to index-space Y
+      real fxi = yw2i(F(xw));
+
+      /* Compute the plot slope. The first derivative of univariate scalar
+         function F is ∇F.  This is one place where Diderot's notation is not
+         mathematically idiomatic (but nor is it designed for univariate
+         data vis), because ∇ is expected to produce vectors. A single tick
+         mark `'` is not very legible as an operator, and `'` is a valid
+         character in the name of the variable or user-defined function. */
+      real slope = asp*∇F(xw);
+
+      /* Membership in the plot itself is determined by a test on
+         vertical index-space, scaled in a way to approximate
+          (to first order) equal-space thickness. */
+      rgb = lerp(rgb, plotrgb, pline((yi - fxi)/sqrt(1 + slope^2)));
+
+      // no need for further iterations
       stabilize;
    }
 }
 
 initially [ plot(xi, yi)
-           | yi in 0..(ysize-1),   // SLOWER axis
-             xi in 0..(xsize-1) ]; // FASTER axis
+           | yi in 0..(ysize-1),   // slower axis
+             xi in 0..(xsize-1) ]; // faster axis
