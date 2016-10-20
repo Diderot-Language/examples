@@ -88,10 +88,10 @@ nothing about Diderot requires shell hacking to get work done. These examples
 do that only to be as self-contained as possible, so that no additional
 software is needed to start using Diderot. Diderot programs can also be
 compiled to **libraries** as well as command-line executables, which can be
-called from other visualization software. Some examples of OpenGL-based
-displays of Diderot programs will be shared here. We are working on
-simplifying connections between compiled Diderot programs and high-level
-languages like python, and simplifying how Diderot programs are debugged.
+called from other visualization software. Some examples of OpenGL-based GUIs
+around Diderot programs will be shared soon. Ongoing work includes simplifying
+connections between compiled Diderot programs and high-level languages like
+python, and simplifying how Diderot programs may be interactively debugged.
 
 ## Building Diderot and these examples
 
