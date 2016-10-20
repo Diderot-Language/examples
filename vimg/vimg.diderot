@@ -194,6 +194,10 @@ strand sample(int ui, int vi) {
          } else if (5 == which) {
             // colormapped, with Newton-based ridge line
             rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+            /* In the eigensystems returned from evecs() and evals(), the
+               eigenvalues from evals() will always be sorted in *descending*
+               order eval{0} >= eval{1}, and the corresponding eigenvectors
+               will have the same order */
             vec2{2} evec = evecs(∇⊗∇F(x));
             real{2} eval = evals(∇⊗∇F(x));
             real strn = -eval{1}/(|∇F(x)| + seps);
@@ -217,8 +221,9 @@ strand sample(int ui, int vi) {
             // Like in matlab and numpy, "inv" is matrix inverse
             vec2 delta = inv(∇⊗∇F(x))•∇F(x);
             real{2} eval = evals(∇⊗∇F(x));
+            // eigenvalue tests here assume sorting eval{0} >= eval{1}
             if (7 == which) {        // maxima
-               if (eval{0} < 0 && eval{1} < 0 && eval{0} < -sthr) {
+               if (eval{0} < 0 && eval{0} < -sthr) {
                   ll = bump(|delta|);
                }
             } else if (8 == which) { // saddle
@@ -226,7 +231,7 @@ strand sample(int ui, int vi) {
                   ll = bump(|delta|);
                }
             } else {  // 9 == which:  minima
-               if (eval{0} > 0 && eval{1} > 0 && eval{1} > sthr) {
+               if (eval{1} > 0 && eval{1} > sthr) {
                   ll = bump(|delta|);
                }
             }
