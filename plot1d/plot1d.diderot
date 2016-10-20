@@ -35,6 +35,12 @@ related to M.
 	./plot1d -img data.nrrd -xmm -$M $M -ymm -2 2
 	unu quantize -b 8 -i rgb.nrrd -o func.png
 
+These example programs are mainly to demonstrate Diderot, but some
+learning some `unu` is a nice side-effect.  Type `unu` to get a list
+of all `unu` commands, and type, for example, `unu resample` or `unu
+axinfo` to get the usage info for those commands, to learn about how
+they are being used above.
+
 Computing the plot as a raster image, with the thickness of plot elements
 defined in index space, requires conversions back and forth between world and
 index space, which are currently somewhat cumbersome in Diderot. Using
@@ -71,8 +77,14 @@ input vec3 plotrgb ("color of the data plot itself") = [0.4,0,0];
 input vec3 axisrgb ("color of axes") = [0.8,0.8,0.9];
 input vec3 tickrgb ("color of tickmarks") = [0.7,0.7,0.8];
 
-/* The data function created by convolving data samples with various kernels.
-   Choose ONE by uncommenting */
+/* The data function created by convolving data samples with various
+   kernels.  Typically Diderot programs use one particular kernel
+   suited for the task; knowing the kernel at compile time permits the
+   evaluation of the kernel and its derivatives to be expressed in
+   terms of specific constants rather than via further indirection.
+   There is currently no good way to specify a kernel on the
+   command-line, or assign one field to another at runtime, hence the
+   need to Choose ONE by uncommenting */
 //field#1(1)[] F0 = c1tent ⊛ bcimg;  // linear "tent" is only C^0
 //field#1(1)[] F0 = ctmr ⊛ bcimg;    // Catmull-Rom
 //field#2(1)[] F0 = bspln3 ⊛ bcimg;  // 3rd-order B-spline
