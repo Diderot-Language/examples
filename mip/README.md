@@ -1,20 +1,14 @@
 ## mip.diderot: basic maximum intensity projection (MIP) volume rendering
 
-Maximum intensity projection is the minimalist volume visualization
-tool. This implementation is about as short as possible; much of the code is
-spent on specifying and setting up the ray geometry. It can also be adapted
-(by changing a line or two) to do other kinds of projections.  The code for
-camera geometry and ray sampling will be re-used verbatim in other volume
-rendering programs. This may later become a target for evolving Diderot to
-support libraries that contain common functionality.
-
-Note that the explicitly pedagogical nature of this example means that some
-unusual usages are required (like recompiling the program multiple times for
-different datasets).  In addition, the interaction loop of changing the
-program parameters via command-line option, generating (on the command-line)
-output images, and viewing the images, is very clumsy.  Diderot supports
-compiling programs to libraries, around which one can generate nicer GUIs,
-but these examples are intended to be as stand-alone and minimal as possible.
+Maximum intensity projection is the minimalist volume visualization tool. This
+implementation is about as short as possible; much of the code is spent on
+specifying and setting up the ray geometry. It can also be adapted (by
+changing a line or two) to do other kinds of projections.  The code for camera
+geometry and ray sampling will be re-used verbatim in other volume rendering
+programs. This may later become a target for evolving Diderot to support
+libraries that contain common functionality. Note that the explicitly
+pedagogical nature of this example means that some unusual usages are required
+(like recompiling the program multiple times for different datasets).
 
 Just like [`iso2d`](../iso2d) depends on first creating a dataset with
 [`fs2d-scl`](../fs2d), we need to create a volume dataset with [`fs3d-scl`](../fs3d)
@@ -32,16 +26,12 @@ in `unu` to make [cube-tile.png](cube-tile.png):
 	  unu tile -a 2 0 1 -s 10 8 |
 	  unu quantize -b 8 -o cube-tile.png
 
-These examples are mainly to demonstrate Diderot, but some learning some
-`unu` is a useful side-effect.  Type `unu` to get a list of all `unu` commands,
-and type, for example, `unu pad` to get the usage info for `unu pad`.
-
 We copy `cube.nrrd` to `vol.nrrd`, so that `mip.diderot` can see it in its
 default location (in the current directory), and then we can compile
 `mip.diderot`:
 
 	cp cube.nrrd vol.nrrd
-	../../vis12/bin/diderotc --exec mip.diderot
+	diderotc --exec mip.diderot
 
 And then make some MIP renderings:
 
@@ -86,22 +76,20 @@ four datasets):
 	../fs3d/fs3d-scl -which 4 -sz0 10 -sz1 10 -sz2 10 -angle 60 -off 0.05 0.50 0.50 | unu save -f nrrd -o parab2.nrrd
 	../fs3d/fs3d-scl -which 4 -sz0 10 -sz1 10 -sz2 10 -angle 90 -off 0.75 0.75 0.75 | unu save -f nrrd -o parab3.nrrd
 
-This demo (of volume rendering with sampling grid invariance) involves a very
-unusual invocation of the Diderot compiler and execution of the resulting
-program, so the following steps are unfortunately rather clumsy: each
-different grid orientation requires a recompilation.  First, we use the
-program as is, with the
+Then, using `mip.diderot` as it is, with the
 
 	field#0(3)[] F = vol ⊛ tent;
 
-line **uncommented out**, and then run some sh/bash commands:
+field reconstruction line in effect (i.e. **not** commented out),
+we recompile for the new data size
+(shared by all `parab?.nrrd`), and then run some shell commands:
 
+	cp parab0.nrrd vol.nrrd
+	diderotc --exec mip.diderot
 	OPTS="-out0 0 -inSphere true -camOrtho true -camEye 8 0 0 -camFOV 15 -rayStep 0.01 -iresU 300 -iresV 300"
 	for I in 0 1 2 3; do
 	  echo === $I ====
-	  cp parab${I}.nrrd vol.nrrd
-	  ../../vis12/bin/diderotc --exec mip.diderot
-	  ./mip $OPTS
+	  ./mip $OPTS -vol parab${I}.nrrd
 	  unu quantize -b 8 -min 0 -max 1 -i out.nrrd -o parab${I}-tent.png
 	done
 
@@ -125,17 +113,17 @@ Now **we change one line of code below**, so that only the
 
 	field#1(3)[] F = vol ⊛ ctmr;
 
-field definition is uncommented (commenting out `field#0(3)[] F = vol ⊛ tent;`).
-This changes the reconstruction kernel the Catmull-Rom cubic interpolating spline,
-which can accurately reconstruct quadratic functions.
-Then we re-run the commands above, but saving the results to differently-named images.
+field definition is in effect (commenting out `field#0(3)[] F = vol ⊛ tent;`).
+This changes the reconstruction kernel the Catmull-Rom cubic interpolating
+spline, which can accurately reconstruct quadratic functions.  Then we
+recompile and re-run the commands above, but saving the results to
+differently-named images.
 
+	diderotc --exec mip.diderot
 	OPTS="-out0 0 -inSphere true -camOrtho true -camEye 8 0 0 -camFOV 15 -rayStep 0.01 -iresU 300 -iresV 300"
 	for I in 0 1 2 3; do
 	  echo === $I ====
-	  cp parab${I}.nrrd vol.nrrd
-	  ../../vis12/bin/diderotc --exec mip.diderot
-	  ./mip $OPTS
+	  ./mip $OPTS -vol parab${I}.nrrd
 	  unu quantize -b 8 -min 0 -max 1 -i out.nrrd -o parab${I}-ctmr.png
 	done
 
@@ -145,8 +133,9 @@ This generates four new images:
 [parab2-ctmr.png](parab2-ctmr.png),
 [parab3-ctmr.png](parab3-ctmr.png).
 
-As should be visually clear, these images are all the same (or very nearly so), demonstrating the
-accuracy of the Catmull-Rom spline for quadratic functions.
+As should be visually clear, these images are all the same (or very nearly
+so), demonstrating the accuracy of the Catmull-Rom spline for quadratic
+functions.
 
 Things to try by further modifications of this program:
 * Change the rendering from being a maximum intensity, to a summation intensity
