@@ -61,7 +61,7 @@ reconstructs quadratic functions, but the cubic B-spline does not.
 	for I in 0 1 2; do
 	   cp sphere-$I.nrrd vol.nrrd
 	   echo "compiling with sphere-$I.nrrd ..."
-	   ../../vis12/bin/diderotc --exec dvr.diderot
+	   diderotc --exec dvr.diderot
 	   echo "rendering with sphere-$I.nrrd ..."
 	   ./dvr -camEye 10 20 5 -camAt 0 0 0 -camUp 0 0 1 \
 	      -camNear -4 -camFar 4 -camFOV 12 -iresU 400 -iresV 300 \
