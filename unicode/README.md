@@ -96,5 +96,4 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
   gives you a scalar, but `∇×` applied to a 3D vector field gives you another 3D vector field.
 * For consistency, `∇` is used even for fields on a 1-D domain, which unfortunately defies
 the expectation that `∇` somehow generates a vector.  Currently Diderot does not have a
-different notation for differentation over a 1-D domain. A single tick mark `'` is not
-very legible, and `'` is a valid character in an identifier.
+different notation for differentation over a 1-D domain.
