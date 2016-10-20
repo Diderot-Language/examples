@@ -86,10 +86,10 @@ input vec3 tickrgb ("color of tickmarks") = [0.7,0.7,0.8];
    command-line, or assign one field to another at runtime, hence the
    need to Choose ONE by uncommenting */
 //field#1(1)[] F0 = c1tent ⊛ bcimg;  // linear "tent" is only C^0
-//field#1(1)[] F0 = ctmr ⊛ bcimg;    // Catmull-Rom
+field#1(1)[] F0 = ctmr ⊛ bcimg;    // Catmull-Rom
 //field#2(1)[] F0 = bspln3 ⊛ bcimg;  // 3rd-order B-spline
 //field#4(1)[] F0 = bspln5 ⊛ bcimg;  // 5th-order B-spline
-field#4(1)[] F0 = c4hexic ⊛ bcimg; // C^4 6-support piecewise hexic
+//field#4(1)[] F0 = c4hexic ⊛ bcimg; // C^4 6-support piecewise hexic
 
 /* The function to actually plot.  Here we can apply functions on reals that
    have been "lifted" to real-valued functions, which is a strength of Diderot
