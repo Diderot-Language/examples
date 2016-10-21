@@ -176,7 +176,7 @@ Linux machine requires support for 32-bit executables, since
 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you fix this will vary between different versions of Linux.
-This is documented in the
+This is documented
 [at the very bottom of the SML/NJ Installation Instructions](http://www.smlnj.org/dist/working/110.80/INSTALL).
 
 Then, to compile `sml` from source files at http://smlnj.org (the `wget` command
