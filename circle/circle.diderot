@@ -41,6 +41,7 @@ If this fails with `ERROR: unexpected arg (or unrecognized flag): "-s"`, it mean
 `circle` wasn't compiled with `--snapshot`, as above.  It should converge in under
 500 iterations, producing many `pos-????.nrrd` files, which we can post-process with:
 
+	export NRRD_STATE_VERBOSE_IO=0
 	for PIIN in pos-????.nrrd; do
 	   IIN=${PIIN#*-}
 	   II=${IIN%.*}
