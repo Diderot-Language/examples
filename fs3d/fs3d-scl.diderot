@@ -123,19 +123,11 @@ function real pyra(real R, vec3 pos) {
 function real trpz(real R, real a, real b, real c, real scl) {
    real ww = (b-a)/(c-a);
    real rr = R + 0.000001;
-   /* Note the use of Python syntax for conditional expressions;
-      chaining them like this may look a little weird at first
-      but note that it can sort of be read like a decision tree,
-      with the two sides branching off the central "if" part */
-   return (0.0
-           if ww < -rr
-           else (scl*(1 + ww/rr)
-                 if ww < 0
-                 else (lerp(scl, 1, ww)
-                       if ww < 1
-                       else (1 - (ww-1)/rr
-                             if ww < 1+rr
-                             else 0.0))));
+   // Note the use of Python syntax for conditional expressions
+   return (0 if ww < -rr else
+           scl*(1 + ww/rr) if ww < 0 else
+           lerp(scl, 1, ww) if ww < 1 else
+           1 - (ww-1)/rr if ww < 1+rr else 0);
 }
 
 function real func(vec3 pos0) {
