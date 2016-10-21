@@ -65,7 +65,7 @@ energy decrease), or because they had no other particles to interact with.
 
 Some experiments that can be tried with this example:
 * If `--double` is removed from the compilation, the system may not converge to the default `eps` before the iteration limit, due to the decrease in numerical accuracy.
-* The are different possible inter-particle potentials `phi`, which can lead to different dynamics and different convergence speed towards a uniform distribution.
+* There are different possible inter-particle potentials `phi` (uncomment one at a time), which can lead to different dynamics and different convergence speed towards a uniform distribution.
 * If the interaction radius `rad` is decreased while maintining the number of particles, gaps may form.
 * Increasing radius `rad` will tend to force convergence faster, at the expense of computing more particle interactions.
 * There are constants associated with Armijo line search, changing them may lead to faster convergence.
