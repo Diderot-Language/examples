@@ -1,4 +1,4 @@
-## circle.diderot: Mutually-repelling particles on a unit-circle
+## circle.diderot: Mutually-repelling particles on a unit circle
 
 This example computes a system of mutually-repelling particles constrained to
 the unit circle. The particles are initialized from a given sequence of a
