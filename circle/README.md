@@ -58,9 +58,9 @@ and laying these out along horizontal scanlines, one per iteration. The result
 should look something like [phi-ref.png](phi-ref.png). It is clear that the
 particle interactions made a roughly uniform distribution early on, but
 subsequent refinements took longer. Scrutinizing the top of the image shows
-where strands were stationary because they repeatedly backtracked in the
-Armijo line search, until they found a step size that led to a sufficient
-energy decrease.
+where strands were stationary either because they repeatedly backtracked in the
+Armijo line search (until they found a step size that led to a sufficient
+energy decrease), or because they had no other particles to interact with.
 
 Some experiments that can be tried with this example:
 * If `--double` is removed from the compilation, the system may not converge to the default `eps` before the iteration limit, due to the decrease in numerical accuracy.
