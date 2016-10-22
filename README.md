@@ -15,7 +15,9 @@ programs and report any problems or confusion, or
 contribute new example programs.
 Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate with us.
 
-Diderot development is supported by [NSF grant CCF-1564298](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1564298).
+Diderot development is partially supported by NSF Grants [CCF-1446412](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1446412)
+and [CCF-1564298](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1564298),
+as well as by donations from NVIDIA and AMD.
 
 Once you've built the `diderotc` compiler (and added it to your path) with the
 instructions below, you can create executable `foo` from Diderot program
@@ -137,7 +139,7 @@ The Diderot runtime system is written in C++11 and the code generator
 also produces C++ code, so you will need to have a modern C++ compiler
 installed.
 
-#### (2) Get SML/NJ
+#### (2) Get Standard ML of New Jersey
 The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
 need to install that first.  **You need at least version 110.80 to build
 the current version of Diderot.**
