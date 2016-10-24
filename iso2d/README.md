@@ -50,7 +50,7 @@ break the over-all symmetry of the isocontour):
 
 and then re-run the isocontouring and display on the new data.
 
-	./iso2d -cmin -4 -4 -cmax 4 4 -size 100 -img noisy.nrrd -o pos2.nrrd
+	./iso2d -cmin -4 -4 -cmax 4 4 -size 100 -img noisy.nrrd -o pos2
 	unu jhisto -i pos2.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos2.png
 
 Make sure your pos2.png looks like [`pos2-ref.png`](pos2-ref.png).
