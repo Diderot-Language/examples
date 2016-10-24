@@ -46,16 +46,16 @@ If this fails with `ERROR: unexpected arg (or unrecognized flag): "-s"`, it mean
 	   II=${IIN%.*}
 	   echo "post-processing snapshot $II ... "
 	   unu dice -i $PIIN -a 0 -o ./
-	   unu 2op atan2 0.nrrd 1.nrrd | unu histax -a 0 -min -pi -max pi -b 800 -t float -o phi-$II.nrrd
+	   unu 2op atan2 0.nrrd 1.nrrd | unu histax -a 0 -min -pi -max pi -b 800 -t float -o angle-$II.nrrd
 	done
 	rm -f 0.nrrd 1.nrrd
-	unu join -i phi-*.nrrd -a 1 |
-	   unu quantize -b 8 -min 0 -max 1 -o phi.png
-	rm -f phi-????.nrrd
+	unu join -i angle-*.nrrd -a 1 |
+	   unu quantize -b 8 -min 0 -max 1 -o angles.png
+	rm -f angle-????.nrrd
 
-This produces `phi.png` by unrolling (with atan2) positions along the circle,
+This produces `angles.png` by unrolling (with atan2) positions along the circle,
 and laying these out along horizontal scanlines, one per iteration. The result
-should look something like [phi-ref.png](phi-ref.png). It is clear that the
+should look something like [angles-ref.png](angles-ref.png). It is clear that the
 particle interactions made a roughly uniform distribution early on, but
 subsequent refinements took longer. Scrutinizing the top of the image shows
 where strands were stationary either because they repeatedly backtracked in the
