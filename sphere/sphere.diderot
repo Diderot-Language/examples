@@ -1,5 +1,5 @@
 /* ==========================================
-Mutually-repelling particles populating a unit sphere
+## sphere.diderot: Mutually-repelling particles populating a unit sphere
 
 This is heavily based on the [`circle.diderot`](../circle) example; see that
 program for more detailed and explanatory comments. The new things added with
@@ -209,7 +209,8 @@ strand particle (vec3 pos0, real hh0) {
                /* when adding a new particle, we add in the direction we were
                   pushed most recently, but we break the symmetry (that would
                   lead to points being added only along a great circle) by
-                  adding a perpendicular component with alternating sign */
+                  adding a perpendicular component with alternating sign.
+                  Note use of × for cross-product. */
                vec3 newdir = normalize(force + pcSgn()*force×norm);
                new particle(pos + newDist*newdir, hh);
                undone = 1;

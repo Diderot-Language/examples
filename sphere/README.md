@@ -1,4 +1,4 @@
-Mutually-repelling particles populating a unit sphere
+## sphere.diderot: Mutually-repelling particles populating a unit sphere
 
 This is heavily based on the [`circle.diderot`](../circle) example; see that
 program for more detailed and explanatory comments. The new things added with
