@@ -1,0 +1,256 @@
+/* ==========================================
+Mutually-repelling particles populating a unit sphere
+
+This is heavily based on the [`circle.diderot`](../circle) example; see that
+program for more detailed and explanatory comments. The new things added with
+this example are documented in comments below. A significant capability
+demonstrated here is "population control", whereby particles create new
+particles (using `new`) if there seem to be too few, or die if there are too
+may (using `die`).  Along with this there is a new variable `undone` that acts
+as a crude signal (to the global update method monitoring the computation)
+that things are unfinished because the system population is changing.
+
+Like the [`circle.diderot`](../circle) example, we use snapshots to inspect
+the system state as it progresses, and compile with `--double` for better
+precision:
+
+	diderotc --snapshot --double --exec sphere.diderot
+
+The following creates a list of `N` randomly oriented unit-length 3-vectors in
+`vec3.nrrd` which will be the initial input.  Setting the random number seed
+of `unu 1op nrand` with `-s RNG` ensures reproducible results, or you can
+leave that out to give different results each time.
+
+	N=2
+	RNG=1
+	eval echo {1..$[3*N]} | unu reshape -s 3 $N | unu 1op nrand -s $RNG -o vec3.nrrd
+	unu project -i vec3.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 3 | unu 2op / vec3.nrrd - -o vec3.nrrd
+
+Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
+to 400 iterations (`-l 400`), as well as cleaning results from previous run:
+
+	rm -f pos-????.{png,nrrd} pos.nrrd
+	./sphere -s 1 -l 400 -rad 0.15 -eps 0.033 -pcp 2
+
+This should converge in under 500 iterations, many `pos-????.nrrd` files.
+The following unu hackery processes this into corresponding `pos-????.png` images.
+The images are 2*SZ by SZ, computed as a joint histogram of coordinates,
+with oversampling OV (higher values improves anti-aliasing).
+
+	SZ=350
+	OV=2
+	export NRRD_STATE_VERBOSE_IO=0
+	for PIIN in pos-????.nrrd; do
+	   IIN=${PIIN#*-}
+	   II=${IIN%.*}
+	   echo "post-processing $PIIN to pos-$II.png ... "
+	   unu dice -i $PIIN -a 0 -o ./
+	   unu 2op gt 2.nrrd 0 | # 1 if in lower hemisphere
+	   unu 2op x - 2.1 |     # 2.1 if in lower hemisphere
+	   unu 2op + - 0.nrrd |  # add to x component
+	   unu jhisto -i - 1.nrrd -min -1.05 -1.05 -max 3.15 1.05 -b $[OV*SZ*2] $[SZ*OV] |
+	   unu resample -s /$OV /$OV -k bspln5 -t float |
+	   unu quantize -b 8 -min 0 -max $(echo "0.15 / ($OV * $OV)" | bc -l) -o pos-$II.png
+	done
+	rm -f {0,1,2}.nrrd
+
+Note that while we are post-processing results after the computation is
+finished, these snapshots are produced **while** the computation is
+running. When compiling Diderot programs to a library, the API makes the
+snapshots available between iterations. Also, the sort of unu hacking used
+above is not actually a required part of using Diderot; the aim here is just
+to producing something informative with the minimal number of software tools.
+For fun we make an animated GIF of the results with [ImageMagick](http://www.imagemagick.org)'s `convert`:
+
+	convert -delay 6 pos*.png sphere-spread.gif
+
+The resulting [sphere-spread.gif](sphere-spread.gif) shows how the population control
+worked to go from 2 to hundreds of particles.  On the other hand, if the initial
+data commands above had started with `N=8000`, the resulting animation shows how
+the system responds to starting with too many particles, by decimating the population
+to arive at roughly the same number of points as when starting with `N=2`.
+========================================== */
+
+input vec3{} ipos ("initial positions for all particles") = load("vec3.nrrd");
+input real rad ("radius of particle's potential energy support") = 0.1;
+input real eps ("system convergence threshold, computed as the coefficient-of-variation of distances to nearest neighbors") = 0.05;
+input int pcp ("periodicity of population control (if greater than zero)") = 2;
+input real hhInit ("initial step size for potential energy gradient descent") = 1;
+
+real newDist = 0.75*rad; // how far away to birth new particles
+real stepMax = rad;     // limit on distance to travel per iter
+int iter = 0;           // which iteration we're on
+real progress = pow(0.5, 1.0/(2*(pcp if pcp > 0 else 1)));
+
+// Univariate energy functions; see ../circle/circle.diderot for alternatives
+function real  phi(real r) = (1 - r)^4;
+function real phi'(real r) = -4*(1 - r)^3;
+
+// Energy and force from particle (with radius rad) at vec3 x
+function real enr(vec3 x) = phi(|x|/rad);
+function vec3 frc(vec3 x) = phi'(|x|/rad) * (1/rad) * x/|x|; // chain rule
+
+// Returns a unit-length vector perpendicular to given non-zero vector v
+function vec3 perp3(vec3 v) {
+   /* First find the component c with the largest absolute value,
+      to increase accuracy and avoid NaNs */
+   int c = 0;
+   if (|v[0]| < |v[1]|) {
+      c = 1;
+   }
+   // not v[c] because tensors can only be indexed by constants
+   if (|v[1] if 1==c else v[0]| < |v[2]|) {
+      c = 2;
+   }
+   // use c to express a necessarily non-zero vector ret
+   vec3 ret = ([v[1] - v[2], -v[0], v[0]] if (c == 0) else
+               [-v[1], v[0] - v[2], v[1]] if (c == 1) else
+               [-v[2], v[2], v[0] - v[1]]);
+   return normalize(ret);
+}
+
+// From a given vec3, find a random-ish value uniformly sampling [0,1)
+function real posrnd(vec3 v) {
+   vec3 p = 10000*v/rad;
+   return fmod(|fmod(p[0],1)| + |fmod(p[1],1)| + |fmod(p[2],1)|, 1);
+}
+
+// Is this an iteration in which to do population control?
+function bool pcIter() = (pcp > 0 && iter > 0 && 0 == iter % pcp);
+// something that alternates between +1 and -1 when pcIter()
+function int pcSgn() = (0 if !pcIter() else ((iter/pcp)%2)*2 - 1);
+
+/* The particle is initialized at position pos0, with initial stepsize hh0.
+   The first set of particles gets hhInit for the initial stepsize, but new
+   particles created by population control benefit from getting the stepsize
+   that was adaptively learned by the parent. */
+strand particle (vec3 pos0, real hh0) {
+   output vec3 pos = pos0/|pos0|;
+   real hh = hh0;
+   vec3 step = [0,0,0]; // step along force
+   real closest = rad;  // distance to closest neighbor
+   int ncount = 0;      // how many neighbors did we have
+   /* This "undone" variable signals to global update that something is
+      happening or just changed that should delay convergence. In this program
+      it is reset to 1 when new particles are created and when there are too
+      many neighbors; otherwise it is slowly decreased towards 0. */
+   real undone = 1;
+
+   update {
+      // Compute energy and forces on us from neighbors
+      real energyLast = 0;
+      vec3 force = [0,0,0];
+      ncount = 0;
+      foreach (particle P in sphere(rad)) {
+         vec3 x = P.pos - pos;
+         if (|x| == 0) {
+            /* we're exactly overlapping with another particle; would be
+               nice to have exactly one strand persist and kill the others;
+               but simpler to have all overlap-ees die here and let
+               population control fill in the hole as needed later */
+            die;
+         }
+         energyLast += enr(x);
+         force += frc(x);
+         ncount += 1;
+      }
+      vec3 norm = normalize(pos); // surface normal for unit circle
+      if (0 == ncount) {
+         if (pcIter()) {  // no neighbors, so let's make one
+            vec3 npos = pos + newDist*perp3(norm);
+            new particle(npos, hh);
+            undone = 1;
+         } else {
+            undone *= progress;
+         }
+         // set closest to something in case used in global update
+         closest = newDist;
+         continue;
+      }
+
+      /* Else we have interacting neighbors; project force onto
+         tangent surface, find step, limit step size */
+      force = (identity[3] - norm⊗norm)•force;
+      step = hh*force;
+      if (|step| > stepMax) {
+         hh *= stepMax/|step|;
+         step = hh*force;
+      }
+
+      // Take step, re-apply constraint, find new energy
+      vec3 posLast = pos;
+      pos = normalize(pos + step);
+      norm = normalize(pos);  // new surface normal for unit circle
+      real energy = 0;
+      closest = rad;
+      ncount = 0;
+      foreach (particle P in sphere(rad)) {
+         energy += enr(P.pos - pos);
+         closest = min(closest, |P.pos - pos|);
+         ncount += 1;
+      }
+
+      // Armijo-Goldstein sufficient decrease condition
+      if (energy - energyLast > 0.5*(pos - posLast)•(-force)) {
+         hh *= 0.5;  // energy didn't decrease as expected: backtrack
+         pos = posLast;  // try again next iteration
+         // no progress, so decrease of undone
+      } else {
+         hh *= 1.02; // opportunistically increase step size
+         // indicate progress; may be over-written below
+         undone *= progress;
+         /* if pcIter(), this is an iteration in which why try to do
+            "population control": making new particles if we have too few
+            neighbors, and possibly removing ourself if we see too many
+            neighbors. On a 2D surface, the goal here is to have between 5 and
+            8 neighbors, based on ncount computed above */
+         if (pcIter()) {
+            if (ncount < 5) {
+               /* when adding a new particle, we add in the direction we were
+                  pushed most recently, but we break the symmetry (that would
+                  lead to points being added only along a great circle) by
+                  adding a perpendicular component with alternating sign */
+               vec3 newdir = normalize(force + pcSgn()*force×norm);
+               new particle(pos + newDist*newdir, hh);
+               undone = 1;
+            } else if (ncount > 8) {
+               /* If this particle has ncount neighbors, then all of those
+                  neighbors probably have a similar number of neighbors. To
+                  get down to having about 8 neighbors, all of them should die
+                  with a chance of ncount-8 out of ncount. */
+               if (posrnd(pos) < (ncount - 8.0)/ncount) {
+                  die;
+               }
+               // else not done if too many neighbors, w/ population control
+               undone = 1;
+            }
+         }
+      }
+
+      // Record actual step taken, in case used in global update
+      step = pos - posLast;
+   }
+}
+
+global {
+   /* Compute coefficient-of-variation of distance to closest neighbor */
+   real meancl = mean { P.closest | P in particle.all};
+   real varicl = mean { (P.closest - meancl)^2 | P in particle.all};
+   real covcl = sqrt(varicl) / meancl;
+   real meanncount = mean { real(P.ncount) | P in particle.all};
+   real maxundone = max { P.undone | P in particle.all};
+   print("(iter ", iter, ") COV(cl)=", covcl,
+         "; mean(cl)=", meancl,
+         "; mean(ncount)=", meanncount,
+         "; max(undone)=", maxundone, "\n");
+
+   if (covcl < eps           // seem to be geometrically uniform
+       && maxundone < 0.5) { // and no particle recently set undone=1
+      print("Stabilizing ", numActive(), " points with COV(closest) ", covcl,
+            " < ", eps, " and maxundone ", maxundone, " < 0.5 (iter ", iter, ")\n");
+      stabilize;
+   }
+   iter += 1;
+}
+
+initially { particle(ipos[ii], hhInit) | ii in 0 .. length(ipos)-1 };
