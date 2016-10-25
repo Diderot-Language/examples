@@ -32,6 +32,8 @@ to 400 iterations (`-l 400`), as well as cleaning results from previous run:
 	./sphere -s 1 -l 400 -rad 0.15 -eps 0.033 -pcp 2
 
 This should converge in under 500 iterations, many `pos-????.nrrd` files.
+The interaction radius `-rad 0.15` can be decreased to create a denser
+(though more computationally expensive) result; increasing it makes it sparser.
 The following unu hackery processes this into corresponding `pos-????.png` images.
 The images are 2*SZ by SZ, computed as a joint histogram of coordinates,
 with oversampling OV (higher values improves anti-aliasing).
