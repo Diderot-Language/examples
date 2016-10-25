@@ -64,11 +64,12 @@ For fun we make an animated GIF of the results with [ImageMagick](http://www.ima
 
 	convert -delay 6 pos*.png sphere-spread.gif
 
-The resulting [sphere-spread.gif](sphere-spread.gif) shows how the population control
-worked to go from 2 to hundreds of particles.  On the other hand, if the initial
-data commands above had started with `N=8000`, the resulting animation shows how
-the system responds to starting with too many particles, by decimating the population
-to arive at roughly the same number of points as when starting with `N=2`.
+The resulting [sphere-spread.gif](sphere-spread.gif) shows how the population
+control worked to go from 2 to hundreds of particles.  On the other hand, if
+the initial data commands above had started with `N=8000`, the resulting
+animation [sphere-decim.gif](sphere-decim.gif) shows how the system responds
+to starting with too many particles, by decimating the population to arive at
+roughly the same number of points as when starting with `N=2`.
 ========================================== */
 
 input vec3{} ipos ("initial positions for all particles") = load("vec3.nrrd");
