@@ -190,6 +190,7 @@ function real func(vec3 pos0) {
          isosurface at isovalue 0.5 fits comfortably inside width 2. */
       real mask = lerp(1, 0, -1, erf((|pos| - 0.75)*15), 1);
       real R2 = sqrt(x^2 + y^2);
+      // use "-parm -1.3 0 0 0" to get 3 flat sheets 120 degrees apart
       real twist = parm[0] + 1.3;
       real phi = atan2(y,x) + z*twist;
       // sorcery here. lobe sharpness 60 matches mask sharpness 15
