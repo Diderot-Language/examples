@@ -68,7 +68,7 @@ reconstructs quadratic functions, but the cubic B-spline does not.
 	      -camNear -4 -camFar 4 -camFOV 12 -iresU 400 -iresV 300 \
 	      -phongKa 0 -phongKd 0.8 -phongKs 0.3 \
 	      -thick 0.03 -rayStep 0.01 \
-	      -isoval 0.0 -fog 0.5 0.5 0.5 0.012 -o rgba-$I
+	      -isoval 0.0 -fog 0.5 0.5 0.5 0.012 -o rgba-$I.nrrd
 	   overrgb -i rgba-$I.nrrd -b 1 1 1 -g 1.2 -o sphere-$I.png
 	done
 	unu join -i sphere-?.png -a 0 -incr | unu slice -a 1 -p 0 -o sphere-compare.png
