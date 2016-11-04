@@ -24,10 +24,11 @@ unu resample -i tmp.nrrd -s x1 x1 -k gauss:20,5 |
 unu 2op x - 0.2 |
 unu 2op - tmp.nrrd - -o tmp.nrrd
 
-# get range into [0,1]
-MIN=$(unu minmax tmp.nrrd | grep min | cut -d' ' -f 2)
-MAX=$(unu minmax tmp.nrrd | grep max | cut -d' ' -f 2)
-unu affine $MIN tmp.nrrd $MAX 0 1 |
+# get range into [0,1], clipping a bit on each end
+MIN=$(unu quantize -b 8 -i tmp.nrrd -min 0.6% | unu head - | grep "old min" | cut -d' ' -f 3)
+MAX=$(unu quantize -b 8 -i tmp.nrrd -max 0.2% | unu head - | grep "old max" | cut -d' ' -f 3)
+unu affine $MIN tmp.nrrd $MAX 0 1 -clamp true |
+unu gamma -g 1.5 |
 unu axinfo -a 0 1 -mm -1 1 -c cell |
 unu dnorm -o ddro.nrrd
 
