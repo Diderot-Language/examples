@@ -15,20 +15,24 @@ export NRRD_STATE_DISABLE_CONTENT=true
 # crop RGB image, and convert to gray-scale
 echo "0.4 0.3 0.3" > wght.txt; junk wght.txt
 unu crop -i Denis_Diderot_111.PNG -min 0 555 195 -max M m+725 m+725 |
-unu resample -s = 420 420 -t float |
+unu resample -s = 400 400 -t float |
 unu 2op x - wght.txt |
 unu project -a 0 -m sum -o tmp.nrrd; junk tmp.nrrd
 
 # a touch of high-pass filtering
 unu resample -i tmp.nrrd -s x1 x1 -k gauss:20,5 |
-unu 2op x - 0.2 |
+unu 2op x - 0.25 |
 unu 2op - tmp.nrrd - -o tmp.nrrd
 
-# get range into [0,1], clipping a bit on each end
-MIN=$(unu quantize -b 8 -i tmp.nrrd -min 0.6% | unu head - | grep "old min" | cut -d' ' -f 3)
-MAX=$(unu quantize -b 8 -i tmp.nrrd -max 0.2% | unu head - | grep "old max" | cut -d' ' -f 3)
-unu affine $MIN tmp.nrrd $MAX 0 1 -clamp true |
-unu gamma -g 1.5 |
+# learn mapping from histogram equalization of central area,
+# then apply to whole image
+unu crop -i tmp.nrrd -min 114 48 -max 338 M |
+unu heq -b 1000 -a 0.75 -m map.nrrd -o /dev/null; junk map.nrrd
+MIN=$(unu slice -i map.nrrd -a 0 -p 10 | unu save -f text)
+MAX=$(unu slice -i map.nrrd -a 0 -p M-40 | unu save -f text)
+unu rmap -i tmp.nrrd -m map.nrrd |
+unu affine $MIN - $MAX 0 1 -clamp true |
+unu gamma -g 0.8 |
 unu axinfo -a 0 1 -mm -1 1 -c cell |
 unu dnorm -o ddro.nrrd
 
