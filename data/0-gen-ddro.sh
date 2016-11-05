@@ -29,7 +29,7 @@ unu 2op - tmp.nrrd - -o tmp.nrrd
 unu crop -i tmp.nrrd -min 114 48 -max 338 M |
 unu heq -b 1000 -a 0.75 -m map.nrrd -o /dev/null; junk map.nrrd
 MIN=$(unu slice -i map.nrrd -a 0 -p 10 | unu save -f text)
-MAX=$(unu slice -i map.nrrd -a 0 -p M-40 | unu save -f text)
+MAX=$(unu slice -i map.nrrd -a 0 -p M-10 | unu save -f text)
 unu rmap -i tmp.nrrd -m map.nrrd |
 unu affine $MIN - $MAX 0 1 -clamp true |
 unu axinfo -a 0 1 -mm -1 1 -c cell |
