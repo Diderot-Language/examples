@@ -74,8 +74,8 @@ histogram of the X positions to ensure it approaches a linear ramp:
 	   II=${IIN%.*}
 	   echo "post-processing $PIIN to pos-$II.png ... "
 	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $[OV*SZ*2] $[SZ*OV] |
-	     unu resample -s /$OV /$OV -k bspln5 -t float |
-	     unu quantize -b 8 -min 0 -max $(echo "1.8 / ($OV * $OV)" | bc -l) -o pos-$II.png
+	     unu resample -s /$OV /$OV -k bspln3 -t float |
+	     unu quantize -b 8 -min 0 -max $(echo "2 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	   unu slice -i $PIIN -a 0 -p 0 |
 	     unu histo -min -1 -max 1 -b $[SZ/3] |
 	     unu dhisto -h $[SZ/3] -nolog |
@@ -84,6 +84,7 @@ histogram of the X positions to ensure it approaches a linear ramp:
 	done
 	convert -delay 6 hp-*.png hp.gif
 
-The resulting `hp.gif` (compare to `[hp-ref.gif](hp-ref.gif)) shows the
-expected convergence to a linear variation in particle density.
+The resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
+expected convergence to a linear variation in particle density, even though
+it is not possible to see the individual particles in the rasterized image.
 
