@@ -68,36 +68,38 @@ function real gauss(real stdv, real x) =
    the default all-zero parm */
 function real func(vec2 pos0) {
    vec2 pos = wrot•pos0;
-   real x = pos[0];
-   real y = pos[1];
-   real t = atan2(y,x);
-   real r = |pos|;
+   real xx = pos[0];
+   real yy = pos[1];
+   real tt = atan2(yy,xx);
+   real rr = |pos|;
    real ret = 0;
    if (0 == which) {        // 0: x ramp
-      ret = x;
+      ret = xx;
    } else if (1 == which) { // 1: y ramp
-      ret = y;
+      ret = yy;
    } else if (2 == which) { // 2: parabola
       ret = pos•pos;
    } else if (3 == which) { // 3: Tschirnhausen cubic
       // using 4*y^2 instead of y^2 for aesthetic reasons
       // expects width of about 8
-      ret = x^3 + 3*x^2 - 4*y^2;
+      ret = xx^3 + 3*xx^2 - 4*yy^2;
    } else if (4 == which) { // 4: sine waves
-      ret = sin((1 + parm[0])*(x + parm[2]))
-          + sin((1 + parm[1])*(y + parm[3]));
+      ret = sin((1 + parm[0])*(xx + parm[2]))
+          + sin((1 + parm[1])*(yy + parm[3]));
    } else if (5 == which) { // 5: circle with soft edge, plus ramps
-      real r = |pos|;
       // expects width of about 4
-      ret = lerp(1, 0, -1, erf((r - (1 + parm[0]))*(8*(1+parm[1]))), 1)
-            + parm[2]*x + parm[3]*y;
+      ret = lerp(1, 0, -1, erf((rr - (1 + parm[0]))*(8*(1+parm[1]))), 1)
+            + parm[2]*xx + parm[3]*yy;
    } else if (6 == which) { // 6: scaled parabola
-      ret = x*x*(1 + parm[0]) + y*y*(1 + parm[1]);
+      ret = xx*xx*(1 + parm[0]) + yy*yy*(1 + parm[1]);
    } else if (7 == which) { // 7: cosine waves
       ret = cos((1 + parm[0])*|pos|)*(1 + parm[1]) + parm[2];
    } else if (8 == which) { // 8: something with a convoluted zero-levelset
-      ret = 0.5 + r*(sin(4.5*t)^2 - 7*r) - 0.18*gauss(0.04,r-0.18)*cos(4.5*t)^2
-            + 0.11*gauss(0.08,r-0.35)*sin(4.5*t)^2;
+      ret = 0.5 + rr*(sin(4.5*tt)^2 - 7*rr)
+            - 0.18*gauss(0.04,rr-0.18)*cos(4.5*tt)^2
+            + 0.11*gauss(0.08,rr-0.35)*sin(4.5*tt)^2;
+   } else if (9 == which) { // 8: angle around origin, from atan2
+      ret = tt;
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
