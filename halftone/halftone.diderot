@@ -67,7 +67,7 @@ histogram of the X positions to ensure it approaches a linear ramp:
 
 	rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 	./halftone -s 10 -l 800 -radmm 0.004 1 -eps 0.00004 -pcp 2
-	SZ=300
+	SZ=200
 	OV=2
 	export NRRD_STATE_VERBOSE_IO=0
 	for PIIN in pos-????.nrrd; do
@@ -76,7 +76,7 @@ histogram of the X positions to ensure it approaches a linear ramp:
 	   echo "post-processing $PIIN to pos-$II.png ... "
 	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $[OV*SZ*2] $[SZ*OV] |
 	     unu resample -s /$OV /$OV -k bspln5 -t float |
-	     unu quantize -b 8 -min 0 -max $(echo "0.9 / ($OV * $OV)" | bc -l) -o pos-$II.png
+	     unu quantize -b 8 -min 0 -max $(echo "1.8 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	   unu slice -i $PIIN -a 0 -p 0 |
 	     unu histo -min -1 -max 1 -b $[SZ/3] |
 	     unu dhisto -h $[SZ/3] -nolog |
