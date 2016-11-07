@@ -23,7 +23,7 @@ leave that out to give different results each time.
 
 	N=2
 	RNG=1
-	eval echo {1..$[3*N]} | unu reshape -s 3 $N | unu 1op nrand -s $RNG -o vec3.nrrd
+	echo 0 0 0 | unu pad -min 0 0 -max M $[N-1] | unu 1op nrand -s $RNG -o vec3.nrrd
 	unu project -i vec3.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 3 | unu 2op / vec3.nrrd - -o vec3.nrrd
 
 Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
