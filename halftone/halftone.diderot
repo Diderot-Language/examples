@@ -34,7 +34,8 @@ positions with random number seen `RNG` that fit within the ramp image domain:
 
 	NN=100
 	RNG=5
-	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] | unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
+	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] |
+	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 
 Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
@@ -62,8 +63,9 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 	convert -delay 6 pos-*.png ramp.gif
 
 On the other hand, to quantitatively check that the particle density is as it should be,
-we run with many more particles (which can take a few minutes to finish), and make a
-histogram of the X positions to ensure it approaches a linear ramp:
+we run with many more particles (which can take a few minutes to finish). The following
+creates a histogram of the X positions, above the rasterized image of the particle positions,
+to ensure position along X approaches a linear ramp:
 
 	rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 	./halftone -s 10 -l 800 -radmm 0.004 1 -eps 0.00004 -pcp 2
@@ -85,9 +87,44 @@ histogram of the X positions to ensure it approaches a linear ramp:
 	done
 	convert -delay 6 hp-*.png hp.gif
 
-The resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
-expected convergence to a linear variation in particle density, even though
-it is not possible to see the individual particles in the rasterized image.
+The top part of the resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
+expected convergence to a linear variation in particle density, even though there are
+too many particles to individually distinguish in the rasterized image.
+
+Finally, to have some fun with a picture of [Diderot
+himself](https://en.wikipedia.org/wiki/Denis_Diderot).  We start by invert the
+image intensity and darken a bit (tending to have more space between
+particles), recompile with the new proxy image (the array axis sizes changed),
+and run again with a new initial particle set (without snapshots this time):
+
+	unu 2op - 1 ../data/ddro.nrrd | unu gamma -g 0.75 -o img.nrrd
+	diderotc --exec halftone.diderot
+	NN=1000
+	RNG=5
+	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] |
+	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
+	./halftone -l 800 -radmm 0.01 0.2 -eps 0.000009 -pcp 1
+	echo 1 -1 |
+	  unu 2op x pos.nrrd - |
+	  unu save -f text |
+	  sed -e s/$/\ 0.005\ 0\ 360\ arc\ closepath\ fill/ |
+	  cat head.eps - tail.eps > ddro.eps
+	epstopdf ddro.eps
+
+The final command for generating `ddro.pdf` is the
+[`epstopdf`](https://www.ctan.org/pkg/epstopdf?lang=en) that comes
+with some LaTeX installations, but there are many other ways
+to convert from eps to pdf. The `ddro.pdf` result (compare to [`drro-ref.pdf`](ddro-ref.pdf))
+should look something like the `ddro.png` produced by
+
+	unu quantize -b 8 -i ../data/ddro.nrrd -o ddro.png
+
+Note that the minimum particle radius specified to `-radmm` was `0.01`, hence
+at their tightest packing particles were 0.01 away from each other (they sat
+in each other's potential wells, at radius 0.01). Drawing each point with a
+circle of radius 0.005 (via `sed` above) creates, where the field is highest
+(where `ddro.nrrd` is darkest), a dense packing of mutually tangent circles,
+which is visible in the output.
 
 ========================================== */
 
@@ -104,7 +141,10 @@ input real searchScl ("scaling of current radius to get neighbor search radius")
 /* A potential function phi(r) found via Mathematica (see findingPhi.nb in
    this directory): this is the lowest-degree piecewise polynomial phi(r) with
    phi(0)=1 and a potential well at phi(0.666)=-0.005, with C^3 continuity
-   across the well and with 0 for r >= 1. */
+   across the well and with 0 for r >= 1. Having a slight potential well is
+   essential for the strategy, used by this program, of using inter-particle
+   energy to create the desired packing density, rather than the interaction
+   of particles and some ambient image-based potential field. */
 function real phi(real r) =
 1 + r*(-4.248582222661734 + r*(5.991287388535527 + (-2.864766048887071 + 0.06790595504541913*r)*r))
 if r < 0.666 else
@@ -147,7 +187,10 @@ function int pcIter() = ((iter/pcp)%2)*2 - 1
    is minimized by ff=1; this is the where particles should be closest, so we
    scale by user-specified minimum radius radmm[0], and then clamp by maximum
    desired radius radmm[1]. Finally, we account for how a particle of radius
-   1.0 actually has minimum-energy neighbors at phiWellRad. */
+   1.0 actually has minimum-energy neighbors at phiWellRad. Other image
+   effects (like gamma), or a more sophisticated accounting of how dots of
+   different densities will produce an effective grayscale, can be
+   incorporated into this radius function. */
 function real radius(real ff) =
    min(radmm[1], radmm[0]*sqrt(1/clamp(0.000000001, 1, ff)))/phiWellRad;
 
@@ -216,8 +259,6 @@ strand particle (int gen, vec2 pos0, real hh0) {
          hh *= stepMax*rad/|step|;
          step = hh*force;
       }
-      // mvmt gradually decays to 0
-      mvmt = lerp(mvmt, |step|/rad, 0.5);
 
       // Take step, find new energy
       vec2 posLast = pos;
@@ -258,21 +299,17 @@ strand particle (int gen, vec2 pos0, real hh0) {
                vec2 npos = pos + noff;
                /* make sure that not only is new position inside field (or
                   else it will be immediately killed off) but that past the
-                  new position is also inside the field (to prevent a stream
-                  of shortly-lived points right at the field boundary) */
+                  new position is also inside the field, to prevent a stream
+                  of shortly-lived points falling off the edge of the field */
                if (inside(npos, F) && inside(pos + 2*noff, F)) {
                   /* try to avoid landing on an existing point */
-                  vec2 savePos = pos;
-                  pos = npos;
                   int nnc = 0;
-                  foreach (particle P in sphere(rad/100)) {
-                     nnc += 1;
-                  }
+                  // note that sphere() can take center as first arg
+                  foreach (particle P in sphere(npos, rad/100)) { nnc += 1; }
                   if (0 == nnc) {
                      /* no existing particle really close to new position */
                      new particle(gen+1, npos, hh);
                   }
-                  pos = savePos;
                }
             }
          } else if (pcIter() < 0 && energy > 0 && ncount > 8
@@ -284,6 +321,7 @@ strand particle (int gen, vec2 pos0, real hh0) {
       /* Record information that may be used in next global update,
          or by other strands in the next iteration */
       step = pos - posLast;
+      mvmt = lerp(mvmt, |step|/rad, 0.5); // should decay to 0
       rad = radius(F(pos));
    }
 }

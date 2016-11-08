@@ -33,7 +33,8 @@ positions with random number seen `RNG` that fit within the ramp image domain:
 
 	NN=100
 	RNG=5
-	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] | unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
+	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] |
+	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 
 Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
@@ -61,8 +62,9 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 	convert -delay 6 pos-*.png ramp.gif
 
 On the other hand, to quantitatively check that the particle density is as it should be,
-we run with many more particles (which can take a few minutes to finish), and make a
-histogram of the X positions to ensure it approaches a linear ramp:
+we run with many more particles (which can take a few minutes to finish). The following
+creates a histogram of the X positions, above the rasterized image of the particle positions,
+to ensure position along X approaches a linear ramp:
 
 	rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 	./halftone -s 10 -l 800 -radmm 0.004 1 -eps 0.00004 -pcp 2
@@ -84,7 +86,42 @@ histogram of the X positions to ensure it approaches a linear ramp:
 	done
 	convert -delay 6 hp-*.png hp.gif
 
-The resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
-expected convergence to a linear variation in particle density, even though
-it is not possible to see the individual particles in the rasterized image.
+The top part of the resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
+expected convergence to a linear variation in particle density, even though there are
+too many particles to individually distinguish in the rasterized image.
+
+Finally, to have some fun with a picture of [Diderot
+himself](https://en.wikipedia.org/wiki/Denis_Diderot).  We start by invert the
+image intensity and darken a bit (tending to have more space between
+particles), recompile with the new proxy image (the array axis sizes changed),
+and run again with a new initial particle set (without snapshots this time):
+
+	unu 2op - 1 ../data/ddro.nrrd | unu gamma -g 0.75 -o img.nrrd
+	diderotc --exec halftone.diderot
+	NN=1000
+	RNG=5
+	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] |
+	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
+	./halftone -l 800 -radmm 0.01 0.2 -eps 0.000009 -pcp 1
+	echo 1 -1 |
+	  unu 2op x pos.nrrd - |
+	  unu save -f text |
+	  sed -e s/$/\ 0.005\ 0\ 360\ arc\ closepath\ fill/ |
+	  cat head.eps - tail.eps > ddro.eps
+	epstopdf ddro.eps
+
+The final command for generating `ddro.pdf` is the
+[`epstopdf`](https://www.ctan.org/pkg/epstopdf?lang=en) that comes
+with some LaTeX installations, but there are many other ways
+to convert from eps to pdf. The `ddro.pdf` result (compare to [`drro-ref.pdf`](ddro-ref.pdf))
+should look something like the `ddro.png` produced by
+
+	unu quantize -b 8 -i ../data/ddro.nrrd -o ddro.png
+
+Note that the minimum particle radius specified to `-radmm` was `0.01`, hence
+at their tightest packing particles were 0.01 away from each other (they sat
+in each other's potential wells, at radius 0.01). Drawing each point with a
+circle of radius 0.005 (via `sed` above) creates, where the field is highest
+(where `ddro.nrrd` is darkest), a dense packing of mutually tangent circles,
+which is visible in the output.
 
