@@ -1,4 +1,4 @@
-Half-toning via interacting repulsive particles
+## halftone.diderot: Half-toning via interacting repulsive particles
 
 This example is based on the [`sphere.diderot`](../sphere) example, which in
 turn is based on the [`circle.diderot`](../circle) example; both of these
