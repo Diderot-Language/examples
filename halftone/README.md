@@ -91,10 +91,10 @@ expected convergence to a linear variation in particle density, even though ther
 too many particles to individually distinguish in the rasterized image.
 
 Finally, to have some fun with a picture of [Diderot
-himself](https://en.wikipedia.org/wiki/Denis_Diderot).  We start by invert the
+himself](https://en.wikipedia.org/wiki/Denis_Diderot), we invert the
 image intensity and darken a bit (tending to have more space between
 particles), recompile with the new proxy image (the array axis sizes changed),
-and run again with a new initial particle set (without snapshots this time):
+and then run with new initial positions (without snapshots this time):
 
 	unu 2op - 1 ../data/ddro.nrrd | unu gamma -g 0.75 -o img.nrrd
 	diderotc --exec halftone.diderot
