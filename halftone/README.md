@@ -110,6 +110,8 @@ and run again with a new initial particle set (without snapshots this time):
 	  cat head.eps - tail.eps > ddro.eps
 	epstopdf ddro.eps
 
+The `ddro.eps` is generated with the help of `head.eps` and `tail.eps`,
+which assume that the points live inside the domain [-1,1]x[-1,1].
 The final command for generating `ddro.pdf` is the
 [`epstopdf`](https://www.ctan.org/pkg/epstopdf?lang=en) that comes
 with some LaTeX installations, but there are many other ways
