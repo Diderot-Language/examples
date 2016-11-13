@@ -74,6 +74,8 @@ Also demonstrates the `inside` and `normalize` functions,
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
 rotation matrix conversion, and nested conditional expressions.
+* [`tensor2`](tensor2/): Details how differentiation adds indices
+to the **end** of tensor shape.
 * [`mip`](mip/): For maximum-intensity projections through 3D volumes;
 Shows a minimal example of setting up a camera and casting rays,
 and also provides a setting for demonstrating how better reconstruction
