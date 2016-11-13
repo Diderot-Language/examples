@@ -1,0 +1,62 @@
+/* ==========================================
+## tensor2.diderot: more details of how tensors work
+
+This continues the work of [`tensor.diderot`](../tensor), with more
+details about how tensors work in Diderot. This uses the [`fs3d-vec.diderot`](../fs3d)
+to generate a synthetic vector field `vec.nrrd` for testing.
+
+	../fs3d/fs3d-vec -width 10 -angle 30 -axis 1 2 3 -which 2 -sz0 30 -sz1 25 -sz2 20 |
+	  unu save -f nrrd -o vec.nrrd
+	rm -f out.nrrd
+
+With this proxy input in place, we compile with:
+
+	diderotc --exec tensor2.diderot
+
+The vector-valued function sampled by this field over (x,y,z) has an
+intentionally non-symmetric Jacobian, and some isolated elements in the second
+derivative (an order-3 tensor), for the testing purposes here.
+========================================== */
+
+field#2(3)[3] F = c4hexic ⊛ image("vec.nrrd");
+
+strand go () { // no need for a strand parameter
+   output real out = 0;
+   update {
+
+      print("Vector field in vec.nrrd: F([x,y,x]) ==\n");
+      print("[x,      x*[0.4,    x*x*[0,      y*z*[0,    [1.4*x,\n");
+      print(" 2*y,  +    0.2,  +      0.5,  +      0, ==  0.2*x + 0.5*x*x + 2*y,\n");
+      print(" 4*z]       0.1]         0]           1]     0.1*x + y*z + 4*z]\n");
+
+      print("\nProbing F:\n");
+      print("F([0,0,0]) = ", F([0,0,0]), "\n");
+      print("F([1,0,0]) = ", F([1,0,0]), "\n");
+      print("F([0,1,0]) = ", F([0,1,0]), "\n");
+      print("F([0,0,1]) = ", F([0,0,1]), "\n");
+      /* Differentiation increases tensor rank by one: if F(p) has rank N then
+         ∇⊗F(p) must have rank N+1, so a new index has to be added to to the
+         shape of F(p) to describe the shape of ∇⊗F(p). In a Jacobian matrix,
+         each row is the gradient of one vector component, implying that the
+         new index from differentiation (into the columns, the elements of
+         that row) comes *after* the existing indices. Diderot does this
+         generally: differentation adds indices at the end of tensor shape. */
+      tensor[3,3] J = ∇⊗F([0,0,0]);
+      print("\nJacobian of F at [0,0,0] (one component gradient per row) = \n");
+      print("J[0,:] = ", J[0,:], "\n");
+      print("J[1,:] = ", J[1,:], "\n");
+      print("J[2,:] = ", J[2,:], "\n");
+
+      tensor[3,3,3] K = ∇⊗∇⊗F([0,0,0]);
+      print("K = ", K, "\n");
+      print("\nPer-component Hessians at [0,0,0]:\n");
+      print("K[0,:,:] = ", K[0,:,:], "\n");
+      print("K[1,:,:] = ", K[1,:,:], "\n");
+      print("K[2,:,:] = ", K[2,:,:], "\n");
+
+      out = 1;
+      stabilize;
+   }
+}
+
+initially [ go() | ii in 0..0 ];  // only one strand
