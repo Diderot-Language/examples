@@ -75,7 +75,7 @@ function vec3 func(vec3 pos0) {
       tensor[3,3] jac = [parm0, parm1, parm2];
       ret = jac•pos;
    } else if (2 == which) { // 1: something with predictable derivatives
-      // Note: this is used by another example ../tensor/tensor.diderot
+      // Note: this is used by another example ../tensor2/tensor2.diderot
       ret = [x,2*y,4*z] + x*[0.4,0.2,0.1] + x*x*[0,0.5,0] + y*z*[0,0,1];
    } else {
       // update "input int which" annotation above as cases are added
