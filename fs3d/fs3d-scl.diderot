@@ -269,6 +269,20 @@ function real func(vec3 pos0) {
       ret = z + lerp(-width/4, xi*xf^2 + yi*yf^2 - (xi + yi)*0.1, scl);
    } else if (15 == which) { // 15: cosine waves
       ret = cos((1 + parm[0])*|pos|)*(1 + parm[1]) + parm[2];
+   } else if (16 == which) { // 16: Möbius strip with beads (c.f. 8 above)
+      real dd = parm[2] + 0.85;
+      real Rbig = sqrt(x*x + y*y);
+      real Rlit = sqrt(z*z + (Rbig-dd)^2);
+      real phi = atan2(Rbig-dd, z) - atan2(x, y)/2;
+      real a = Rlit*cos(phi);
+      real b = Rlit*sin(phi);
+      ret = gauss(0.35+parm[0], a)*gauss(0.12+parm[1], b);
+      ret += 1.2*(gauss(0.15, |pos-[dd,0,0]|) + gauss(0.15, |pos-[-dd,0,0]|) +
+                  gauss(0.15, |pos-[0,dd,0]|) + gauss(0.15, |pos-[0,-dd,0]|) +
+                  gauss(0.15, |pos-[dd,dd,0]/sqrt(2)|) +
+                  gauss(0.15, |pos-[dd,-dd,0]/sqrt(2)|) +
+                  gauss(0.15, |pos-[-dd,dd,0]/sqrt(2)|) +
+                  gauss(0.15, |pos-[-dd,-dd,0]/sqrt(2)|));
    } else {
       // update "input int which" annotation above as cases are added
       print("Sorry, no function defined for which = ", which, "\n");
