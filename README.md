@@ -301,7 +301,7 @@ in the `svn co` commands below is the branch name at the end of the URL.
 The **vis15** branch contains functionality from other branches listed below, and is the
 focus of ongoing merge work. Pthread support is coming soon. The source is available via:
 
-	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
+	svn co -r4933 --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
 
 Before the vis15 branch, the vis12 branch (created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
