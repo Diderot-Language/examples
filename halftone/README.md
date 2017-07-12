@@ -33,7 +33,7 @@ positions with random number seen `RNG` that fit within the ramp image domain:
 
 	NN=100
 	RNG=5
-	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] |
+	echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
 	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 
@@ -55,7 +55,7 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 	   IIN=${PIIN#*-}
 	   II=${IIN%.*}
 	   echo "post-processing $PIIN to pos-$II.png ... "
-	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $[OV*SZ*2] $[SZ*OV] |
+	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
 	     unu resample -s /$OV /$OV -k bspln5 -t float |
 	     unu quantize -b 8 -min 0 -max $(echo "0.15 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	done
@@ -75,13 +75,13 @@ to ensure position along X approaches a linear ramp:
 	   IIN=${PIIN#*-}
 	   II=${IIN%.*}
 	   echo "post-processing $PIIN to pos-$II.png ... "
-	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $[OV*SZ*2] $[SZ*OV] |
+	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
 	     unu resample -s /$OV /$OV -k bspln3 -t float |
 	     unu quantize -b 8 -min 0 -max $(echo "2 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	   unu slice -i $PIIN -a 0 -p 0 |
-	     unu histo -min -1 -max 1 -b $[SZ/3] |
-	     unu dhisto -h $[SZ/3] -nolog |
-	     unu resample -s $[SZ*2] = -k box |
+	     unu histo -min -1 -max 1 -b $((SZ/3)) |
+	     unu dhisto -h $((SZ/3)) -nolog |
+	     unu resample -s $((SZ*2)) = -k box |
 	     unu join -i - pos-$II.png -a 1 -o hp-$II.png
 	done
 	convert -delay 6 hp-*.png hp.gif
@@ -100,7 +100,7 @@ and then run with new initial positions (without snapshots this time):
 	diderotc --exec halftone.diderot
 	NN=1000
 	RNG=5
-	echo 0 0 | unu pad -min 0 0 -max M $[NN-1] |
+	echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
 	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	./halftone -l 800 -radmm 0.01 0.2 -eps 0.000009 -pcp 1
 	echo 1 -1 |
