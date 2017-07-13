@@ -22,7 +22,7 @@ leave that out to give different results each time.
 
 	N=2
 	RNG=1
-	echo 0 0 0 | unu pad -min 0 0 -max M $[N-1] | unu 1op nrand -s $RNG -o vec3.nrrd
+	echo 0 0 0 | unu pad -min 0 0 -max M $((N-1)) | unu 1op nrand -s $RNG -o vec3.nrrd
 	unu project -i vec3.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 3 | unu 2op / vec3.nrrd - -o vec3.nrrd
 
 Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
@@ -49,7 +49,7 @@ with oversampling OV (higher values improves anti-aliasing).
 	   unu 2op gt 2.nrrd 0 | # 1 if in lower hemisphere
 	   unu 2op x - 2.1 |     # 2.1 if in lower hemisphere
 	   unu 2op + - 0.nrrd |  # add to x component
-	   unu jhisto -i - 1.nrrd -min -1.05 -1.05 -max 3.15 1.05 -b $[OV*SZ*2] $[SZ*OV] |
+	   unu jhisto -i - 1.nrrd -min -1.05 -1.05 -max 3.15 1.05 -b $((OV*SZ*2)) $((SZ*OV)) |
 	   unu resample -s /$OV /$OV -k bspln5 -t float |
 	   unu quantize -b 8 -min 0 -max $(echo "0.15 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	done
