@@ -51,4 +51,5 @@ We can use some `unu` to turn these into an image sequence:
 
 	convert -delay 2 state*.png gosperglidergun.gif
 
-The resulting [gosperglidergun.gif](gosperglidergun.gif) looks as expected.
+The resulting `gosperglidergun.gif` should look the same as the
+reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
