@@ -28,9 +28,9 @@ into a linear ramp from (-M,-M) to (M,M), with 4 samples of extra padding to acc
 for reconstruction kernel support.
 
 	M=12;
-	MP=$[M+4];
+	MP=$((M+4));
 	echo "-$MP $MP" | unu axdelete -a -1 |
-	  unu resample -s $[2*MP+1] -k tent -c node |
+	  unu resample -s $((2*MP+1)) -k tent -c node |
 	  unu axinfo -a 0 -mm -$MP $MP | unu dnorm -o data.nrrd
 	./plot1d -img data.nrrd -xmm -$M $M -ymm -2 2
 	unu quantize -b 8 -i rgb.nrrd -o func.png
