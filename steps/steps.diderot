@@ -1,12 +1,12 @@
 /* ==========================================
-## steps.diderot Demonstrates strand interaction steps and snapshots
+## steps.diderot: Demonstrates strand interaction, steps, and snapshots
 
-This program creates a small set of strands that undergo a carefully
-scripted set of updates, to illustrate and disambiguate the
-interaction of strand initialization, strand updates, global updates
-as part of the program super-steps and snapshots.  It also shows
-how the "all", "active", and "stable" strand sets can be accessed
-in the global update method.
+This program creates a small collection of strands that undergo a
+carefully scripted set of updates, to illustrate the interaction of
+strand initialization, strand updates, and global updates as part of
+the program super-steps and snapshots.  It also shows how the "all",
+"active", and "stable" strand sets can be accessed in the global
+update method.
 
 Here is an ASCII-art depiction of the strand state and actions
 on each step:
@@ -89,7 +89,9 @@ initialization, but before the first step (step 0) has run.  The
 step 1, the step in which strand 0 (represented by the last digit in
 the line) calls "die", and hence is removed from the strands visible
 in the global update phase of step 1 (which logically comes after the
-per-strand updates).
+per-strand updates). In general `state-NNNN.nrrd` documents things
+after `NNNN` steps have finished, and before step `NNNN` runs (this
+was also noted in the [`life.diderot`](../life) example).
 
 	05-Snap 0 3 3 7 0
 	05-glob 1 3 3 7 0
@@ -116,7 +118,7 @@ phase of step 9 (the `09-glob` line) reflects that change.  There is
 one last snapshot, shown in the `10-Snap` line (from snapshot
 `state-0010.nrrd`) documents things before step 10, which is not
 executed.  The `99-Snap` line shows the final saved program output
-`state.nrrd`.
+`state.nrrd`, which is the same as the final snapshot.
 
 TODO: what does it look like if a new strand immediately dies.
 
