@@ -1,4 +1,4 @@
-## life.diderot Conway's Game of Life
+## life.diderot: Conway's Game of Life
 
 [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 is not in the target domain of the Diderot DSL, but it is a simple
