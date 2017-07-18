@@ -49,6 +49,8 @@ how strands can `die` (in a strand collection) and the `global` update block,
 which can compute on globals and strand states between per-strand updates.
 * [`life`](life/): Conway's Game of Life.  Demonstrates strand communication
 and snapshots for watching how strand state changes.
+* [`steps`](steps/): Documents interaction of strand communication, strand
+updates, global updates, and snapshots, in a strand collection.
 * [`plot1d`](plot1d/): Plots a univariate function reconstructed by convolution
 of 1-D, possibly with border control, and transformed by lifted functions.
 * [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
@@ -69,7 +71,8 @@ chained else-if conditionals to emulate a switch, and
 single-expression functions defined with `=`.
 * [`iso2d`](iso2d/): Sampling isocontours with non-interacting particles using
 Newton-Raphson iteration, which is legible as such because of Diderot's mathematical notation.
-Also demonstrates the `inside` and `normalize` functions,
+Also demonstrates the `inside` and `normalize` functions.
+* [`lic`](lic/): Line integral convolution (LIC) in a 2D flow field.
 * [`fs3d`](fs3d/): For generating a variety of interesting 3D synthetic datasets;
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
