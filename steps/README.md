@@ -88,8 +88,9 @@ initialization, but before the first step (step 0) has run.  The
 step 1, the step in which strand 0 (represented by the last digit in
 the line) calls "die", and hence is removed from the strands visible
 in the global update phase of step 1 (which logically comes after the
-per-strand updates). In general `state-NNNN.nrrd` documents things
-after `NNNN` steps have finished, and before step `NNNN` runs (this
+per-strand updates). **In general `state-NNNN.nrrd` documents things
+after NNNN steps (with normal 1-based counting) have finished, and
+before the step 0-based index `NNNN` runs** (this
 was also noted in the [`life.diderot`](../life) example).
 
 	05-Snap 0 3 3 7 0
