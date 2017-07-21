@@ -90,8 +90,11 @@ the line) calls "die", and hence is removed from the strands visible
 in the global update phase of step 1 (which logically comes after the
 per-strand updates). **In general `state-NNNN.nrrd` documents things
 after NNNN steps (with normal 1-based counting) have finished, and
-before the step 0-based index `NNNN` runs** (this
-was also noted in the [`life.diderot`](../life) example).
+before (0-based index) step `NNNN` runs**  This subtle point bears
+some contemplation: it **not** the case that state-NNNN.nrrd` documents
+things at the end (0-based index) step `NNNN`. The chronology of steps
+and snapshots is also demonstrated in the [`life.diderot`](../life) example.
+Continuing with this example:
 
 	05-Snap 0 3 3 7 0
 	05-glob 1 3 3 7 0
