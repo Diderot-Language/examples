@@ -11,7 +11,8 @@ which should produce "42".
 
 /* Strands normally have parameters, so that different strands can be
    initialized with different values. This unusual case, with only a single
-   strand, does not need parameters; having one would produce a warning.  */
+   strand, does not need parameters (and having an unused parameter would
+   produce a warning.  */
 strand hello () {
    /* Every Diderot program must have at least one output variable. */
    output int out = 42;
