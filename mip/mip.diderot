@@ -1,3 +1,4 @@
+#version 1.0
 /* ==========================================
 ## mip.diderot: basic maximum intensity projection (MIP) volume rendering
 

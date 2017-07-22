@@ -1,3 +1,4 @@
+#version 1.0
 /* ==========================================
 ## lic.diderot: 2D line integral convolution (LIC) of a flow field
 

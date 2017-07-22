@@ -1,3 +1,4 @@
+#version 1.0
 /* fs3d-vec.diderot: function sampler, 3D vector synthetic fields
 
 This is based on fs3d-scl.diderot in this same directory, after much

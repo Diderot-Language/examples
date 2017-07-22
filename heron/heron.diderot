@@ -1,3 +1,4 @@
+#version 1.0
 /* ==========================================
 ## heron.diderot: Computing square roots via Heron's method
 

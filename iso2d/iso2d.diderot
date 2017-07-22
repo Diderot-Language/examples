@@ -1,3 +1,4 @@
+#version 1.0
 /* ==========================================
 ## iso2d.diderot: 2D isocontour sampling by independent (non-interacting) particles
 

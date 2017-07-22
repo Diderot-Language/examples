@@ -1,3 +1,4 @@
+#version 1.0
 /* ==========================================
 ## circle.diderot: Mutually-repelling particles on a unit circle
 
