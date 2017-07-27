@@ -1,10 +1,10 @@
 # Diderot Examples
 
-These example programs demonstrate [Diderot
+These example programs demonstrate the [Diderot
 language](http://diderot-language.cs.uchicago.edu), recently described in a
-[VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).  A much
-simpler version of the language was described in a [PLDI 2012
-paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).  The
+[VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).  An
+earlier version of the language was described in a [PLDI 2012
+paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).  These example
 programs have been written to help you learn how to use
 Diderot, and to provide starting points for writing your own Diderot programs.
 
@@ -15,6 +15,11 @@ programs and report any problems or confusion, or
 contribute new example programs.
 Join the [diderot-language](https://goo.gl/kXpxhV) Google group to communicate with us.
 
+The Diderot language and its compiler are the work of (in alphabetical order)
+[Charisee Chiw](http://people.cs.uchicago.edu/~cchiw/),
+[Gordon Kindlmann](http://people.cs.uchicago.edu/~glk/),
+[John Reppy](http://people.cs.uchicago.edu/~jhr/),
+and [Lamont Samuels](http://www.lamontksamuels.com).
 Diderot development is partially supported by NSF Grants [CCF-1446412](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1446412)
 and [CCF-1564298](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1564298),
 as well as by donations from NVIDIA and AMD.
