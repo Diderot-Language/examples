@@ -1,0 +1,240 @@
+#version 2.0
+
+/* ==========================================
+## circle.diderot: Mutually-repelling particles on a unit circle
+
+*This is a revision of the [circle](../circle) example that uses
+version 2.0 of the Diderot syntax.*
+
+This example computes a system of mutually-repelling particles constrained to
+the unit circle. The particles are initialized from a given sequence of a
+2-vectors, and each update tries to move each particle to a lower potential
+energy, as determined by looking at nearby particles.  As in the
+[`life.diderot`](../life-2.0) example that introduced strand communication, the
+special strand variable named `pos` indicates the particle position, and the
+computation is monitored via a `global` update method. Like
+[`sieve.diderot`](../sieve-2.0), this program computes global reductions in the
+global update, used here to compute the coefficient-of-variation of nearest
+inter-particle distances, as the basis of a geometric test of convergence.
+
+Like the [`life.diderot`](../life-2.0) example, we use snapshots to inspect
+the system state as it progresses, so we compile with:
+
+	diderotc --snapshot --double --exec circle.diderot
+
+When compiling with `--double`, Diderot represents the `real` type
+as a `double` in C++, instead of the default `float`, which produces
+more accurate results.
+
+The following creates a list of `N` randomly oriented unit-length 2-vectors in
+`vec2.nrrd` which will be the initial input.  Setting the random number seed
+of `unu 1op nrand` with `-s RNG` ensures reproducible results, or you can
+leave that out to give different results each time.
+
+	N=60
+	RNG=42
+	eval echo {1..$((2*N))} | unu reshape -s 2 $N | unu 1op nrand -s $RNG -o vec2.nrrd
+	unu project -i vec2.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 2 | unu 2op / vec2.nrrd - -o vec2.nrrd
+
+Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
+to 500 iterations (`-l 500`), as well as cleaning results from previous run:
+
+	rm -f pos-????.nrrd pos.nrrd
+	./circle -s 1 -l 500
+
+If this fails with `ERROR: unexpected arg (or unrecognized flag): "-s"`, it means that
+`circle` wasn't compiled with `--snapshot`, as above.  It should converge in under
+500 iterations, producing many `pos-????.nrrd` files, which we can post-process with:
+
+	export NRRD_STATE_VERBOSE_IO=0
+	for PIIN in pos-????.nrrd; do
+	   IIN=${PIIN#*-}
+	   II=${IIN%.*}
+	   echo "post-processing snapshot $II ... "
+	   unu dice -i $PIIN -a 0 -o ./
+	   unu 2op atan2 0.nrrd 1.nrrd | unu histax -a 0 -min -pi -max pi -b 800 -t float -o angle-$II.nrrd
+	done
+	rm -f 0.nrrd 1.nrrd
+	unu join -i angle-*.nrrd -a 1 |
+	   unu quantize -b 8 -min 0 -max 1 -o angles.png
+	rm -f angle-????.nrrd
+
+This produces `angles.png` by unrolling (with atan2) positions along the circle,
+and laying these out along horizontal scanlines, one per iteration. The result
+should look something like [angles-ref.png](angles-ref.png). It is clear that the
+particle interactions made a roughly uniform distribution early on, but
+subsequent refinements took longer. Scrutinizing the top of the image shows
+where strands were stationary either because they repeatedly backtracked in the
+Armijo line search (until they found a step size that led to a sufficient
+energy decrease), or because they had no other particles to interact with.
+
+Some experiments that can be tried with this example:
+* If `--double` is removed from the compilation, the system may not converge to the default `eps` before the iteration limit, due to the decrease in numerical accuracy.
+* There are different possible inter-particle potentials `phi` (uncomment one at a time), which can lead to different dynamics and different convergence speed towards a uniform distribution.
+* If the interaction radius `rad` is decreased while maintining the number of particles, gaps may form.
+* Increasing radius `rad` will tend to force convergence faster, at the expense of computing more particle interactions.
+* There are constants associated with Armijo line search, changing them may lead to faster convergence.
+
+========================================== */
+
+/* The file containing a sequence (read via "load_sequence") currently undergoes no
+   compile-time analysis, but there is a run-time check on the shape of the
+   array.  A sequence of scalars should come from a 1-D array, and a sequence
+   of any other kind of value should come from a 2-D array: the faster axis
+   should contain the components per value, and the sequence of values is
+   along the slower axis. The filename "-" may be used to say that the
+   sequence should be read from standard in.  A text file (one value per line)
+   may be used for non-scalar sequences. */
+input vec2[] ipos ("initial positions for all particles") = load_sequence("vec2.nrrd");
+input real rad ("radius of particle's potential energy support") = 0.25;
+input real eps ("system convergence threshold, computed as the coefficient-of-variation of distances to nearest neighbors") = 0.01;
+
+real hhInit = 1;        // initial step size
+real stepMax = rad;     // limit on distance to travel per iter
+int iter = 0;           // which iteration we're on
+
+/* phi defines the potential energy around a particle, as a function of
+   distance from particle r > 0. By design, the potential function smoothly
+   falls to 0 at r == 1, so that the potential has compact support, which
+   simplifies computing the inter-particle interactions. phi'(r) is the
+   derivative of phi(r). The ' in phi' is merely suggestive; ' is not acting
+   as an operator. Below are some different possibilities for phi and phi';
+   only one should be uncommented.
+
+   In a conservative force field, force is the *negative* gradient of some
+   potential. While phi(r) is the potential at r > 0, due to a particle at 0,
+   it can also be considered as the potential at 0, due to a particle at
+   r. Moving closer to the particle at r by a small dr > 0, the change in
+   potential is dphi = -phi'(r)*dr, which is positive for a monotonically
+   decreasing phi(r). The force at 0, or negative gradient of the potential,
+   is then phi'(r), which justifies how no negation is used in the frc()
+   definition below, based on phi'(). */
+
+// phi(0) and phi'(0) are bounded
+function real  phi(real r) = (1 - r)^4;
+function real phi'(real r) = -4*(1 - r)^3;
+
+/*
+// electrostatic potential 1/r, scaled to be C^2 continuous with 0 at r==1
+function real  phi(real r) =  (1/r)*(1 - r)^3;
+function real phi'(real r) = 3 - 1/(r^2) - 2*r;
+*/
+/*
+// Cotangent-based potential from Meyer et al. SMI'05
+function real  phi(real r) = 1/tan(r*π/2) + r*π/2 - π/2;
+function real phi'(real r) = (π/2)*(1 - (1/sin(r*π/2))^2);
+*/
+
+/* The enr and frc functions use phi and phi' to define the potential due to,
+   and force from, a particle at 2-D offset x with a potential field extending
+   to radius rad. */
+function real enr(vec2 x) = phi(|x|/rad);
+function vec2 frc(vec2 x) = phi'(|x|/rad) * (1/rad) * x/|x|; // chain rule
+
+/* The particle is initialized at position pos0 */
+strand particle (vec2 pos0) {
+   /* These strand variables are visible to the global update and to other
+      strands making spatial queries. Any variable inside the scope of
+      update{} will not be visible in this way. NOTE: "pos" is the special
+      variable name that *must* be used to enable spatial queries of
+      neighboring particles via sphere(). */
+   output vec2 pos = pos0/|pos0|;
+   real hh = hhInit;
+   vec2 step = [0,0];  // step along force
+   real closest = 0;   // distance to closest neighbor
+   int ncount = 0;     // how many neighbors did we have
+
+   update {
+      // Compute energy and forces on us from neighbors
+      real energyLast = 0;
+      vec2 force = [0,0];
+      ncount = 0;
+      foreach (particle P in sphere(rad)) {
+         energyLast += enr(P.pos - pos);
+         force += frc(P.pos - pos);
+         ncount += 1;
+      }
+      if (0 == ncount) {
+         /* no neighbors; do nothing to do but set closest to big value */
+         closest = rad;
+         continue;
+      }
+
+      // Else we have interacting neighbors
+      vec2 norm = normalize(pos); // surface normal for unit circle
+      // project force onto tangent surface
+      force = (identity[2] - norm⊗norm)•force;
+
+      /* Limiting the step size (even before testing for sufficient decrease,
+         below) helps keep particles near the surface they are supposed to be
+         sampling; this precaution matters more with a non-trivial
+         (data-driven) constraint surface */
+      step = hh*force;           // compute step along force
+      if (|step| > stepMax) {
+         // decrease hh by factor by which step was too big
+         hh *= stepMax/|step|;
+         // and find smaller step (of length stepMax)
+         step = hh*force;
+      }
+
+      // take step and re-apply constraint
+      vec2 posLast = pos;
+      pos = normalize(pos + step);
+      // find energy at new location, and distance to closest neighbor
+      real energy = 0;
+      closest = rad;
+      foreach (particle P in sphere(rad)) {
+         energy += enr(P.pos - pos);
+         closest = min(closest, |P.pos - pos|);
+      }
+      // save actual step taken
+      step = pos - posLast;
+
+      /* The Armijo-Goldstein sufficient decrease condition: The potential
+         gradient, -force, dotted with change in position (pos - posLast),
+         should predict the change in potential (energy - energyLast), which
+         should be negative. If the potential change is too large (not
+         negative enough), decrease step size and try again on the next
+         iteration. */
+      if (energy - energyLast > 0.5*(pos - posLast)•(-force)) {
+         hh *= 0.5; // backtrack
+         pos = posLast;
+      } else {
+         hh *= 1.02; // opportunistically increase step size
+      }
+   }
+}
+
+/* In some programs, like ../heron-2.0/heron.diderot, strands can individually
+   determine when they have converged, and then execute "stabilize".  In this
+   kind of particle system, the judgement of convergence has to come from a
+   more global view of the state of computation.  This global update monitors
+   the particle system by measuring how uniformly the points are distributed
+   along the circle, based on the coefficient of variation of distances to
+   nearest neighbors. If the result has converged sufficiently, the
+   "stabilize" here results in all active strands being stabilized (and all
+   their stabilize{} methods would be called, if they had them). On the other
+   hand, if it is clear that the computation cannot converge, global update
+   can also call "die". */
+update {
+   // Convergence test could be based on movement
+   //real mvmt = max { |P.step|/rad | P in particle.all};
+   // This tests convergence based on distances to closest neighbor
+   real meancl = mean { P.closest | P in particle.all};
+   real varicl = mean { (P.closest - meancl)^2 | P in particle.all};
+   real covcl = sqrt(varicl) / meancl;
+   print("(iter ", iter, ") mean(hh)=", mean { P.hh | P in particle.all},
+         "; COV(closest) = ", covcl, "\n");
+   if (covcl < eps) {
+      print("Stabilizing with COV(closest) ", covcl, " < ", eps, " (iter ", iter, ")\n");
+      stabilize;
+   }
+   iter += 1;
+}
+
+/* In this example, there is no "population control" (with "new" or "die"), so
+   the set of strands is constant throughout the program execution. It thus
+   doesn't matter if the strands are created via "create_collection" (a collection
+   of strands) or "create_array" (an array of strands). We create a collection
+   of strands here to be consistent with future particle system examples.*/
+create_collection { particle(ip) | ip in ipos }

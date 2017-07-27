@@ -1,0 +1,137 @@
+#version 2.0
+
+/* ==========================================
+## life.diderot: Conway's Game of Life
+
+*This is a revision of the [life](../life) example that uses
+version 2.0 of the Diderot syntax.*
+
+[Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+is not in the target domain of the Diderot DSL, but it is a simple
+program for demonstrating **strand communication**, a new feature relative
+to previous examples. Strands are located in their domain according to a
+special variable named `pos`, and strands can learn about nearby strands
+via the `sphere` query. Strands have read-only access to the values of
+other strands' variables *as they were at the start of the iteration*.
+It would take two iterations for information to get from strand, to another,
+and back.
+
+Diderot's strand communication was primarily intended for running particle
+systems, in which particles are moving around in some domain, dynamically
+changing which other strands they interact with, and the program output is a
+1-D sequence (or set) of values. In this example, strands do not move,
+and do not change their interacting neighbors, and the output is a rectangular
+array. The `sphere` query (to find strands within some radius) will always
+return the same 8 neighbors.
+
+This example also shows off the **snapshot** mechanism that can be used to
+inspect the state of computation at each iteration, by saving the values of
+the output variable(s) during execution.  This is enabled by the `--snapshot`
+option to the compiler:
+
+	diderotc --snapshot --exec life.diderot
+
+This adds a new `-s` option to the `./life` executable, which controls the
+periodicity of snapshots being saved, i.e. `-s 1` means save at every iteration,
+`-s 10` means save at every tenth iteration. The default `-s 0` means that no
+snapshots are saved.
+
+We can run Life with one of the supplied initial patterns in the `patterns`
+subdirectory, like the [Gosper glider
+gun](http://www.conwaylife.com/w/index.php?title=Gosper_glider_gun) (as well
+as clean up any results from a previous run):
+
+	rm -f state*{nrrd,png}
+	./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd
+
+which generates many `state-NNNN.nrrd` files, one for each iteration, starting
+with `state-0000.nrrd` to record initialization state before the first iteration.
+We can use some `unu` to turn these into an image sequence:
+
+	unu join -i state-*.nrrd -a 2 |
+	unu quantize -b 8 |
+	unu resample -s x4 x4 = -k box -c cell |
+	unu dice -a 2 -ff state-%04d.png -o ./
+
+[ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
+
+	convert -delay 2 state*.png gosperglidergun.gif
+
+The resulting `gosperglidergun.gif` should look the same as the
+reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
+========================================== */
+
+/* The game will be computed on an NN x NN grid. Real Conway Life programs can
+   compute on an effectively infinite grid, but this is not currently possible
+   in Diderot (at least not with this program). The grid will centered at the
+   origin (see "create_array" below) only because the initialization patterns
+   available at http://www.conwaylife.com/wiki/Category:Patterns in the "Life
+   1.06" format seem to center their patterns around the origin. */
+input int NN ("size of (square) simulation grid") = 200;
+
+/* The initial pattern is read in as a field, sampled on an integer grid with
+   linear (tent) interpolation). NOTE: By *not* specifying an named input file
+   here (called a "proxy" file in Diderot), the compiler currently produces a
+   program that is general with respect to input image size, but specialized
+   to sample type float (which happens to be what we're using here). */
+input image(2)[] init ("initial pattern");
+field#0(2)[] initF = tent ⊛ init;
+
+int iter = 0; // counts how many iterations have finished
+
+// Each strand represents one cell in the grid
+strand cell (vec2 pos0) {
+   /* "pos" is a special strand variable: the type indicates the dimension of
+       the spatial domain over which strand communication happens, and the
+       value is the strand position in that domain. Currently, only a variable
+       named "pos" satisfies this role. In this case, pos is learned from the
+       strand initialization, and then never changed. */
+   vec2 pos = pos0;
+   /* "state" is either 1 or 0, initialized by querying the initF field at the
+      strand position. Diderot currently has no casting mechanism to convert a
+      real to an int, hence the "1 if initF(pos) > 0.5 else 0" conditional
+      expression that produces an int from real-valued initF(pos).  */
+   output int state = 0 if !inside(pos, initF) else
+                      1 if initF(pos) > 0.5 else
+                      0;
+
+   /* This update method computes the new state of this strand's cell from
+      its previous state and the previous state of its 8 neighbors */
+   update {
+      /* Count living neighbors. The cells are at integral grid positions, so
+         the 8 closest neighbors (use for Life) are either distance 1 away
+         (up, down, left, right), or distance sqrt(2) away (the diagonals). A
+         little extra is added to sqrt(2) for safety.
+         Note that in version 2.0, we can use a summation over the strands,
+         which is more concise than the explicit `foreach` loop used in
+         ../life/life.diderot. */
+      int nn = sum ({ c.state | c in sphere(sqrt(2)+0.001) });
+      // Here are the rules of Life
+      state = 1 if (3 == nn) else
+              state if (2 == nn) else
+              0;
+   }
+}
+
+/* This program uses a global update just to print a progress indication.  The
+   assumption is that execution is being stopped via the "-l" limit on
+   iterations.  If the program is compiled with snapshot generation enabled
+   ("--snapshot") and the program is run to save a snapshot at every iteration
+   ("-s 1"), then it will save "snap-0000.nrrd" to indicate strand state after
+   strands have been initialization but before the first iteration runs
+   (before any per-strand updates), and thereafter "snap-NNNN.nrrd" will
+   indicate state after the NNNN iterations have finished. In this program,
+   running with "-l 5" will lead to six snapshot files being saved
+   "snap-000{0,1,2,3,4,5}.nrrd", as well as the final output "state.nrrd".
+   Had the program been run as a strand collection (with "create_collection"), the
+   final "state.nrrd" would not be saved when running with "-l 5", but each
+   snapshot would be a 1D array of ints, instead of a 2D array. */
+update {
+   print("iter ", iter, " done.\n"); // progress indication
+   iter += 1;
+}
+
+create_array { cell([ii, jj])
+               // these index ranges center the grid on the origin
+             | jj in (-NN/2)..(-NN/2 + NN - 1),
+               ii in (-NN/2)..(-NN/2 + NN - 1) }
