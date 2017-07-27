@@ -88,8 +88,8 @@ as a collection of strands, i.e. the last line of the program is instead
 (note `initially {}` instead of `initially []`), then running `./heron -eps
 1e-8 -l 20` will still finish after 20 iterations, but no output values will
 be saved for those strands that didn't stabilize in time.  That is, `unu save -f text
--i vrie.nrrd` will produce less than 100 lines of text, including only the
-values for which the algorithm converged with 20 iterations or less.
+-i vrie.nrrd` will produce fewer than 100 lines of text, including only the
+values for which the algorithm converged with 20 iterations or fewer.
 
 On the other hand, we can also increase the precision of a Diderot
 `real` itself by using a C `double` to store a `real`, instead of a (single-precision) `float`,
