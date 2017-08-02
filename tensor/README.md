@@ -36,4 +36,3 @@ same way they work in other languages that support higher-order tensors. The
 program ends with a demonstration of how, when saved out to files, tensor
 indices are ordered slow to fast.
 
-

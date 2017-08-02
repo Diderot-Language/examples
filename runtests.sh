@@ -29,6 +29,7 @@ life
 steps
 unicode
 plot1d
+tensor
 "
 
 genref=0

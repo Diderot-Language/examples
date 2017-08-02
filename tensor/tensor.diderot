@@ -25,6 +25,7 @@ of familiarity that in a rank-2 tensor, i.e. a matrix, the first index
 selects the row, and the second index selects the column.  A matrix created
 by `mm = [[a,b,c],[d,e,f],[g,h,i]]` would conventionally be written as:
 
+	#R
 	a b c
 	d e f
 	g h i
@@ -38,7 +39,12 @@ same way they work in other languages that support higher-order tensors. The
 program ends with a demonstration of how, when saved out to files, tensor
 indices are ordered slow to fast.
 
-
+	#!
+	#=diderotc
+	#_ ./tensor
+	#_ junk out.nrrd
+	#_ echo == output out.nrrd:
+	#_ unu save -f text -i out.nrrd
 ========================================== */
 
 // vec3 means tensor[3]
