@@ -1,4 +1,4 @@
-[life.diderot:106.4-120.0] Warning: update method does not have reachable die or stabilize statement
+[life.diderot:111.4-125.0] Warning: update method does not have reachable die or stabilize statement
 [life.diderot] Warning: assuming a sample type of float for 'init'; specify a proxy-image file to override the default sample type
 iter 0 done.
 iter 1 done.
