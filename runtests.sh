@@ -66,9 +66,9 @@ for TT in $TESTS; do
   else
       # we comparing against pre-existing reference outputs
       ./.test.sh > out.txt 2>&1
-      junk `pwd`/$TT
       # compare textual output with reference
       diff out.txt .ref/out.txt
+      junk `pwd`/$TT `pwd`/out.txt
       # see what output files there are to compare;
       # NOTE that these comparisons are done AFTER test script execution
       saveIFS="$IFS"
