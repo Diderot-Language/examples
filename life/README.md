@@ -46,7 +46,11 @@ We can use some `unu` to turn these into an image sequence:
 	unu quantize -b 8 |
 	unu resample -s x4 x4 = -k box -c cell |
 	unu dice -a 2 -ff state-%04d.png -o ./
-
+These example programs are mainly to demonstrate Diderot, but
+learning some `unu` is a possible side-effect.  Type `unu` to get a list
+of all `unu` commands, and type, for example, `unu quantize` or `unu
+resample` to get the usage info for those commands, to learn about how
+they are being used above. Finally,
 [ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
 
 	convert -delay 2 state*.png gosperglidergun.gif

@@ -36,12 +36,6 @@ for reconstruction kernel support.
 	./plot1d -img data.nrrd -xmm -$M $M -ymm -2 2
 	unu quantize -b 8 -i rgb.nrrd -o func.png
 
-These example programs are mainly to demonstrate Diderot, but some
-learning some `unu` is a possible side-effect.  Type `unu` to get a list
-of all `unu` commands, and type, for example, `unu resample` or `unu
-axinfo` to get the usage info for those commands, to learn about how
-they are being used above.
-
 Computing the plot as a raster image, with the thickness of plot elements
 defined in index space, requires conversions back and forth between world and
 index space, which are currently somewhat cumbersome in Diderot. Using
