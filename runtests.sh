@@ -74,12 +74,13 @@ for TT in $TESTS; do
         fi
       done <<< $(cat .test.sh)
   else
-      # we comparing against pre-existing reference outputs
+      # we compare against pre-existing reference outputs
+      # generate textual output
       ./.test.sh > out.txt 2>&1
       # compare textual output with reference
       diff out.txt .ref/out.txt
       junk `pwd`/$TT `pwd`/out.txt
-      # see what output files there are to compare;
+      # see what other output files there are to compare;
       # NOTE that these comparisons are done AFTER test script execution
       saveIFS="$IFS"
       IFS='' # to preserve whitespace when reading lines of README.md
