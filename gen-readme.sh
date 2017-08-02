@@ -11,8 +11,6 @@ shopt -s extglob # for totest=${totest##*( )}
 # that this is supposed to be put into a markdown file.
 flag='=========================================='
 
-saveIFS="$IFS"
-
 examples=$(find . -depth 1 -type d -print | grep -v \.git)
 
 tab="	";
@@ -25,7 +23,7 @@ forTest="#_";
 
 for exdir in $examples; do
   echo $exdir ...
-  ddros=$(ls -1 $exdir/*.diderot)
+  ddros=$(ls -1 $exdir/*.diderot 2> /dev/null)
   got=""
   gotnum=0
   for ddr in $ddros; do
@@ -38,7 +36,7 @@ for exdir in $examples; do
     continue
   fi
   if [ $gotnum -gt 1 ]; then
-    echo "$0: HEY got $gotnum programs with markdown, only processing last one: $got"
+    echo "$0: HEY only using last program $got of $gotnum with Markdown delimiter $flag"
   fi
   progddro=$(basename $got)
   prog=$(basename $progddro .diderot)
@@ -55,6 +53,7 @@ for exdir in $examples; do
   errorok=0
   haveDiderotc=0
   echo "  ... processing $got to create $README"
+  saveIFS="$IFS"
   IFS='' # to preserve whitespace when read'ing lines below
   while read -r line; do # reads lines from $got
     if [[ "$line" =~ $flag ]]; then
@@ -108,6 +107,7 @@ for exdir in $examples; do
       fi
     fi
   done <<< $(cat $got)
+  IFS="$saveIFS"
   if [[ ! -s $TEST ]]; then
     # didn't end up saving anything here
     rm -f $TEST
@@ -134,5 +134,4 @@ junk $prog.o $prog.cxx" >> $TEST
     echo "  ... also created $TEST"
   fi
 done
-IFS="$saveIFS"
 
