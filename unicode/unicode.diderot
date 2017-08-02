@@ -29,9 +29,17 @@ undermine their continued relevance for Diderot or for programming in general.
 See https://en.wikipedia.org/wiki/Unicode_input for information about
 how best to input unicode in your OS.  Or, copy and paste from this file.
 
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+	#!
+	#_ #just to make sure no-op compiles and runs
+	#=diderotc
+	#_ ./unicode
+	#_ junk out.nrrd
+	#_ unu save -f text -i out.nrrd
 
 #### π means pi, as in
 
+	#R
 	real rad = degrees*π/180;
 * Unicode: U+03C0 (Greek Small Letter Pi)
 * LaTeX: `\pi`
@@ -39,6 +47,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 #### ∞ means infinity, as in
 
+	#R
 	output real out = -∞;
 * Unicode: U+221E (Infinity)
 * LaTeX: `\infty`
@@ -47,6 +56,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 #### ⊛ means convolution, as in
 
+	#R
 	field#2(3)[] F = bspln3 ⊛ image("img.nrrd");
 * Unicode: U+229B (Circled Asterisk Operator)
 * LaTeX: `\circledast` is probably typical, but `\varoast` (with `\usepackage{stmaryrd}`)
@@ -55,6 +65,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 #### × means cross product, as in
 
+	#R
 	vec3 camU = normalize(camN × camUp);
 * Unicode: U+00D7 (Multiplication Sign)
 * LaTeX: `\times`
@@ -63,6 +74,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 #### ⊗ means tensor product, as in
 
+	#R
 	tensor[3,3] Proj = identity[3] - norm⊗norm
 * Unicode: U+2297 (Circled Times)
 * LaTeX: `\otimes`.
@@ -71,6 +83,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 #### • means dot product and matrix multiplication, as in
 
+	#R
 	real ld = norm • lightDir;
 * Unicode: U+2022 (Bullet)
 * LaTeX: `\bullet`, which is more consistently visible than
@@ -83,6 +96,7 @@ how best to input unicode in your OS.  Or, copy and paste from this file.
 
 #### ∇ means Del, which is part of various derivative operators on fields, as in
 
+	#R
 	field#3(3)[] F = ...;
 	field#2(3)[3] gradient = ∇F;
 	field#1(3)[3,3] hessian = ∇⊗∇F;

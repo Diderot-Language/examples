@@ -13,12 +13,13 @@ flag='=========================================='
 
 examples=$(find . -depth 1 -type d -print | grep -v \.git)
 
+# see documentation in runtests.sh
 tab="	";
 tabDoTest="	#!$";
 tabCompile="	#=diderotc";
 tabErrorOk="	#\|\|:";
 tabOutFileTol="	#>"; # HEY sync with runtests.sh
-tabNoop="	:$";
+tabNoop="	#R$";
 forTest="#_";
 
 for exdir in $examples; do
@@ -65,6 +66,7 @@ for exdir in $examples; do
       nfread=0
       nftest=0
       nfe=0
+      if [[ $line =~ \<!--.*--\> ]]; then nfe=1; fi # only good for single-line HTML comments
       if [[ ! $line =~ ^$tab ]]; then # line didn't start with tab
         intabs=0
         testing=0

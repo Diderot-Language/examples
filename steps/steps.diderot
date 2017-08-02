@@ -12,7 +12,7 @@ update method.
 Here is an ASCII-art depiction of the strand state and actions
 on each step:
 
-	:
+	#R
 	| means strand is active
 	o means active strand calls "stabilize"
 	: means strand is stable (or idle)
@@ -31,7 +31,6 @@ on each step:
 	step  8       |       :   :
 	step  9     n(5),o    :   :
 	step 10   x   :       :   :
-	step 11       :       :   :           
 
 The `print()` statements in this program are set up so that the output
 can be piped into `sort` to put the results into a canonical order
@@ -77,6 +76,7 @@ The snapshots `state-????.nrrd` are processed into `snaps.txt` with:
 	   echo -n "${II: -2}-Snap " | cat - tmp-$II.txt >> snaps.txt
 	done
 	rm -f tmp-*.txt
+	#_ junk snaps.txt
 
 To combine part of the printed program output with the processed snapshots:
 
@@ -88,7 +88,7 @@ To combine part of the printed program output with the processed snapshots:
 
 Some features of the output of the above:
 
-	:
+	#R
 	00-Snap 0 0 1 1 1 1
 	00-glob 0 0 3 3 3 3
 	01-Snap 0 0 3 3 3 3
@@ -109,7 +109,7 @@ things at the end (0-based index) step `NNNN`. The chronology of steps
 and snapshots is also demonstrated in the [`life.diderot`](../life) example.
 Continuing with this example:
 
-	:
+	#R
 	05-Snap 0 0 3 3 7 0
 	05-glob 0 1 3 3 7 0
 	06-Snap 0 1 3 3 7 0
@@ -123,7 +123,7 @@ still are in the the `06-Snap` line (from snapshot `state-0006.nrrd`).
 The `06-glob` line (from the global update of step 6) we see that
 strand 4 has updated.
 
-	:
+	#R
 	09-Snap 0 3 0 7 7 0
 	09-glob 1 7 0 7 7 0
 	10-Snap 1 7 0 7 7 0
@@ -146,7 +146,7 @@ see value 3 for strand 5, even though its `update` was executed).
 the program execution from within Diderot or by looking at snapshots:
 there is no enduring record of what strands died when, and you can only
 learn that a strand's `update` method was called if it does not immediately die**
-(except for `print` messages to explicitly document this as it happens).
+(except if you've used `print` messages to explicitly document this as it happens).
 The `99-Snap` line shows the final saved program output
 `state.nrrd`, which is the same as the final snapshot.
 

@@ -2,6 +2,23 @@
 /* ==========================================
 ## hello.diderot: The usual greeting, in Diderot
 
+<!-- In this and other examples, the code blocks are on lines starting -->
+<!-- with a tab character; these are generally intended to be shown as -->
+<!-- pre-formatted text blocks via Markdown. The ../gen-readme.sh script -->
+<!-- converts the current Diderot comment into the contents of the -->
+<!-- README.md in this directory. This script also does some -->
+<!-- experimental things to generate a test script .test.sh for each -->
+<!-- example; the contents of these test scripts is based on the -->
+<!-- (tab-indicated) code blocks herein, but with some modifications. -->
+<!-- Those modifications are controlled with the lines starting with -->
+<!-- "\t#" (tab pound), which are also processed by -->
+<!-- ../gen-readme.sh. These lines (as well as these HTML comments) will -->
+<!-- not show up in the generated README.md; but they do control the -->
+<!-- contents of the generated .test.sh, which are run as a group with -->
+<!-- ../runtests.sh. -->
+<!-- THUS: you can ignore all the \t# lines, and look at the README.md -->
+<!-- for the program documentation as it was intended to be seen. -->
+
 After compiling `hello.diderot`, you run it with:
 
 	#!

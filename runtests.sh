@@ -1,8 +1,16 @@
 #!/bin/bash
 
-# This is an experiment in literate programming for testing: turning
-# the information about running the program in the Markdown comment
-# at the top of the program into test script. ... in progress ...
+# This is sort of an experiment in literate programming for test generation.
+# ./gen-readme.sh not only processes a certain comment (containing Markdown)
+# into the README.md file, it also generates a .test.sh test script. There
+# are some contrived ways of controlling how the pre-formated code blocks
+# (Markdown lines starting with tab) are turned into test scripts, as follows:
+# \t#! == do generate .test.sh (else the generated .test.sh is deleted)
+# \t#R == following code block is only for README.md, not for test script
+# \t#_ == this line is only for test script, not for README.md
+# \t#=diderotc == substitute in diderotc compilation line
+# \t#||: == suffix command on following line with "||:" to avoid stopping on error
+# \t# OUT EPS == compare output file OUT with reference with tolerance EPS
 
 set -o errexit
 set -o nounset
@@ -18,6 +26,7 @@ heron
 sieve
 life
 steps
+unicode
 "
 
 genref=0

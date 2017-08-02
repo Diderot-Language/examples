@@ -28,7 +28,6 @@ on each step:
 	step  8       |       :   :
 	step  9     n(5),o    :   :
 	step 10   x   :       :   :
-	step 11       :       :   :           
 
 The `print()` statements in this program are set up so that the output
 can be piped into `sort` to put the results into a canonical order
@@ -136,7 +135,7 @@ see value 3 for strand 5, even though its `update` was executed).
 the program execution from within Diderot or by looking at snapshots:
 there is no enduring record of what strands died when, and you can only
 learn that a strand's `update` method was called if it does not immediately die**
-(except for `print` messages to explicitly document this as it happens).
+(except if you've used `print` messages to explicitly document this as it happens).
 The `99-Snap` line shows the final saved program output
 `state.nrrd`, which is the same as the final snapshot.
 

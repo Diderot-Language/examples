@@ -1,5 +1,6 @@
 ## hello.diderot: The usual greeting, in Diderot
 
+
 After compiling `hello.diderot`, you run it with:
 
 	./hello

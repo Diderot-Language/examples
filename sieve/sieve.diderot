@@ -22,6 +22,7 @@ for which iteration, and when they die off.
 
 After running the program with `./sieve` or, say, `./sieve -NN 1000`, the
 output (one prime per line) can be shown with:
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
 
 	#!
 	#=diderotc
@@ -31,7 +32,7 @@ output (one prime per line) can be shown with:
 
 or to put all the primes on one line:
 
-	:
+	#R
 	unu axinsert -i pp.nrrd -a 1 | unu save -f text
 
 which can be checked against [lists of prime numbers](http://primos.mat.br/indexen.html).

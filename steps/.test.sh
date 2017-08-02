@@ -37,6 +37,7 @@ unu flip -a 0 -o tmp-$II.txt # highest index first
 echo -n "${II: -2}-Snap " | cat - tmp-$II.txt >> snaps.txt
 done
 rm -f tmp-*.txt
+junk snaps.txt
 
 echo == integrating logs:
 grep ======= log.txt | # looking for status summaries from global update
