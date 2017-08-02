@@ -68,7 +68,7 @@ for TT in $TESTS; do
       fi
       ./.test.sh > .ref/out.txt 2>&1
       saveIFS="$IFS"
-      IFS='' # to preserve whitespace when reading lines of README.md
+      IFS='' # to preserve whitespace when reading lines
       while read -r line; do # reads lines from .test.sh
         if [[ $line =~ ^$outFileTol ]]; then
           line=${line#$outFileTol}
@@ -89,7 +89,7 @@ for TT in $TESTS; do
       # see what other output files there are to compare;
       # NOTE that these comparisons are done AFTER test script execution
       saveIFS="$IFS"
-      IFS='' # to preserve whitespace when reading lines of README.md
+      IFS='' # to preserve whitespace when reading lines
       while read -r line; do # reads lines from .test.sh
         if [[ $line =~ ^$outFileTol ]]; then
           line=${line#$outFileTol} # HEY copy-paste from above
