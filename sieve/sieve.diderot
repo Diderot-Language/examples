@@ -20,6 +20,10 @@ Try adding `print()` statements to the program (either within the strand
 `update` or the `global` update) to clarify which strands are active
 for which iteration, and when they die off.
 
+	#!
+	#=diderotc
+	#_ ./sieve -NN 1000
+	#_ junk pp.nrrd
 After running the program with `./sieve` or, say, `./sieve -NN 1000`, the
 output (one prime per line) can be shown with:
 
@@ -27,6 +31,7 @@ output (one prime per line) can be shown with:
 
 or to put all the primes on one line:
 
+	:
 	unu axinsert -i pp.nrrd -a 1 | unu save -f text
 
 which can be checked against [lists of prime numbers](http://primos.mat.br/indexen.html).

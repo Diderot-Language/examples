@@ -1,8 +1,10 @@
 ## hello.diderot: The usual greeting, in Diderot
 
-After compiling `hello.diderot`, you run it and check its output with:
+After compiling `hello.diderot`, you run it with:
 
 	./hello
-	unu save -f text -i out.nrrd
+After the `hello` executable prints `hello, world`, it saves a single-element
+1-D array into `out.nrrd`.  We can inspect its contents with:
 
-which should produce "42".
+	unu save -f text -i out.nrrd
+which should print the number 42.

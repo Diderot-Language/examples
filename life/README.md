@@ -53,3 +53,4 @@ We can use some `unu` to turn these into an image sequence:
 
 The resulting `gosperglidergun.gif` should look the same as the
 reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
+

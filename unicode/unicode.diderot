@@ -2,7 +2,8 @@
 /* ==========================================
 ## unicode.diderot: The Diderot unicode cheatsheet
 
-This example program doesn't actually do anything; these comments
+This example program doesn't actually do anything (in fact it is effectively
+a no-op program).  These comments, however,
 list the Unicode characters that you can use in Diderot.
 With each character we give the Unicode code point and name, the LaTeX equivalent (might be
 useful for Diderot programs in LaTeX documents), and other comments.

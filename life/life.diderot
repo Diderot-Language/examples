@@ -25,6 +25,7 @@ inspect the state of computation at each iteration, by saving the values of
 the output variable(s) during execution.  This is enabled by the `--snapshot`
 option to the compiler:
 
+	#!
 	diderotc --snapshot --exec life.diderot
 
 This adds a new `-s` option to the `./life` executable, which controls the
@@ -38,12 +39,15 @@ gun](http://www.conwaylife.com/w/index.php?title=Gosper_glider_gun) (as well
 as clean up any results from a previous run):
 
 	rm -f state*{nrrd,png}
+	#||:
 	./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd
+	#_ junk state-*.nrrd
 
 which generates many `state-NNNN.nrrd` files, one for each iteration, starting
 with `state-0000.nrrd` to record initialization state before the first iteration.
 We can use some `unu` to turn these into an image sequence:
 
+	:
 	unu join -i state-*.nrrd -a 2 |
 	unu quantize -b 8 |
 	unu resample -s x4 x4 = -k box -c cell |
@@ -51,10 +55,15 @@ We can use some `unu` to turn these into an image sequence:
 
 [ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
 
+	:
 	convert -delay 2 state*.png gosperglidergun.gif
 
 The resulting `gosperglidergun.gif` should look the same as the
 reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
+
+	#_ unu join -i state-*.nrrd -a 0 -incr |
+	#_ unu project -a 0 -m mean max histo-median -t float |
+	#_ unu 2op exists - 0 -o tmp.nrrd
 ========================================== */
 
 /* The game will be computed on an NN x NN grid. Real Conway Life programs can

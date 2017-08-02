@@ -25,6 +25,7 @@ of familiarity that in a rank-2 tensor, i.e. a matrix, the first index
 selects the row, and the second index selects the column.  A matrix created
 by `mm = [[a,b,c],[d,e,f],[g,h,i]]` would conventionally be written as:
 
+	:
 	a b c
 	d e f
 	g h i

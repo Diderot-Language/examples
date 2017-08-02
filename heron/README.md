@@ -77,14 +77,12 @@ text -i vrie.nrrd`, you'll see lines like:
 	89 -1 -1 -1
 	90 -1 -1 -1
 	91 -1 -1 -1
-
 for the values where the algorithm didn't converge.
 The consequences of active strands being halted by an iteration limit is
 different for strand **collections** vs strand **arrays**.  If the program runs
 as a collection of strands, i.e. the last line of the program is instead
 
 	initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };
-
 (note `initially {}` instead of `initially []`), then running `./heron -eps
 1e-8 -l 20` will still finish after 20 iterations, but no output values will
 be saved for those strands that didn't stabilize in time.  That is, `unu save -f text
@@ -96,6 +94,7 @@ On the other hand, we can also increase the precision of a Diderot
 the default.  We do this by compiling with:
 
 	diderotc --double --exec heron.diderot
+at which point
 
-at which point `./heron -eps 1e-8` will finish, with every strand producing a
-more accurate answer.
+	./heron -eps 1e-8
+should finish, with every strand producing a more accurate answer.
