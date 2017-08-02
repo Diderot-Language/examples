@@ -1,0 +1,1 @@
+[plot1d.diderot] Warning: assuming a sample type of float for 'img'; specify a proxy-image file to override the default sample type
