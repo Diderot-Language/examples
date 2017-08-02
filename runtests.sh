@@ -40,10 +40,13 @@ done
 HERE="`dirname \"$0\"`"
 HERE="`( cd \"$HERE\" && pwd )`"
 
+outFileTol="#>" # HEY sync with gen-readme.sh
+
 for TT in $TESTS; do
   echo ========== $TT
   cd $HERE/$TT
   if [[ $genref -eq 1 ]]; then
+      # we are generating reference output, not comparing against
       if [[ ! -e .ref ]]; then
           echo == mkdir $TT/.ref
           mkdir .ref
@@ -52,8 +55,36 @@ for TT in $TESTS; do
           exit 1
       fi
       ./.test.sh > .ref/out.txt 2>&1
+      while read -r line; do # reads lines from .test.sh
+        if [[ $line =~ ^$outFileTol ]]; then
+          line=${line#$outFileTol}
+          # HEY add check that the same outFile isn't used twice
+          outFile=$(echo $line | cut -d' ' -f 1) # messy from IFS modification
+          mv $outFile .ref/$outFile
+        fi
+      done <<< $(cat .test.sh)
   else
+      # we comparing against pre-existing reference outputs
       ./.test.sh > out.txt 2>&1
+      junk `pwd`/$TT
+      # compare textual output with reference
       diff out.txt .ref/out.txt
+      # see what output files there are to compare;
+      # NOTE that these comparisons are done AFTER test script execution
+      saveIFS="$IFS"
+      IFS='' # to preserve whitespace when reading lines of README.md
+      while read -r line; do # reads lines from .test.sh
+        if [[ $line =~ ^$outFileTol ]]; then
+          line=${line#$outFileTol}
+          # HEY add check that the same outFile isn't used twice
+          outFile=$(echo $line | cut -d' ' -f 1) # messy from IFS modification
+          toler=$(echo $line | cut -d' ' -f 2)
+          # needs teem svn r6312
+          unu diff -q -x $outFile .ref/$outFile -eps $toler
+          # HEY if there is a difference, preserve $outFile, else
+          junk `pwd`/$outFile
+        fi
+      done <<< $(cat .test.sh)
+      IFS="$saveIFS"
   fi
 done

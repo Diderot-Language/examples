@@ -62,9 +62,9 @@ The resulting `gosperglidergun.gif` should look the same as the
 reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
 
 	#_ unu join -i state-*.nrrd -a 0 -incr |
-	#_ unu project -a 0 -m sum max histo-median -t float |
-	#_ unu 2op exists - 0 |
-	#_ unu axmerge -a 0 | unu save -f text
+	#_   unu project -a 0 -m sum max histo-median histo-min histo-max -t float |
+	#_     unu 2op exists - 0 | unu convert -t int -o out.nrrd
+	#>out.nrrd 0
 ========================================== */
 
 /* The game will be computed on an NN x NN grid. Real Conway Life programs can

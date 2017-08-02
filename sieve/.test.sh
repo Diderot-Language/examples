@@ -9,10 +9,11 @@ set -o nounset
 rm -f ./sieve
 
 diderotc  --exec sieve.diderot
- ./sieve -NN 1000
- junk pp.nrrd
+./sieve -NN 1000
+junk pp.nrrd
 unu save -f text -i pp.nrrd
 
 
 #cleanup if successful so far
-junk sieve sieve.o sieve.cxx
+#not removing executable since programs may need each other (like fs2d, fs3d)
+junk sieve.o sieve.cxx

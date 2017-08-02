@@ -16,4 +16,5 @@ unu save -f text -i out.nrrd
 
 
 #cleanup if successful so far
-junk hello hello.o hello.cxx
+#not removing executable since programs may need each other (like fs2d, fs3d)
+junk hello.o hello.cxx
