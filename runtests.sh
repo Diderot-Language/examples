@@ -10,7 +10,7 @@
 # \t#_ == this line is only for test script, not for README.md
 # \t#=diderotc == substitute in diderotc compilation line
 # \t#||: == suffix command on following line with "||:" to avoid stopping on error
-# \t# OUT EPS == compare output file OUT with reference with tolerance EPS
+# \t#> OUT EPS == compare output file OUT with reference with tolerance EPS
 
 set -o errexit
 set -o nounset
