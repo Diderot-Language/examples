@@ -1,0 +1,71 @@
+== output of sort log.txt | grep -v =======
+00 Strand 0:  I see 800010
+00 Strand 1:  I see 800101
+00 Strand 2:  I see 801010
+00 Strand 3:  I see 800100
+00 global -------: all(4=4)=8001111; active(4=4)=8001111; stable(0=0)=8000000; inited=8001111; updated=8001111; idle=8000000
+01 Strand 0:  I see 800010
+01 Strand 0: ******** dying
+01 Strand 1:  I see 800101
+01 Strand 2:  I see 801010
+01 Strand 3:  I see 800100
+01 global -------: all(3=3)=8001110; active(3=3)=8001110; stable(0=0)=8000000; inited=8001110; updated=8001110; idle=8000000
+02 Strand 1:  I see 800100
+02 Strand 2:  I see 801010
+02 Strand 3:  I see 800100
+02 global -------: all(3=3)=8001110; active(3=3)=8001110; stable(0=0)=8000000; inited=8001110; updated=8001110; idle=8000000
+03 Strand 1:  I see 800100
+03 Strand 1: ******** stabilizing
+03 Strand 2:  I see 801010
+03 Strand 3:  I see 800100
+03 global -------: all(3=3)=8001110; active(2=2)=8001100; stable(1=1)=8000010; inited=8001110; updated=8001110; idle=8000010
+04 Strand 2:  I see 801010
+04 Strand 3:  I see 800100
+04 global -------: all(3=3)=8001110; active(2=2)=8001100; stable(1=1)=8000010; inited=8001110; updated=8001110; idle=8000010
+05 Strand 2:  I see 801010
+05 Strand 3:  I see 800100
+05 Strand 3: ******** new digit(4)
+05 global -------: all(4=4)=8011110; active(3=3)=8011100; stable(1=1)=8000010; inited=8011110; updated=8001110; idle=8000010
+06 Strand 2:  I see 801010
+06 Strand 3:  I see 810100
+06 Strand 4:  I see 801000
+06 global -------: all(4=4)=8011110; active(3=3)=8011100; stable(1=1)=8000010; inited=8011110; updated=8011110; idle=8000010
+07 Strand 2:  I see 801010
+07 Strand 2: ******** stabilizing
+07 Strand 3:  I see 810100
+07 Strand 3: ******** dying
+07 Strand 4:  I see 801000
+07 global -------: all(3=3)=8010110; active(1=1)=8010000; stable(2=2)=8000110; inited=8010110; updated=8010110; idle=8000110
+08 Strand 4:  I see 800000
+08 global -------: all(3=3)=8010110; active(1=1)=8010000; stable(2=2)=8000110; inited=8010110; updated=8010110; idle=8000110
+09 Strand 4:  I see 800000
+09 Strand 4: ******** new digit(5); stabilizing
+09 global -------: all(4=4)=8110110; active(1=1)=8100000; stable(3=3)=8010110; inited=8110110; updated=8010110; idle=8010110
+10 Strand 5:  I see 810000
+10 Strand 5: ******** dying
+10 global -------: all(3=3)=8010110; active(0=0)=8000000; stable(3=3)=8010110; inited=8010110; updated=8010110; idle=8010110
+== integrating logs:
+00-Snap 0 0 1 1 1 1
+00-glob 0 0 3 3 3 3
+01-Snap 0 0 3 3 3 3
+01-glob 0 0 3 3 3 0
+02-Snap 0 0 3 3 3 0
+02-glob 0 0 3 3 3 0
+03-Snap 0 0 3 3 3 0
+03-glob 0 0 3 3 7 0
+04-Snap 0 0 3 3 7 0
+04-glob 0 0 3 3 7 0
+05-Snap 0 0 3 3 7 0
+05-glob 0 1 3 3 7 0
+06-Snap 0 1 3 3 7 0
+06-glob 0 3 3 3 7 0
+07-Snap 0 3 3 3 7 0
+07-glob 0 3 0 7 7 0
+08-Snap 0 3 0 7 7 0
+08-glob 0 3 0 7 7 0
+09-Snap 0 3 0 7 7 0
+09-glob 1 7 0 7 7 0
+10-Snap 1 7 0 7 7 0
+10-glob 0 7 0 7 7 0
+11-Snap 0 7 0 7 7 0
+99-Snap 0 7 0 7 7 0
