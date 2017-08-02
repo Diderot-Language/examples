@@ -13,9 +13,14 @@ The program as distributed here plots the reconstruction of data with the
 "ctmr" Catmull-Rom reconstruction kernel, with "clamp" border-control. We can plot
 `ctmr` itself, as the response to an impulse in the data:
 
+	#!
 	echo "0 0 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data.nrrd
+	#_ junk data.nrrd
+	#=diderotc
 	./plot1d -img data.nrrd -ymm -0.3 1.3
+	#_ junk rgb.nrrd
 	unu quantize -b 8 -i rgb.nrrd -o ctmr.png
+	#> ctmr.png 0
 
 (See [ctmr.png](ctmr.png)). To learn more, try
 changing the program in all the places noted with "Choose ONE by
@@ -28,6 +33,7 @@ playing with taking derivates, choose reconstruction with `c4hexic` for a high
 into a linear ramp from (-M,-M) to (M,M), with 4 samples of extra padding to account
 for reconstruction kernel support.
 
+	#R
 	M=12;
 	MP=$((M+4));
 	echo "-$MP $MP" | unu axdelete -a -1 |
