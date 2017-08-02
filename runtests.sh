@@ -14,6 +14,7 @@
 
 set -o errexit
 set -o nounset
+shopt -s extglob # for var=${var##*( )}
 shopt -s expand_aliases
 JUNK=""
 function junk { JUNK="$JUNK $@"; }
@@ -27,6 +28,7 @@ sieve
 life
 steps
 unicode
+plot1d
 "
 
 genref=0
@@ -65,14 +67,18 @@ for TT in $TESTS; do
           exit 1
       fi
       ./.test.sh > .ref/out.txt 2>&1
+      saveIFS="$IFS"
+      IFS='' # to preserve whitespace when reading lines of README.md
       while read -r line; do # reads lines from .test.sh
         if [[ $line =~ ^$outFileTol ]]; then
           line=${line#$outFileTol}
+          line=${line##*( )}
           # HEY add check that the same outFile isn't used twice
           outFile=$(echo $line | cut -d' ' -f 1) # messy from IFS modification
           mv $outFile .ref/$outFile
         fi
       done <<< $(cat .test.sh)
+      IFS="$saveIFS"
   else
       # we compare against pre-existing reference outputs
       # generate textual output
@@ -86,7 +92,8 @@ for TT in $TESTS; do
       IFS='' # to preserve whitespace when reading lines of README.md
       while read -r line; do # reads lines from .test.sh
         if [[ $line =~ ^$outFileTol ]]; then
-          line=${line#$outFileTol}
+          line=${line#$outFileTol} # HEY copy-paste from above
+          line=${line##*( )}
           # HEY add check that the same outFile isn't used twice
           outFile=$(echo $line | cut -d' ' -f 1) # messy from IFS modification
           toler=$(echo $line | cut -d' ' -f 2)
