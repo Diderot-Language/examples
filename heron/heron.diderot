@@ -107,7 +107,7 @@ be saved for those strands that didn't stabilize in time.  That is, `unu save -f
 values for which the algorithm converged with 20 iterations or fewer.
 
 	#_ echo == collection instead of array
-	#_ grep -v ARRAY heron.diderot > coll.diderot
+	#_ grep -v "initially \[" heron.diderot > coll.diderot
 	#_ echo "initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };" >> coll.diderot
 	#_ diderotc --exec coll.diderot
 	#_ ./coll -eps 1e-8 -l 20
@@ -168,6 +168,6 @@ strand sqroot (real val) {
 
 /* Initialize strands with value to take the square root of; with this
    5-argument lerp, the output ranges from minval to maxval as ii ranges
-   from 1 to numval. The "initially [];" creates an array of strands
-   (as opposed to a collection, created by "initially {};"). */
-initially [ sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval ]; // ARRAY
+   from 1 to numval. The "initially [];" declaration creates an array
+   of strands (as opposed to a collection, created by "initially {};"). */
+initially [ sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval ];

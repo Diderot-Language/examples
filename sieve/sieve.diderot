@@ -20,13 +20,13 @@ Try adding `print()` statements to the program (either within the strand
 `update` or the `global` update) to clarify which strands are active
 for which iteration, and when they die off.
 
+After running the program with `./sieve` or, say, `./sieve -NN 1000`, the
+output (one prime per line) can be shown with:
+
 	#!
 	#=diderotc
 	#_ ./sieve -NN 1000
 	#_ junk pp.nrrd
-After running the program with `./sieve` or, say, `./sieve -NN 1000`, the
-output (one prime per line) can be shown with:
-
 	unu save -f text -i pp.nrrd
 
 or to put all the primes on one line:
@@ -65,5 +65,5 @@ global {
 
 /* Start a collection of strands on integers 2 through NN. Only in a
    collection can strands `die`.  Had strands been created in an array
-   with `initially []`, `die` would not be allowed. */
+   with `initially []`, use of `die` would cause a compile-time error. */
 initially { test(ii) | ii in 2..NN };

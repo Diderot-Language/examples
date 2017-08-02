@@ -20,7 +20,7 @@ unu save -f text -i vrie.nrrd
  unu save -f text -i vrie.nrrd
 
  echo == collection instead of array
- grep -v ARRAY heron.diderot > coll.diderot
+ grep -v "initially \[" heron.diderot > coll.diderot
  echo "initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };" >> coll.diderot
  diderotc --exec coll.diderot
  ./coll -eps 1e-8 -l 20
