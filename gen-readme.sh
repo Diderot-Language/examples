@@ -43,9 +43,7 @@ if [[ "$@" ]]; then
     examples="$@"
     given=1
 else
-    HERE="`dirname \"$0\"`"
-    #HERE="`( cd \"$HERE\" && pwd )`" # for absolute path
-    examples=$(find $HERE -depth 1 -type d -print | grep -v \.git)
+    examples=$(ls -1F | grep ".*/$" | cut -d/ -f 1)
 fi
 
 
