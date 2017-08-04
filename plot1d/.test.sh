@@ -14,7 +14,7 @@ diderotc  --exec plot1d.diderot
 ./plot1d -img data.nrrd -ymm -0.3 1.3
 junk rgb.nrrd
 unu quantize -b 8 -i rgb.nrrd -o ctmr.png
-#> ctmr.png 0
+#> ctmr.png 2
 
 echo "0.1 0.5 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data5.nrrd
 unu resample -i data5.nrrd -s 6 -o data6.nrrd
@@ -33,7 +33,7 @@ for BC in clamp wrap mirror; do
      junk plot1d-$KK-${BC}{,.diderot,.o,.cxx}
   done
 done
-#> plot-*-*-*.png 0
+#> plot-*-*-*.png 2
 
 M=10;
 MP=$[M+4];
@@ -66,7 +66,7 @@ for I in $(seq 0 $[NF-1]); do
   unu quantize -b 8 -i rgb.nrrd -o plot-f$II.png
   junk plot1d-f${II}{,.diderot,.o,.cxx}
 done
-#> plot-f??.png 0
+#> plot-f??.png 2
 
 
 #cleanup if successful so far; not removing executable

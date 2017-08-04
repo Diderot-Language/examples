@@ -42,6 +42,7 @@ To compile, run, and show output:
 	diderotc --snapshot --exec steps.diderot
 	rm -f state*nrrd log.txt
 	./steps -s 1 > log.txt
+	export LC_ALL=C # to ensure traditional sort order
 	sort log.txt | grep -v =======
 
 (TODO: explain output in `log.txt`)

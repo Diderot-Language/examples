@@ -12,6 +12,7 @@ diderotc --snapshot --exec steps.diderot
 rm -f state*nrrd log.txt
 ./steps -s 1 > log.txt
 echo == output of "sort log.txt | grep -v ======="
+export LC_ALL=C # to ensure traditional sort order
 sort log.txt | grep -v =======
 junk state.nrrd log.txt state-????.nrrd
 

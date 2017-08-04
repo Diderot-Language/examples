@@ -47,6 +47,7 @@ To compile, run, and show output:
 	rm -f state*nrrd log.txt
 	./steps -s 1 > log.txt
 	#_ echo == output of "sort log.txt | grep -v ======="
+	export LC_ALL=C # to ensure traditional sort order
 	sort log.txt | grep -v =======
 	#_ junk state.nrrd log.txt state-????.nrrd
 
