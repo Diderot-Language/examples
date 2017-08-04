@@ -20,6 +20,6 @@ unu 2op exists - 0 | unu convert -t int -o out.nrrd
 #>out.nrrd 0
 
 
-#cleanup if successful so far
-#not removing executable since programs may need each other (like fs2d, fs3d)
+#cleanup if successful so far; not removing executable
+#since programs may need each other (e.g. fs2d, fs3d)
 junk life.o life.cxx

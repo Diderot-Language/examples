@@ -24,7 +24,6 @@ the output variable(s) during execution.  This is enabled by the `--snapshot`
 option to the compiler:
 
 	diderotc --snapshot --exec life.diderot
-
 This adds a new `-s` option to the `./life` executable, which controls the
 periodicity of snapshots being saved, i.e. `-s 1` means save at every iteration,
 `-s 10` means save at every tenth iteration. The default `-s 0` means that no
@@ -37,7 +36,6 @@ as clean up any results from a previous run):
 
 	rm -f state*{nrrd,png}
 	./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd
-
 which generates many `state-NNNN.nrrd` files, one for each iteration, starting
 with `state-0000.nrrd` to record initialization state before the first iteration.
 We can use some `unu` to turn these into an image sequence:
@@ -54,7 +52,6 @@ they are being used above. Finally,
 [ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
 
 	convert -delay 2 state*.png gosperglidergun.gif
-
 The resulting `gosperglidergun.gif` should look the same as the
 reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
 

@@ -107,14 +107,15 @@ be saved for those strands that didn't stabilize in time.  That is, `unu save -f
 -i vrie.nrrd` will produce fewer than 100 lines of text, including only the
 values for which the algorithm converged with 20 iterations or fewer.
 
-	#_ echo == collection instead of array
-	#_ grep -v "initially \[" heron.diderot > coll.diderot
-	#_ echo "initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };" >> coll.diderot
-	#_ diderotc --exec coll.diderot
-	#_ ./coll -eps 1e-8 -l 20
-	#_ echo == vrie.nrrd from coll.diderot
-	#_ unu save -f text -i vrie.nrrd
-	#_ junk coll{,.diderot,.o,.cxx}
+	#T
+	echo == collection instead of array
+	grep -v "initially \[" heron.diderot > coll.diderot
+	echo "initially { sqroot(lerp(minval, maxval, 1, ii, numval)) | ii in 1 .. numval };" >> coll.diderot
+	diderotc --exec coll.diderot
+	./coll -eps 1e-8 -l 20
+	echo == vrie.nrrd from coll.diderot
+	unu save -f text -i vrie.nrrd
+	junk coll{,.diderot,.o,.cxx}
 On the other hand, we can also increase the precision of a Diderot
 `real` itself by using a C `double` to store a `real`, instead of a (single-precision) `float`,
 the default.  We do this by compiling with:

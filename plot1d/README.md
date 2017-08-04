@@ -19,6 +19,7 @@ The program as distributed here plots the reconstruction of data with the
 changing the program in all the places noted with "Choose ONE by
 uncommenting", then recompiling, running, and looking at the results.
 
+
 To plot a function created within Diderot,
 uncomment and edit the "or write your own function of F0" line below. If
 playing with taking derivates, choose reconstruction with `c4hexic` for a high
@@ -31,7 +32,7 @@ for reconstruction kernel support.
 	echo "-$MP $MP" | unu axdelete -a -1 |
 	  unu resample -s $((2*MP+1)) -k tent -c node |
 	  unu axinfo -a 0 -mm -$MP $MP | unu dnorm -o data.nrrd
-	./plot1d -img data.nrrd -xmm -$M $M -ymm -2 2
+	./plot1d -img data.nrrd -xmm -$M $M -ymm -4 4
 	unu quantize -b 8 -i rgb.nrrd -o func.png
 
 Computing the plot as a raster image, with the thickness of plot elements
@@ -40,3 +41,4 @@ index space, which are currently somewhat cumbersome in Diderot. Using
 homogeneous coordinate transforms might simplify this (available with
 matrix-vector multiplications in Diderot), though that would be a very
 different program.
+

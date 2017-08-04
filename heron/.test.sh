@@ -29,6 +29,6 @@ unu save -f text -i vrie.nrrd
 junk coll{,.diderot,.o,.cxx}
 
 
-#cleanup if successful so far
-#not removing executable since programs may need each other (like fs2d, fs3d)
+#cleanup if successful so far; not removing executable
+#since programs may need each other (e.g. fs2d, fs3d)
 junk heron.o heron.cxx

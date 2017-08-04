@@ -16,7 +16,7 @@
 <!-- not show up in the generated README.md; but they do control the -->
 <!-- contents of the generated .test.sh, which are run as a group with -->
 <!-- ../runtests.sh. -->
-<!-- THUS: you can ignore all the \t# lines, and look at the README.md -->
+<!-- THUS: you can ignore all the \t# lines, and read ./README.md -->
 <!-- for the program documentation as it was intended to be seen. -->
 
 After compiling `hello.diderot`, you run it with:

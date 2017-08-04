@@ -15,6 +15,6 @@ junk out.nrrd
 unu save -f text -i out.nrrd
 
 
-#cleanup if successful so far
-#not removing executable since programs may need each other (like fs2d, fs3d)
+#cleanup if successful so far; not removing executable
+#since programs may need each other (e.g. fs2d, fs3d)
 junk unicode.o unicode.cxx
