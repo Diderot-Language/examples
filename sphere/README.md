@@ -71,3 +71,4 @@ the initial data commands above had started with `N=8000`, the resulting
 animation [sphere-decim.gif](sphere-decim.gif) shows how the system responds
 to starting with too many particles, by decimating the population to arive at
 roughly the same number of points as when starting with `N=2`.
+

@@ -15,6 +15,8 @@ Like the [`circle.diderot`](../circle) example, we use snapshots to inspect
 the system state as it progresses, and compile with `--double` for better
 precision:
 
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+	#!
 	diderotc --snapshot --double --exec sphere.diderot
 
 The following creates a list of `N` randomly oriented unit-length 3-vectors in
@@ -26,12 +28,16 @@ leave that out to give different results each time.
 	RNG=1
 	echo 0 0 0 | unu pad -min 0 0 -max M $((N-1)) | unu 1op nrand -s $RNG -o vec3.nrrd
 	unu project -i vec3.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 3 | unu 2op / vec3.nrrd - -o vec3.nrrd
+	#_ junk vec3.nrrd
 
 Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
 to 400 iterations (`-l 400`), as well as cleaning results from previous run:
 
-	rm -f pos-????.{png,nrrd} pos.nrrd
-	./sphere -s 1 -l 400 -rad 0.15 -eps 0.033 -pcp 2
+	#^ rm -f pos-????.{png,nrrd} pos.nrrd
+	#_ rm -f pos.nrrd
+	#^ ./sphere -s 1 -l 400 -rad 0.15 -eps 0.033 -pcp 2
+	#_ ./sphere -s 0 -l 400 -rad 0.15 -eps 0.033 -pcp 2
+	#_ junk pos.nrrd  # the #T block below tests pos.nrrd
 
 This should converge in under 500 iterations, many `pos-????.nrrd` files.
 The interaction radius `-rad 0.15` can be decreased to create a denser
@@ -40,6 +46,7 @@ The following unu hackery processes this into corresponding `pos-????.png` image
 The images are 2*SZ by SZ, computed as a joint histogram of coordinates,
 with oversampling OV (higher values improves anti-aliasing).
 
+	#R
 	SZ=350
 	OV=2
 	export NRRD_STATE_VERBOSE_IO=0
@@ -65,6 +72,7 @@ above is not actually a required part of using Diderot; the aim here is just
 to producing something informative with the minimal number of software tools.
 For fun we make an animated GIF of the results with [ImageMagick](http://www.imagemagick.org)'s `convert`:
 
+	#R
 	convert -delay 6 pos*.png sphere-spread.gif
 
 The resulting [sphere-spread.gif](sphere-spread.gif) shows how the population
@@ -73,6 +81,18 @@ the initial data commands above had started with `N=8000`, the resulting
 animation [sphere-decim.gif](sphere-decim.gif) shows how the system responds
 to starting with too many particles, by decimating the population to arive at
 roughly the same number of points as when starting with `N=2`.
+
+	#T
+	NP=$(unu head pos.nrrd | grep sizes | cut -d' ' -f 3)
+	unu axinsert -i pos.nrrd -a 2 -s $NP -o pos2.nrrd
+	unu swap -i pos2.nrrd -a 1 2 -o pos1.nrrd
+	junk pos{1,2}.nrrd
+	unu 2op - pos1.nrrd pos2.nrrd |  # all pair-wise differences
+	  unu project -a 0 -m l2 | # lengths of diffs
+	  unu histo -b 400 -min 0 -max 0.24 | # HEY 0.24 depends on -rad 0.15 in execution
+	  unu crop -min 1 -max M | # lose spike for differences w/ self
+	  unu resample -s x1 -k gauss:6,4 -t float -o dhisto.nrrd # blur a bunch
+	#> dhisto.nrrd 0
 ========================================== */
 
 input vec3{} ipos ("initial positions for all particles") = load("vec3.nrrd");

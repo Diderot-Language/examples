@@ -55,9 +55,10 @@ tabDoTest="	#!$";
 tabCompile="	#=diderotc";
 tabErrorOk="	#\|\|:";
 tabOutFileTol="	#>"; # HEY sync with runtests.sh
-tabForReadBlock="	#R$";
+tabForReadBlock="	#R";
 tabForTestBlock="	#T";
 forTestLine="#_";
+forReadLine="#\^";
 
 for exdir in $examples; do
     echo $0: $exdir ...
@@ -125,6 +126,7 @@ for exdir in $examples; do
                 if [[ $line =~ ^$tabOutFileTol ]]; then nfread=1; fi
                 if [[ $line =~ ^$tabCompile ]]; then nfread=1; fi
                 if [[ $line =~ ^$tab$forTestLine ]]; then nfread=1; fi
+                if [[ $line =~ ^$tab$forReadLine ]]; then nftest=1; fi
                 if [[ $line =~ ^$tabDoTest ]]; then dotest=1; nfe=1; fi
                 if [[ $line =~ ^$tabForReadBlock ]]; then nfe=1; fi
                 if [[ $line =~ ^$tabForTestBlock ]]; then nfe=1; fi
@@ -148,7 +150,12 @@ for exdir in $examples; do
                 fi
             fi
             if [[ $reading -eq 1 && $nfread -eq 0 && $nfe -eq 0 ]]; then
-                echo $line >> $README
+                if [[ $line =~ ^$tab$forReadLine ]]; then
+                    line=${line##$tab$forReadLine*( )}
+                    echo "$tab$line" >> $README
+                else
+                    echo $line >> $README
+                fi
             fi
         fi
     done <<< $(cat $got) # reading Diderot source lines

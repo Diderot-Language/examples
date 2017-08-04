@@ -7,10 +7,12 @@
 # (Markdown lines starting with tab) are turned into test scripts, as follows:
 # \t#! == do generate .test.sh (else the generated .test.sh is deleted)
 # \t#R == following code block is only for README.md, not for test script
+# \t#T == following code block is only for test script, not for README.md
+# \t#^ == this line is only for README.md, not for test script
 # \t#_ == this line is only for test script, not for README.md
 # \t#=diderotc == substitute in diderotc compilation line
-# \t#||: == suffix command on following line with "||:" to avoid stopping on error
-# \t#> OUT EPS == compare output file OUT with reference with tolerance EPS
+# \t#||: == suffix command on following line with "||:" to avoid stopping from error
+# \t#> OUT EPS == compare output file(s) OUT with reference, with tolerance EPS
 
 #TODO: valgrind commands starting with "./"
 #TODO: compile for pthreads (control how many times run), --double ( --long-int, --scalar)
@@ -36,6 +38,7 @@ steps
 unicode
 plot1d
 tensor
+sphere
 "
 
 function usage {

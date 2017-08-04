@@ -13,6 +13,7 @@ The program as distributed here plots the reconstruction of data with the
 "ctmr" Catmull-Rom reconstruction kernel, with "clamp" border-control. We can plot
 `ctmr` itself, as the response to an impulse in the data:
 
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
 	#!
 	echo "0 0 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data.nrrd
 	#_ junk data.nrrd
