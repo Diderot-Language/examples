@@ -35,6 +35,7 @@ to 400 iterations (`-l 400`), as well as cleaning results from previous run:
 
 	#^ rm -f pos-????.{png,nrrd} pos.nrrd
 	#_ rm -f pos.nrrd
+	#I   # because particle motions can change with any FP changes
 	#^ ./sphere -s 1 -l 400 -rad 0.15 -eps 0.033 -pcp 2
 	#_ ./sphere -s 0 -l 400 -rad 0.15 -eps 0.033 -pcp 2
 	#_ junk pos.nrrd  # the #T block below tests pos.nrrd

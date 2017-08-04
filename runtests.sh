@@ -10,6 +10,8 @@
 # \t#T == following code block is only for test script, not for README.md
 # \t#^ == this line is only for README.md, not for test script
 # \t#_ == this line is only for test script, not for README.md
+# \t#I == ignore differences in out.txt, because they are to be expected
+#         (e.g. due to acceptable differences in floating point ops)
 # \t#=diderotc == substitute in diderotc compilation line
 # \t#||: == suffix command on following line with "||:" to avoid stopping from error
 # \t#> OUT EPS == compare output file(s) OUT with reference, with tolerance EPS
@@ -102,6 +104,7 @@ if [[ $verbose -eq 1 ]]; then
 fi
 
 outFileTol="#>" # HEY sync with gen-readme.sh
+ignoreOutDotTxt="^#I"; # HEY sync with gen-readme.sh
 
 for TT in $tests; do
     if [[ ! -d $HERE/$TT ]]; then
@@ -161,8 +164,10 @@ for TT in $tests; do
             continue;
         fi
         set -o errexit
-        # compare textual output with reference
-        diff out.txt $REF/$TT/out.txt
+        if [[ -z $(grep "$ignoreOutDotTxt" .test.sh ||:) ]]; then
+            # compare textual output with reference
+            diff out.txt $REF/$TT/out.txt
+        fi
         # see what other output files there are to compare;
         # NOTE that these comparisons are done AFTER test script execution
         saveIFS="$IFS"

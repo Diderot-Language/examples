@@ -17,6 +17,7 @@ unu project -i vec3.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 3 | unu 2op / vec3.nr
 junk vec3.nrrd
 
 rm -f pos.nrrd
+#I   # because particle motions can change with any FP changes
 ./sphere -s 0 -l 400 -rad 0.15 -eps 0.033 -pcp 2
 junk pos.nrrd  # the #T block below tests pos.nrrd
 

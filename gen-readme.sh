@@ -57,6 +57,7 @@ tabForReadBlock="	#R";
 tabForTestBlock="	#T";
 forTestLine="#_";
 forReadLine="#\^";
+tabIgnoreOutDotTxt="	#I"; # HEY sync with runtests.sh
 
 for exdir in $examples; do
     echo $0: $exdir ...
@@ -126,6 +127,7 @@ for exdir in $examples; do
                 if [[ $line =~ ^$tab$forTestLine ]]; then nfread=1; fi
                 if [[ $line =~ ^$tab$forReadLine ]]; then nftest=1; fi
                 if [[ $line =~ ^$tabDoTest ]]; then dotest=1; nfe=1; fi
+                if [[ $line =~ ^$tabIgnoreOutDotTxt ]]; then nfread=1; fi
                 if [[ $line =~ ^$tabForReadBlock ]]; then nfe=1; fi
                 if [[ $line =~ ^$tabForTestBlock ]]; then nfe=1; fi
                 if [[ $line =~ ^$tabErrorOk ]]; then nfe=1; errorok=1; fi
