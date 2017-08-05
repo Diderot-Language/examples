@@ -13,7 +13,7 @@ rm -f state*nrrd log.txt
 ./steps -s 1 > log.txt
 echo == output of "sort log.txt | grep -v ======="
 sort log.txt | grep -v =======
-junk state.nrrd log.txt state-????.nrrd
+# junk state.nrrd log.txt state-????.nrrd
 
 rm -f snaps.txt
 touch snaps.txt
