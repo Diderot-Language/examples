@@ -17,7 +17,7 @@ The output stores four numbers for each value processed (by index along fast axi
 </ol>
 To see the output (four numbers per line):
 
-	unu save -f text -i vrie.nrrd
+	echo == vrie.nrrd ==
 
 You can see that with the defaults, it took at most 7 iterations to converge:
 
@@ -65,7 +65,6 @@ from above that at most 7 iterations were needed with the default `eps`, we
 can try limiting the computation at something higher than 7:
 
 	./heron -eps 1e-8 -l 20
-
 This will finish promptly, after 20 iterations. The initialization of the program output variable
 with:
 

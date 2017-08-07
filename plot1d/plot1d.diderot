@@ -13,7 +13,7 @@ The program as distributed here plots the reconstruction of data with the
 "ctmr" Catmull-Rom reconstruction kernel, with "clamp" border-control. We can plot
 `ctmr` itself, as the response to an impulse in the data:
 
-<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.py)-->
 	#!
 	echo "0 0 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data.nrrd
 	#_ junk data.nrrd
@@ -42,9 +42,9 @@ uncommenting", then recompiling, running, and looking at the results.
 	         ./plot1d-$KK-$BC -img data$DD.nrrd $PARM
 	         unu quantize -b 8 -i rgb.nrrd -o plot-$DD-$KK-$BC.png
 	      done
-	      junk plot1d-$KK-${BC}{,.diderot,.o,.cxx}
 	   done
 	done
+	#tmp plot1d-*-*.diderot
 	#> plot-*-*-*.png 2
 
 To plot a function created within Diderot,
@@ -100,8 +100,8 @@ different program.
 	   diderotc --exec plot1d-f$II.diderot
 	   ./plot1d-f$II -img dataf.nrrd $PARM
 	   unu quantize -b 8 -i rgb.nrrd -o plot-f$II.png
-	   junk plot1d-f${II}{,.diderot,.o,.cxx}
 	done
+	#tmp plot1d-f*.diderot
 	#> plot-f??.png 2
 ========================================== */
 

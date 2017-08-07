@@ -47,17 +47,19 @@ else
 fi
 
 
-# see documentation in runtests.sh
+# see documentation in runtests.py
 tab="	";
 tabDoTest="	#!$";
 tabCompile="	#=diderotc";
 tabErrorOk="	#\|\|:";
-tabOutFileTol="	#>"; # HEY sync with runtests.sh
+outFileTol="#>"; # HEY sync with runtests.py
 tabForReadBlock="	#R";
 tabForTestBlock="	#T";
 forTestLine="#_";
 forReadLine="#\^";
-tabIgnoreOutDotTxt="	#I"; # HEY sync with runtests.sh
+tabIgnoreOutDotTxt="	#I"; # HEY sync with runtests.py
+tmpProgName="#tmp"; # HEY sync with runtests.py
+progName="#prog"; # HEY sync with runtests.py
 
 for exdir in $examples; do
     echo $0: $exdir ...
@@ -122,21 +124,54 @@ for exdir in $examples; do
                     reading=0
                 fi
                 intabs=1
-                if [[ $line =~ ^$tabOutFileTol ]]; then nfread=1; fi
+                if [[ $line =~ ^$tab$outFileTol ]]; then nfread=1; fi
                 if [[ $line =~ ^$tabCompile ]]; then nfread=1; fi
                 if [[ $line =~ ^$tab$forTestLine ]]; then nfread=1; fi
                 if [[ $line =~ ^$tab$forReadLine ]]; then nftest=1; fi
                 if [[ $line =~ ^$tabDoTest ]]; then dotest=1; nfe=1; fi
                 if [[ $line =~ ^$tabIgnoreOutDotTxt ]]; then nfread=1; fi
+                if [[ $line =~ ^$tab$tmpProgName ]]; then nfread=1; fi
+                if [[ $line =~ ^$tab$progName ]]; then nfread=1; fi
                 if [[ $line =~ ^$tabForReadBlock ]]; then nfe=1; fi
                 if [[ $line =~ ^$tabForTestBlock ]]; then nfe=1; fi
                 if [[ $line =~ ^$tabErrorOk ]]; then nfe=1; errorok=1; fi
                 if [[ $testing -eq 1 ]]; then
                     totest=${line#$tab}
                     if [[ $line =~ ^$tabCompile ]]; then
-                        totest="diderotc ${line#$tabCompile} --exec $progddro"
+                        totest="diderotc ${line#$tabCompile} --exec $progddro
+$progName $progddro"
                     elif [[ $totest =~ ^$forTestLine ]]; then
                         totest=${totest#$forTestLine}
+                    fi
+                    if [[ $line =~ ^$tab$outFileTol ]]; then # error checking
+                        # HEY add check that the same outFile isn't used twice
+                        filetol=${totest##$outFileTol*( )}
+                        filetol=${filetol%%*( )}
+                        file=$(echo $filetol | cut -d' ' -f 1) # alas, IFS hacking
+                        tol=$(echo $filetol | cut -d' ' -f 2)
+                        foo=$(echo $filetol | cut -d' ' -f 3)
+                        if [[ ! $filetol =~ " " || -z $tol || ! -z $foo ]]; then
+                            echo "$0: in $got, outFileTol line \"$line\" not of form \"\t$outFileTol OUT EPS\"" >&2
+                            exit 1
+                        fi
+                    fi
+                    if [[ $line =~ ^$tab$tmpProgName ]]; then # error checking
+                        # HEY add check that the same progName isn't used twice
+                        prog=${totest##$tmpProgName*( )}
+                        prog=${prog%%*( )}
+                        if [[ -z $prog ]]; then
+                            echo "$0: in $got, tmpProgName line \"$line\" not of form \"\t$tmpProgName OUT\"" >&2
+                            exit 1
+                        fi
+                    fi
+                    if [[ $line =~ ^$tab$progName ]]; then # HEY copy+paste from above; error checking
+                        # HEY add check that the same progName isn't used twice
+                        prog=${totest##$progName*( )}
+                        prog=${prog%%*( )}
+                        if [[ -z $prog ]]; then
+                            echo "$0: in $got, progName line \"$line\" not of form \"\t$progName OUT\"" >&2
+                            exit 1
+                        fi
                     fi
                     if [[ $nftest -eq 0 && $nfe -eq 0 ]]; then
                         totest=${totest# }
@@ -177,14 +212,17 @@ function cleanup { rm -rf \$JUNK; }
 trap cleanup err exit int term
 set -o errexit
 set -o nounset
+shopt -s expand_aliases
 
-rm -f ./$prog
+if [ ! -z \${DDRO_TEST+x} ]; then
+    if [ \$DDRO_TEST == noop ]; then
+        alias diderotc=:
+    elif [ \$DDRO_TEST == pthread ]; then
+        alias diderotc=\"diderotc --target=pthread\"
+    fi
+fi
+
 $(cat $TEST)" > $TEST
-        echo "
-
-#cleanup if successful so far; not removing executable
-#since programs may need each other (e.g. fs2d, fs3d)
-junk $prog.o $prog.cxx" >> $TEST
         chmod 755 $TEST
         echo "  ... also created $TEST"
     fi

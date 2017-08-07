@@ -5,12 +5,21 @@ function cleanup { rm -rf $JUNK; }
 trap cleanup err exit int term
 set -o errexit
 set -o nounset
+shopt -s expand_aliases
 
-rm -f ./plot1d
+if [ ! -z ${DDRO_TEST+x} ]; then
+    if [ $DDRO_TEST == noop ]; then
+        alias diderotc=:
+    elif [ $DDRO_TEST == pthread ]; then
+        alias diderotc="diderotc --target=pthread"
+    fi
+fi
+
 
 echo "0 0 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data.nrrd
 junk data.nrrd
 diderotc  --exec plot1d.diderot
+#prog plot1d.diderot
 ./plot1d -img data.nrrd -ymm -0.3 1.3
 junk rgb.nrrd
 unu quantize -b 8 -i rgb.nrrd -o ctmr.png
@@ -30,9 +39,9 @@ for BC in clamp wrap mirror; do
         ./plot1d-$KK-$BC -img data$DD.nrrd $PARM
         unu quantize -b 8 -i rgb.nrrd -o plot-$DD-$KK-$BC.png
      done
-     junk plot1d-$KK-${BC}{,.diderot,.o,.cxx}
   done
 done
+#tmp plot1d-*-*.diderot
 #> plot-*-*-*.png 2
 
 M=10;
@@ -64,11 +73,6 @@ for I in $(seq 0 $[NF-1]); do
   diderotc --exec plot1d-f$II.diderot
   ./plot1d-f$II -img dataf.nrrd $PARM
   unu quantize -b 8 -i rgb.nrrd -o plot-f$II.png
-  junk plot1d-f${II}{,.diderot,.o,.cxx}
 done
+#tmp plot1d-f*.diderot
 #> plot-f??.png 2
-
-
-#cleanup if successful so far; not removing executable
-#since programs may need each other (e.g. fs2d, fs3d)
-junk plot1d.o plot1d.cxx

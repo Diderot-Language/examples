@@ -44,6 +44,7 @@ To compile, run, and show output:
 
 	#!
 	diderotc --snapshot --exec steps.diderot
+	#prog steps.diderot
 	rm -f state*nrrd log.txt
 	./steps -s 1 > log.txt
 	#_ echo == output of "sort log.txt | grep -v ======="

@@ -5,15 +5,19 @@ function cleanup { rm -rf $JUNK; }
 trap cleanup err exit int term
 set -o errexit
 set -o nounset
+shopt -s expand_aliases
 
-rm -f ./sieve
+if [ ! -z ${DDRO_TEST+x} ]; then
+    if [ $DDRO_TEST == noop ]; then
+        alias diderotc=:
+    elif [ $DDRO_TEST == pthread ]; then
+        alias diderotc="diderotc --target=pthread"
+    fi
+fi
+
 
 diderotc  --exec sieve.diderot
+#prog sieve.diderot
 ./sieve -NN 1000
 junk pp.nrrd
 unu save -f text -i pp.nrrd
-
-
-#cleanup if successful so far; not removing executable
-#since programs may need each other (e.g. fs2d, fs3d)
-junk sieve.o sieve.cxx

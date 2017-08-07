@@ -24,10 +24,11 @@ This example also shows off the **snapshot** mechanism that can be used to
 inspect the state of computation at each iteration, by saving the values of
 the output variable(s) during execution.  This is enabled by the `--snapshot`
 option to the compiler:
-<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.py)-->
 
 	#!
 	diderotc --snapshot --exec life.diderot
+	#prog life.diderot
 This adds a new `-s` option to the `./life` executable, which controls the
 periodicity of snapshots being saved, i.e. `-s 1` means save at every iteration,
 `-s 10` means save at every tenth iteration. The default `-s 0` means that no

@@ -5,10 +5,19 @@ function cleanup { rm -rf $JUNK; }
 trap cleanup err exit int term
 set -o errexit
 set -o nounset
+shopt -s expand_aliases
 
-rm -f ./sphere
+if [ ! -z ${DDRO_TEST+x} ]; then
+    if [ $DDRO_TEST == noop ]; then
+        alias diderotc=:
+    elif [ $DDRO_TEST == pthread ]; then
+        alias diderotc="diderotc --target=pthread"
+    fi
+fi
+
 
 diderotc --snapshot --double --exec sphere.diderot
+#prog sphere.diderot
 
 N=2
 RNG=1
@@ -29,10 +38,7 @@ unu 2op - pos1.nrrd pos2.nrrd |  # all pair-wise differences
  unu project -a 0 -m l2 | # lengths of diffs
  unu histo -b 400 -min 0 -max 0.24 | # HEY 0.24 depends on -rad 0.15 in execution
  unu crop -min 1 -max M | # lose spike for differences w/ self
- unu resample -s x1 -k gauss:6,4 -t float -o dhisto.nrrd # blur a bunch
+ unu resample -s x1 -k gauss:4,4 -t float -o dhisto.nrrd # blur a bunch
 #> dhisto.nrrd 0
-
-
-#cleanup if successful so far; not removing executable
-#since programs may need each other (e.g. fs2d, fs3d)
-junk sphere.o sphere.cxx
+# even with non-deterministic differences in parallel computation of pos.nrrd,
+# dhisto.nrrd will be exactly the same each time

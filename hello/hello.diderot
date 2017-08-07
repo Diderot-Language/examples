@@ -15,7 +15,7 @@
 <!-- ../gen-readme.sh. These lines (as well as these HTML comments) will -->
 <!-- not show up in the generated README.md; but they do control the -->
 <!-- contents of the generated .test.sh, which are run as a group with -->
-<!-- ../runtests.sh. -->
+<!-- ../runtests.py -->
 <!-- THUS: you can ignore all the \t# lines, and read ./README.md -->
 <!-- for the program documentation as it was intended to be seen. -->
 

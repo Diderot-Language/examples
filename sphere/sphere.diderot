@@ -15,9 +15,10 @@ Like the [`circle.diderot`](../circle) example, we use snapshots to inspect
 the system state as it progresses, and compile with `--double` for better
 precision:
 
-<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.py)-->
 	#!
 	diderotc --snapshot --double --exec sphere.diderot
+	#prog sphere.diderot
 
 The following creates a list of `N` randomly oriented unit-length 3-vectors in
 `vec3.nrrd` which will be the initial input.  Setting the random number seed
@@ -92,8 +93,10 @@ roughly the same number of points as when starting with `N=2`.
 	  unu project -a 0 -m l2 | # lengths of diffs
 	  unu histo -b 400 -min 0 -max 0.24 | # HEY 0.24 depends on -rad 0.15 in execution
 	  unu crop -min 1 -max M | # lose spike for differences w/ self
-	  unu resample -s x1 -k gauss:6,4 -t float -o dhisto.nrrd # blur a bunch
+	  unu resample -s x1 -k gauss:4,4 -t float -o dhisto.nrrd # blur a bunch
 	#> dhisto.nrrd 0
+	# even with non-deterministic differences in parallel computation of pos.nrrd,
+	# dhisto.nrrd will be exactly the same each time
 ========================================== */
 
 input vec3{} ipos ("initial positions for all particles") = load("vec3.nrrd");

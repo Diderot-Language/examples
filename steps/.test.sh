@@ -5,16 +5,25 @@ function cleanup { rm -rf $JUNK; }
 trap cleanup err exit int term
 set -o errexit
 set -o nounset
+shopt -s expand_aliases
 
-rm -f ./steps
+if [ ! -z ${DDRO_TEST+x} ]; then
+    if [ $DDRO_TEST == noop ]; then
+        alias diderotc=:
+    elif [ $DDRO_TEST == pthread ]; then
+        alias diderotc="diderotc --target=pthread"
+    fi
+fi
+
 
 diderotc --snapshot --exec steps.diderot
+#prog steps.diderot
 rm -f state*nrrd log.txt
 ./steps -s 1 > log.txt
 echo == output of "sort log.txt | grep -v ======="
 export LC_ALL=C # to ensure traditional sort order
 sort log.txt | grep -v =======
-# junk state.nrrd log.txt state-????.nrrd
+junk state.nrrd log.txt state-????.nrrd
 
 rm -f snaps.txt
 touch snaps.txt
@@ -45,8 +54,3 @@ grep ======= log.txt | # looking for status summaries from global update
 cut -d' ' -f 4,5,6,7,8,9,10 | # -glob index and values for 6 strands
 cat - snaps.txt | # combining with snapshot summary
 sort
-
-
-#cleanup if successful so far; not removing executable
-#since programs may need each other (e.g. fs2d, fs3d)
-junk steps.o steps.cxx

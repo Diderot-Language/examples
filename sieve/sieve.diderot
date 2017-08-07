@@ -22,7 +22,7 @@ for which iteration, and when they die off.
 
 After running the program with `./sieve` or, say, `./sieve -NN 1000`, the
 output (one prime per line) can be shown with:
-<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.py)-->
 
 	#!
 	#=diderotc

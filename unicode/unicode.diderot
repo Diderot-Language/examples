@@ -29,7 +29,7 @@ undermine their continued relevance for Diderot or for programming in general.
 See https://en.wikipedia.org/wiki/Unicode_input for information about
 how best to input unicode in your OS.  Or, copy and paste from this file.
 
-<!--(ignore lines starting with "\tab#"; for testing with ../runtests.sh)-->
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.py)-->
 	#!
 	#_ #just to make sure no-op compiles and runs
 	#=diderotc
