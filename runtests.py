@@ -65,6 +65,8 @@ tpnre=re.compile('^' + tmpProgName + ' *')
 progName="#prog"; # HEY sync with gen-readme.sh
 pnre=re.compile('^' + progName + ' *')
 
+faultre=re.compile('.*ault.*') # for finding segfaults
+
 ddrcwre=re.compile('^\[.*\.diderot.*\] Warning: ') # pattern for warnings from diderotc
 
 
@@ -127,6 +129,12 @@ def runsave(outname):
     # with or without error, res stores output, for saving to file
     with open(outname, 'w') as f:
         slines=[str(bl,'utf-8') for bl in res.stdout.splitlines()]
+        # this is a challenge for testing: it is not really an error (for this
+        # program) to finish without all strands converging, so we ignore the
+        # non-zero return status. But then how do we catch things like a
+        # segfault?  Right now we search for that line in the output. But
+        # HEY what if there are other errors that we aren't searching for?
+        if [l for l in slines if faultre.match(l)]: ret=1 # segfault!
         # dropping diderotc warnings because in case of parallel testing, they
         # are seen only on the first pass (and the difference in presence of
         # warning shouldn't be an error), and because they aren't really the
@@ -134,7 +142,7 @@ def runsave(outname):
         flines=[l for l in slines if not ddrcwre.match(l)]
         f.write('\n'.join(flines))
         f.write('\n') # final newline
-    return ret
+    return (ret,res)
 
 def globprogs(TT, globs, progs, execs):
     for pg in globs:
@@ -197,8 +205,10 @@ for TT in tests:
     junk=[]
     thispass=True
     if generate:
-        if runsave(refdir + '/out.txt'):
-            eprint('%s: PANIC: failed to run test script; see %s' % (me, refdir + '/out.txt'))
+        (ret,out)=runsave(refdir + '/out.txt')
+        if ret:
+            eprint('%s: PANIC: failed to run test script; %s records:\n%s'
+                   % (me, refdir + '/out.txt', str(out.stdout,'utf-8')))
             sys.exit(1)
         # done running script, now move outputs
         for ot in outtols:
@@ -218,6 +228,7 @@ for TT in tests:
             eprint(me+': missing reference "%s"; need to run with -g; stopping' % (refdir + '/out.txt'))
             sys.exit(1)
         runs = parallel if parallel else 1
+        run('rm -f out.txt out-??.txt')
         for II in range(runs):
             if not thispass: break
             if parallel:
@@ -229,8 +240,10 @@ for TT in tests:
                 OUT='out.txt'
                 if 'DDRO_TEST' in os.environ: del os.environ['DDRO_TEST']
             junk.append(OUT)
-            if runsave(OUT):
-                eprint('%s: "%s" FAIL; %s returned:' % (me, TT, tsh))
+            (ret,out)=runsave(OUT)
+            if ret:
+                eprint('%s: %s FAIL; %s script says (see %s):\n%s'
+                       % (me, TT, tsh, refdir + '/out.txt', str(out.stdout,'utf-8')))
                 thispass=False
                 break
             if not II: # first time through
