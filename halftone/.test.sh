@@ -7,12 +7,18 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
-if [ ! -z ${DDRO_TEST+x} ]; then
-    if [ $DDRO_TEST == noop ]; then
+if [ ! -z ${DDRO_TARG+x} ]; then
+    if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
-    elif [ $DDRO_TEST == pthread ]; then
+    elif [ $DDRO_TARG == pthread ]; then
         alias diderotc="diderotc --target=pthread"
     fi
+fi
+
+if [ ! -z ${DDRO_PRFX+x} ]; then
+    PRFX=$DDRO_PRFX
+else
+    PRFX=
 fi
 
 
@@ -27,12 +33,27 @@ junk img.nrrd
 diderotc --snapshot --exec halftone.diderot
 #prog halftone.diderot
 
-NN=100
+NN=300
 RNG=5
 echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 junk vec2.nrrd
+
+rm -f pos-????.{png,nrrd} pos.nrrd
+$PRFX ./halftone -s 0 -l 800 -radmm 0.04 1.3 -eps 0.0001 -pcp 2
+
+SZ=200
+OV=2
+export NRRD_STATE_VERBOSE_IO=0
+for PIIN in pos.nrrd; do
+   II=lores
+  echo "post-processing $PIIN to pos-$II.png ... "
+  unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
+    unu resample -s /$OV /$OV -k bspln5 -t float |
+    unu quantize -b 8 -min 0 -max $(echo "0.15 / ($OV * $OV)" | bc -l) -o pos-$II.png
+done
+#> pos-lores.png 0
 
 rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 NN=30000
@@ -40,7 +61,7 @@ RNG=5
 echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
   unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
-./halftone -s 50 -l 150 -radmm 0.006 1 -eps 0.00004 -pcp 1 ||:
+$PRFX ./halftone -s 50 -l 150 -radmm 0.006 1 -eps 0.00004 -pcp 1 ||:
 SZ=200
 OV=2
 export NRRD_STATE_VERBOSE_IO=0
@@ -56,6 +77,5 @@ for PIIN in pos-0{000,050,100,150}.nrrd; do
     unu resample -s $((SZ*2)) = -k box |
     unu join -i - pos-$II.png -a 1 -o hp-$II.png
 done
-unu cksum pos-????.nrrd
 junk hp-0{000,050,100}.png pos-????.{png,nrrd}
 #> hp-0150.png 0

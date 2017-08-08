@@ -32,7 +32,7 @@ passes. With this proxy image in place, we can compile:
 We use snapshots to monitor the progress of computation.  To make `NN` initial
 positions with random number seen `RNG` that fit within the ramp image domain:
 
-	NN=100
+	NN=300
 	RNG=5
 	echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
 	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
@@ -42,19 +42,18 @@ Then to run with snapshots saved every iteration (`-s 1`), but limiting the prog
 to 800 iterations (`-l 800`), as well as cleaning results from previous run:
 
 	rm -f pos-????.{png,nrrd} pos.nrrd
-	./halftone -s 2 -l 800 -radmm 0.03 1 -eps 0.0001 -pcp 2
+	./halftone -s 2 -l 800 -radmm 0.03 1.0 -eps 0.0001 -pcp 2
 
 Running with this large value (0.03) of minimum radius (considering the image domain)
 is good for giving a visual impression of how the particle system populates the
-domain. This does some `unu` hacking to make images of the evolving system, which
+domain. Next, some `unu` hacking makes images of the evolving system, which
 are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref.gif)).
 
 	SZ=200
 	OV=2
 	export NRRD_STATE_VERBOSE_IO=0
 	for PIIN in pos-????.nrrd; do
-	   IIN=${PIIN#*-}
-	   II=${IIN%.*}
+	IIN=${PIIN#*-}; II=${IIN%.*}
 	   echo "post-processing $PIIN to pos-$II.png ... "
 	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
 	     unu resample -s /$OV /$OV -k bspln5 -t float |
