@@ -64,9 +64,11 @@ tpnre=re.compile('^' + tmpProgName + ' *')
 progName="#prog"; # HEY sync with gen-readme.sh
 pnre=re.compile('^' + progName + ' *')
 
-faultre=re.compile('.*ault.*') # for finding segfaults
+# for finding segfaults; need egmentation or else it matches "default"
+faultre=re.compile('.*egmentation.*ault.*')
 
-ddrcwre=re.compile('^\[.*\.diderot.*\] Warning: ') # pattern for warnings from diderotc
+# pattern for warnings from diderotc
+ddrcwre=re.compile('^\[.*\.diderot.*\] Warning: ')
 
 
 def eprint(*args, **kwargs):
@@ -117,7 +119,7 @@ startdir = os.getcwd()
 if args.prfx:
     os.environ['DDRO_PRFX'] = args.prfx[0]
     if (verbose):
-        print('%s: environment variable DDRO_PRFX now "%s"' % (me, os.environ['DDRO_PRFX']))
+        print('%s: NOTE: program executions will be prefixed by "%s"' % (me, os.environ['DDRO_PRFX']))
 else:
     if 'DDRO_PRFX' in os.environ: del os.environ['DDRO_PRFX']
 
