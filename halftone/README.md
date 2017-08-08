@@ -20,6 +20,7 @@ available via:
 	unu crop -min 0 100 -max M M-100 |
 	unu affine -1 - 1 0 1 |
 	unu pad -min -2 -2 -max M+2 M+2 -o img.nrrd
+	rm -f out.nrrd
 
 The domain of this `img.nrrd` is [-1,1] along X, and [-0.5,0.5] along Y, and
 which varies from 0 at X=-1 to 1 at X=1. Two extra samples are added at
@@ -72,12 +73,11 @@ to ensure position along X approaches a linear ramp:
 	OV=2
 	export NRRD_STATE_VERBOSE_IO=0
 	for PIIN in pos-????.nrrd; do
-	   IIN=${PIIN#*-}
-	   II=${IIN%.*}
+	   IIN=${PIIN#*-}; II=${IIN%.*}
 	   echo "post-processing $PIIN to pos-$II.png ... "
 	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
 	     unu resample -s /$OV /$OV -k bspln3 -t float |
-	     unu quantize -b 8 -min 0 -max $(echo "2 / ($OV * $OV)" | bc -l) -o pos-$II.png
+	unu quantize -b 8 -min 0 -max $(echo "2 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	   unu slice -i $PIIN -a 0 -p 0 |
 	     unu histo -min -1 -max 1 -b $((SZ/3)) |
 	     unu dhisto -h $((SZ/3)) -nolog |
@@ -104,10 +104,10 @@ and then run with new initial positions (without snapshots this time):
 	  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	./halftone -l 800 -radmm 0.01 0.2 -eps 0.000009 -pcp 1
 	echo 1 -1 |
-	  unu 2op x pos.nrrd - |
-	  unu save -f text |
-	  sed -e s/$/\ 0.005\ 0\ 360\ arc\ closepath\ fill/ |
-	  cat head.eps - tail.eps > ddro.eps
+	unu 2op x pos.nrrd - |
+	unu save -f text |
+	sed -e s/$/\ 0.005\ 0\ 360\ arc\ closepath\ fill/ |
+	cat head.eps - tail.eps > ddro.eps
 	epstopdf ddro.eps
 
 The `ddro.eps` is generated with the help of `head.eps` and `tail.eps`,

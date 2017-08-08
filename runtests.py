@@ -6,6 +6,25 @@ import subprocess
 import re
 import glob
 
+# explicitly listing these, rather than discovering which directories have
+# .test.sh scripts, so that we can encode here dependencies (e.g. anything
+# that depends on fs2d or fs3d has to come after them)
+TESTS=[
+'hello',
+'heron',
+'sieve',
+'life',
+'steps',
+'unicode',
+'plot1d',
+'tensor',
+'sphere',
+'vimg',
+'fs2d',
+'iso2d',
+'halftone'
+]
+
 # This is an experiment in combining test generation and documentation.
 # ./gen-readme.sh not only processes a certain comment (containing Markdown)
 # into the README.md file, it also generates a .test.sh test script. There
@@ -48,23 +67,6 @@ pnre=re.compile('^' + progName + ' *')
 
 ddrcwre=re.compile('^\[.*\.diderot.*\] Warning: ') # pattern for warnings from diderotc
 
-# explicitly listing these, rather than discovering which directories have
-# .test.sh scripts, so that we can encode here dependencies (e.g. anything
-# that depends on fs2d or fs3d has to come after them)
-TESTS=[
-'hello',
-'heron',
-'sieve',
-'life',
-'steps',
-'unicode',
-'plot1d',
-'tensor',
-'sphere',
-'vimg',
-'fs2d',
-'iso2d'
-]
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
