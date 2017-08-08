@@ -7,12 +7,18 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
-if [ ! -z ${DDRO_TEST+x} ]; then
-    if [ $DDRO_TEST == noop ]; then
+if [ ! -z ${DDRO_TARG+x} ]; then
+    if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
-    elif [ $DDRO_TEST == pthread ]; then
+    elif [ $DDRO_TARG == pthread ]; then
         alias diderotc="diderotc --target=pthread"
     fi
+fi
+
+if [ ! -z ${DDRO_PRFX+x} ]; then
+    PRFX=$DDRO_PRFX
+else
+    PRFX=
 fi
 
 
@@ -22,7 +28,7 @@ diderotc  --exec iso2d.diderot
 #prog iso2d.diderot
 junk cubic.nrrd
 
-./iso2d -cmin -4 -4 -cmax 4 4 -size 100
+$PRFX ./iso2d -cmin -4 -4 -cmax 4 4 -size 100
 junk pos.nrrd
 
 unu jhisto -i pos.nrrd -b 300 300 -min -4 4 -max 4 -4 -t float |
@@ -35,7 +41,7 @@ rm out.nrrd
 unu 2op x yramp.nrrd 3 | unu 2op + noisy.nrrd - -o noisy.nrrd
 junk yramp.nrrd noisy.nrrd
 
-./iso2d -cmin -4 -4 -cmax 4 4 -size 100 -img noisy.nrrd -o pos2.nrrd
+$PRFX ./iso2d -cmin -4 -4 -cmax 4 4 -size 100 -img noisy.nrrd -o pos2.nrrd
 junk pos2.nrrd
 unu jhisto -i pos2.nrrd -b 300 300 -min -4 4 -max 4 -4 -t float |
 unu resample -s x1 x1 -k gauss:3,4 -o jhisto2.nrrd

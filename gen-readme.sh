@@ -164,7 +164,7 @@ $progName $progddro"
                             exit 1
                         fi
                     fi
-                    if [[ $line =~ ^$tab$progName ]]; then # HEY copy+paste from above; error checking
+                    if [[ $line =~ ^$tab$progName ]]; then # error checking; HEY copy+paste from above
                         # HEY add check that the same progName isn't used twice
                         prog=${totest##$progName*( )}
                         prog=${prog%%*( )}
@@ -176,11 +176,12 @@ $progName $progddro"
                     if [[ $nftest -eq 0 && $nfe -eq 0 ]]; then
                         totest=${totest# }
                         if [[ $errorok -eq 1 ]]; then
-                            echo "$totest ||:" >> $TEST
+                            totest="$totest ||:"
                             errorok=0
-                        else
-                            echo $totest >> $TEST
                         fi
+                        # add prefix PRFX to anything starting with "./"
+                        totest=$(echo "$totest" | sed 's|^\( *\)./|\1$PRFX ./|g')
+                        echo $totest >> $TEST
                     fi
                 fi
             fi
@@ -214,12 +215,18 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
-if [ ! -z \${DDRO_TEST+x} ]; then
-    if [ \$DDRO_TEST == noop ]; then
+if [ ! -z \${DDRO_TARG+x} ]; then
+    if [ \$DDRO_TARG == noop ]; then
         alias diderotc=:
-    elif [ \$DDRO_TEST == pthread ]; then
+    elif [ \$DDRO_TARG == pthread ]; then
         alias diderotc=\"diderotc --target=pthread\"
     fi
+fi
+
+if [ ! -z \${DDRO_PRFX+x} ]; then
+    PRFX=\$DDRO_PRFX
+else
+    PRFX=""
 fi
 
 $(cat $TEST)" > $TEST

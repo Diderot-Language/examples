@@ -50,7 +50,6 @@ TESTS=[
 # \t#||: == suffix command on following line with "||:" to avoid stopping from error
 # \t#> OUT EPS == compare output file(s) OUT with reference, with tolerance EPS
 
-#TODO: valgrind commands starting with "./"
 #TODO: maybe compile with --double ( --long-int, --scalar)
 
 outFileTol='#>' # HEY sync with gen-readme.sh
@@ -75,6 +74,9 @@ def eprint(*args, **kwargs):
 
 parser = argparse.ArgumentParser(description='Run tests generated from Diderot examples')
 parser.add_argument('-v', action='store_true', help='verbose mode')
+parser.add_argument('-r', metavar='refdir',
+                    help='directory containing all reference outputs, in one subdirectory per test',
+                    nargs=1, required=True)
 parser.add_argument('-g', action='store_true',
                     help='generate reference results, rather than compare against them')
 parser.add_argument('-ke', action='store_true',
@@ -86,9 +88,9 @@ parser.add_argument('-kc', action='store_true',
 parser.add_argument('-p', metavar='#runs',
                     help='instead of compile to sequential target, compile to pthread, and run this number of times',
                     nargs=1, type=int)
-parser.add_argument('-r', metavar='refdir',
-                    help='directory containing all reference outputs, in one subdirectory per test',
-                    nargs=1, required=True)
+parser.add_argument('-prfx', metavar='prefix',
+                    help='prepend execution of compiled programs with this (e.g. "valgrind")',
+                    nargs=1)
 parser.add_argument('test', nargs='*')
 args = parser.parse_args()
 verbose=args.v
@@ -112,6 +114,13 @@ if not os.path.isdir(refroot):
 refroot=os.path.abspath(refroot)
 startdir = os.getcwd()
 
+if args.prfx:
+    os.environ['DDRO_PRFX'] = args.prfx[0]
+    if (verbose):
+        print('%s: environment variable DDRO_PRFX now "%s"' % (me, os.environ['DDRO_PRFX']))
+else:
+    if 'DDRO_PRFX' in os.environ: del os.environ['DDRO_PRFX']
+
 def run(wut):
     if verbose: print('%s: running "%s" in %s' % (me, wut, os.getcwd()))
     return subprocess.run(wut, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -129,11 +138,12 @@ def runsave(outname):
     # with or without error, res stores output, for saving to file
     with open(outname, 'w') as f:
         slines=[str(bl,'utf-8') for bl in res.stdout.splitlines()]
-        # this is a challenge for testing: it is not really an error (for this
-        # program) to finish without all strands converging, so we ignore the
-        # non-zero return status. But then how do we catch things like a
-        # segfault?  Right now we search for that line in the output. But
-        # HEY what if there are other errors that we aren't searching for?
+        # this is a unfortunately challenge for testing: it is not
+        # really an error (for this program) to finish without all
+        # strands converging, so we ignore the non-zero return
+        # status. But then how do we catch things like a segfault?
+        # Right now we search for that line in the output. But HEY
+        # what if there are other errors that we aren't searching for?
         if [l for l in slines if faultre.match(l)]: ret=1 # segfault!
         # dropping diderotc warnings because in case of parallel testing, they
         # are seen only on the first pass (and the difference in presence of
@@ -233,12 +243,12 @@ for TT in tests:
             if not thispass: break
             if parallel:
                 # if doing repeated tests, only compile once
-                os.environ['DDRO_TEST'] = 'pthread' if II==0 else 'noop'
+                os.environ['DDRO_TARG'] = 'pthread' if II==0 else 'noop'
                 OUT='out-%02d.txt' % II
-                print('... run %d/%d (%s) ...' % (II, runs, os.environ['DDRO_TEST']))
+                print('... run %d/%d (%s) ...' % (II, runs, os.environ['DDRO_TARG']))
             else:
                 OUT='out.txt'
-                if 'DDRO_TEST' in os.environ: del os.environ['DDRO_TEST']
+                if 'DDRO_TARG' in os.environ: del os.environ['DDRO_TARG']
             junk.append(OUT)
             (ret,out)=runsave(OUT)
             if ret:

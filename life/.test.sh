@@ -7,12 +7,18 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
-if [ ! -z ${DDRO_TEST+x} ]; then
-    if [ $DDRO_TEST == noop ]; then
+if [ ! -z ${DDRO_TARG+x} ]; then
+    if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
-    elif [ $DDRO_TEST == pthread ]; then
+    elif [ $DDRO_TARG == pthread ]; then
         alias diderotc="diderotc --target=pthread"
     fi
+fi
+
+if [ ! -z ${DDRO_PRFX+x} ]; then
+    PRFX=$DDRO_PRFX
+else
+    PRFX=
 fi
 
 
@@ -20,7 +26,7 @@ diderotc --snapshot --exec life.diderot
 #prog life.diderot
 
 rm -f state*{nrrd,png}
-./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd ||:
+$PRFX ./life -s 1 -l 200 -NN 80 -init patterns/gosperglidergun.nrrd ||:
 junk state-*.nrrd state-*.png
 
 unu join -i state-*.nrrd -a 0 -incr |

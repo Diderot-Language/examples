@@ -7,12 +7,18 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
-if [ ! -z ${DDRO_TEST+x} ]; then
-    if [ $DDRO_TEST == noop ]; then
+if [ ! -z ${DDRO_TARG+x} ]; then
+    if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
-    elif [ $DDRO_TEST == pthread ]; then
+    elif [ $DDRO_TARG == pthread ]; then
         alias diderotc="diderotc --target=pthread"
     fi
+fi
+
+if [ ! -z ${DDRO_PRFX+x} ]; then
+    PRFX=$DDRO_PRFX
+else
+    PRFX=
 fi
 
 
@@ -27,7 +33,7 @@ junk vec3.nrrd
 
 rm -f pos.nrrd
 #I   # because particle motions can change with any FP changes
-./sphere -s 0 -l 400 -rad 0.15 -eps 0.033 -pcp 2
+$PRFX ./sphere -s 0 -l 400 -rad 0.15 -eps 0.033 -pcp 2
 junk pos.nrrd  # the #T block below tests pos.nrrd
 
 NP=$(unu head pos.nrrd | grep sizes | cut -d' ' -f 3)

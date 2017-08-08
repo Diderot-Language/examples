@@ -7,12 +7,18 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
-if [ ! -z ${DDRO_TEST+x} ]; then
-    if [ $DDRO_TEST == noop ]; then
+if [ ! -z ${DDRO_TARG+x} ]; then
+    if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
-    elif [ $DDRO_TEST == pthread ]; then
+    elif [ $DDRO_TARG == pthread ]; then
         alias diderotc="diderotc --target=pthread"
     fi
+fi
+
+if [ ! -z ${DDRO_PRFX+x} ]; then
+    PRFX=$DDRO_PRFX
+else
+    PRFX=
 fi
 
 
@@ -20,7 +26,7 @@ echo "0 0 1 0 0" | unu axdelete -a -1 | unu dnorm -rc -o data.nrrd
 junk data.nrrd
 diderotc  --exec plot1d.diderot
 #prog plot1d.diderot
-./plot1d -img data.nrrd -ymm -0.3 1.3
+$PRFX ./plot1d -img data.nrrd -ymm -0.3 1.3
 junk rgb.nrrd
 unu quantize -b 8 -i rgb.nrrd -o ctmr.png
 #> ctmr.png 2
@@ -36,7 +42,7 @@ for BC in clamp wrap mirror; do
      cat plot1d.diderot | sed -e s/clamp/$BC/g | sed -e s/ctmr/$KK/g > plot1d-$KK-$BC.diderot
      diderotc --exec plot1d-$KK-$BC.diderot
      for DD in 5 6; do
-        ./plot1d-$KK-$BC -img data$DD.nrrd $PARM
+        $PRFX ./plot1d-$KK-$BC -img data$DD.nrrd $PARM
         unu quantize -b 8 -i rgb.nrrd -o plot-$DD-$KK-$BC.png
      done
   done
@@ -71,7 +77,7 @@ for I in $(seq 0 $[NF-1]); do
   dst="${FF[$I]}"
   cat 0-tmp.diderot | perl -pe "s!\Q$src\E!${dst}!g" > plot1d-f$II.diderot
   diderotc --exec plot1d-f$II.diderot
-  ./plot1d-f$II -img dataf.nrrd $PARM
+  $PRFX ./plot1d-f$II -img dataf.nrrd $PARM
   unu quantize -b 8 -i rgb.nrrd -o plot-f$II.png
 done
 #tmp plot1d-f*.diderot
