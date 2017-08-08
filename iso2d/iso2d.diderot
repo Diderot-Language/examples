@@ -39,7 +39,7 @@ of their X and Y coordinates:
 	#^ unu quantize -b 8 -o pos.png
 	#_ unu jhisto -i pos.nrrd -b 300 300 -min -4 4 -max 4 -4 -t float |
 	#_ unu resample -s x1 x1 -k gauss:3,4 -o jhisto.nrrd
-	#> jhisto.nrrd 0
+	#> jhisto.nrrd 0.0001
 
 Make sure your `pos.png` looks like [`pos-ref.png`](pos-ref.png); it may
 not be an exact pixel match but it should be close.  If `pos.png`
@@ -71,7 +71,7 @@ and then re-run the isocontouring and display on the new data.
 	#^ unu quantize -b 8 -o pos2.png
 	#_ unu jhisto -i pos2.nrrd -b 300 300 -min -4 4 -max 4 -4 -t float |
 	#_ unu resample -s x1 x1 -k gauss:3,4 -o jhisto2.nrrd
-	#> jhisto2.nrrd 0
+	#> jhisto2.nrrd 0.0001
 
 Make sure your pos2.png looks like [`pos2-ref.png`](pos2-ref.png).
 
