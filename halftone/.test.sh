@@ -16,6 +16,7 @@ if [ ! -z ${DDRO_TEST+x} ]; then
 fi
 
 
+#I due to non-deterministic parallelism
 ../fs2d/fs2d-scl -which 0 -width 2 -size0 401 -size1 401 |
 unu crop -min 0 100 -max M M-100 |
 unu affine -1 - 1 0 1 |

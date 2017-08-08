@@ -169,6 +169,7 @@ for TT in tests:
     print(TT, '..................................')
     outtols=[]
     progglobs=[]
+    texes=[]
     dodiff=True
     os.chdir(TT)
     if (verbose): print('%s: now in directory %s' % (me, os.getcwd()))
@@ -210,7 +211,7 @@ for TT in tests:
                 eprint(str(e.output,'utf-8').rstrip())
                 eprint('%s: stopping' % me)
                 sys.exit(1)
-        globprogs(TT, progglobs, progs, execs)
+        globprogs(TT, progglobs, progs, texes)
         # "thispass" stays True; failures here are fatal anyway
     else:  # we compare against pre-existing reference outputs
         if not os.path.isfile(refdir + '/out.txt'):
@@ -233,7 +234,7 @@ for TT in tests:
                 thispass=False
                 break
             if not II: # first time through
-                globprogs(TT, progglobs, progs, execs)
+                globprogs(TT, progglobs, progs, texes)
             if dodiff:
                 cmd='diff ' + OUT + ' ' + refdir + '/out.txt'
                 try:
@@ -256,8 +257,8 @@ for TT in tests:
                         thispass=False
                         break
         # done looping over (parallel) runs
-        if not thispass:
-            break # so that all artifacts of problem remain as is
+        #if not thispass:
+        #    break # so that all artifacts of problem remain as is
     if thispass:
         if not keepout:
             for f in junk:
@@ -269,6 +270,7 @@ for TT in tests:
                 if p['tmp']: torm.append(p['prog'] + '.diderot')
                 if (verbose): print('%s: rm %s' % (me, ' '.join(torm)))
                 for r in torm: os.remove(r)
+        execs.extend(texes)
         passed.append(TT)
     else:
         failed.append(TT)
