@@ -4,13 +4,20 @@
 
 This program needs a dataset to render, and a colormap, for example:
 
-	ln -s ../data/sscand.nrrd img.nrrd
-	ln -s ../cmap/spiral.nrrd cmap.nrrd
+	#!
+	#^ ln -s ../data/sscand.nrrd img.nrrd
+	#_ unu resample -i ../data/sscand.nrrd -s /2 /2 -o img.nrrd
+	#_ junk img.nrrd
+	#^ ln -s ../cmap/spiral.nrrd cmap.nrrd
+	#_ cp ../cmap/spiral.nrrd cmap.nrrd
+	#_ junk cmap.nrrd
+	#=diderotc
 
 When you compile this program (with `diderotc --exec vimg.diderot`)
 the compiler will see that specific datafiles are named in the declaration
 of the input image and colormap data:
 
+	#R
 	input image(2)[] img ("2D image dataset to view") = image("img.nrrd");
 	input image(1)[3] cmimg ("colormap to use") = image("cmap.nrrd");
 
@@ -22,6 +29,7 @@ called *proxy files*. It is an error for a named proxy file to not exist at
 compilation. Without creating the `img.nrrd` file prior to
 compilation, the compiler would exit with:
 
+	#R
 	[vimg.diderot] Error: proxy-image file "cmap.nrrd" does not exist
 
 Currently, for input arrays, the Diderot compiler specializes on the sample
@@ -38,6 +46,7 @@ Multivariate samples always have their constituent values on the fastest
 axis of the array. In the NRRD, the axes are tagged with a `kind` that can
 disambiguate their purpose. `unu head cmap.nrrd` will show
 
+	#R
 	kinds: 3-vector space
 
 which means that the 3-vectors components are on the faster axis, while
@@ -50,6 +59,7 @@ sample type, array dimension, and axis sizes of the proxy file.
 
 If there is no proxy file named with the input image declaration, as with:
 
+	#R
 	input image(2)[] img ("2D image dataset to view");
 
 then the compiler will assume `float` sample type, and will generate code to
@@ -81,6 +91,25 @@ respectively), some examples usages are:
    `./vimg -cent 290 414 -fov 45 -which 8 -cmin -500 -cmax 1900 -th 0.25 -fcol 0 1 0`
 * Colormapped field, with cyan minima:  
    `./vimg -cent 290 414 -fov 45 -which 9 -cmin -500 -cmax 1900 -th 0.25 -sthr 25 -fcol 0 1 1`
+
+	#T
+	PARM="-cent 290 414 -fov 80"
+	CMM="-cmin -500 -cmax 1900"
+	EPRM=("" "" ""          # 0 1 2
+	"$CMM -iso 1210 -th 20" # 3
+	"$CMM -iso 1210 -th 0.2"
+	"$CMM -th 0.3 -sthr 2"
+	"$CMM -th 0.3 -sthr 2"  # 6
+	"$CMM -th 0.4 -sthr 25 -fcol 0 0 0.8"
+	"$CMM -th 0.4 -fcol 0 1 0"
+	"$CMM -th 0.4 -sthr 25 -fcol 0 1 1" # 9
+	)
+	for I in $(seq 0 9); do
+	   ./vimg -which $I $PARM ${EPRM[$I]} -o rgb.nrrd
+	   unu quantize -b 8 -i rgb.nrrd -o rgb-$I.png
+	done
+	junk rgb.nrrd
+	#> rgb-?.png 0
 
 Each command can be followed by `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands

@@ -6,12 +6,12 @@ import subprocess
 import re
 import glob
 
-# These tests are an experiment in literate programming for test generation.
+# This is an experiment in combining test generation and documentation.
 # ./gen-readme.sh not only processes a certain comment (containing Markdown)
 # into the README.md file, it also generates a .test.sh test script. There
 # are some contrived ways of controlling how the pre-formated code blocks
 # (Markdown lines starting with tab) are turned into test scripts, as follows:
-# \t#! == do generate .test.sh (else the generated .test.sh is deleted)
+# \t#! == do generate .test.sh
 # \t#R == following code block is only for README.md, not for test script
 # \t#T == following code block is only for test script, not for README.md
 # \t#^ == this line is only for README.md, not for test script
@@ -60,14 +60,16 @@ TESTS=[
 'unicode',
 'plot1d',
 'tensor',
-'sphere'
+'sphere',
+'vimg',
+'fs2d',
+'iso2d'
 ]
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
-parser = argparse.ArgumentParser(description='Run tests generated from Diderot examples',
-                                 prog='runtests')
+parser = argparse.ArgumentParser(description='Run tests generated from Diderot examples')
 parser.add_argument('-v', action='store_true', help='verbose mode')
 parser.add_argument('-g', action='store_true',
                     help='generate reference results, rather than compare against them')
@@ -112,8 +114,15 @@ def run(wut):
 
 def runsave(outname):
     os.remove(outname) if os.path.exists(outname) else None
-    res=run('./' + tsh)
-    # HEY catch and describe errors
+    ret=0
+    res=None
+    try:
+        res=run('./' + tsh)
+    except subprocess.CalledProcessError as e:
+        eprint('%s: failed to run ./%s in %s' % (me, tsh, os.getcwd()))
+        res=e
+        ret=1
+    # with or without error, res stores output, for saving to file
     with open(outname, 'w') as f:
         slines=[str(bl,'utf-8') for bl in res.stdout.splitlines()]
         # dropping diderotc warnings because in case of parallel testing, they
@@ -123,6 +132,7 @@ def runsave(outname):
         flines=[l for l in slines if not ddrcwre.match(l)]
         f.write('\n'.join(flines))
         f.write('\n') # final newline
+    return ret
 
 def globprogs(TT, globs, progs, execs):
     for pg in globs:
@@ -184,7 +194,9 @@ for TT in tests:
     junk=[]
     thispass=True
     if generate:
-        runsave(refdir + '/out.txt')
+        if runsave(refdir + '/out.txt'):
+            eprint('%s: PANIC: failed to run test script; see %s' % (me, refdir + '/out.txt'))
+            sys.exit(1)
         # done running script, now move outputs
         for ot in outtols:
             cmd='mv ' + ot['out'] + ' ' + refdir
@@ -200,10 +212,11 @@ for TT in tests:
         # "thispass" stays True; failures here are fatal anyway
     else:  # we compare against pre-existing reference outputs
         if not os.path.isfile(refdir + '/out.txt'):
-            eprint(me+': missing reference "%s"; need to run with -g; stopping' % refdir + '/out.txt')
+            eprint(me+': missing reference "%s"; need to run with -g; stopping' % (refdir + '/out.txt'))
             sys.exit(1)
         runs = parallel if parallel else 1
         for II in range(runs):
+            if not thispass: break
             if parallel:
                 # if doing repeated tests, only compile once
                 os.environ['DDRO_TEST'] = 'pthread' if II==0 else 'noop'
@@ -212,8 +225,11 @@ for TT in tests:
             else:
                 OUT='out.txt'
                 if 'DDRO_TEST' in os.environ: del os.environ['DDRO_TEST']
-            runsave(OUT)
             junk.append(OUT)
+            if runsave(OUT):
+                eprint('%s: "%s" FAIL; %s returned:' % (me, TT, tsh))
+                thispass=False
+                break
             if not II: # first time through
                 globprogs(TT, progglobs, progs, execs)
             if dodiff:
@@ -224,6 +240,7 @@ for TT in tests:
                     eprint('%s: "%s" FAIL; "%s" returned:' % (me, TT, cmd))
                     eprint(str(e.output,'utf-8'))
                     thispass=False
+                    break
             for ot in outtols:
                 for o in glob.glob(ot['out']):
                     if not II: junk.append(o)
@@ -235,9 +252,10 @@ for TT in tests:
                         eprint('%s: "%s" FAIL; "%s" returned:' % (me, TT, cmd))
                         eprint(str(e.output,'utf-8'))
                         thispass=False
+                        break
+        # done looping over (parallel) runs
         if not thispass:
             break # so that all artifacts of problem remain as is
-        # done looping over (parallel) runs
     if thispass:
         if not keepout:
             for f in junk:

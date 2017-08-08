@@ -5,10 +5,15 @@
 The previous [`fs2d-scl.diderot`](../fs2d) program makes a little dataset
 in which we can try to find isosurfaces:
 
+	#!
 	../fs2d/fs2d-scl -size0 50 -size1 50 -which 3 -width 8 | unu save -f nrrd -o cubic.nrrd
+	rm out.nrrd
+	#=diderotc
+	#_ junk cubic.nrrd
 
 Then compile this program:
 
+	#R
 	diderotc --exec iso2d.diderot
 
 and try `./iso2d --help` to see the available input variables.  See
@@ -18,6 +23,7 @@ To run isocontour sampling (starting with a 100x100 grid of points),
 at the default isovalue 0:
 
 	./iso2d -cmin -4 -4 -cmax 4 4 -size 100
+	#_ junk pos.nrrd
 
 This saves the output positions into `pos.nrrd` as a list of 2-vectors, which
 can be seen by running `unu head pos.nrrd`. You can convert this to a
@@ -28,7 +34,12 @@ point set; some other graphics or plotting program is needed.  A really
 quick-and-dirty way of showing the points is as a joint histogram
 of their X and Y coordinates:
 
-	unu jhisto -i pos.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos.png
+	#^ unu jhisto -i pos.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float |
+	#^ unu 2op gt - 0 |
+	#^ unu quantize -b 8 -o pos.png
+	#_ unu jhisto -i pos.nrrd -b 300 300 -min -4 4 -max 4 -4 -t float |
+	#_ unu resample -s x1 x1 -k gauss:3,4 -o jhisto.nrrd
+	#> jhisto.nrrd 0
 
 Make sure your `pos.png` looks like [`pos-ref.png`](pos-ref.png); it may
 not be an exact pixel match but it should be close.  If `pos.png`
@@ -49,11 +60,18 @@ break the over-all symmetry of the isocontour):
 	../fs2d/fs2d-scl -size0 50 -size1 50 -which 1 -width 8 | unu save -f nrrd -o yramp.nrrd
 	rm out.nrrd
 	unu 2op x yramp.nrrd 3 | unu 2op + noisy.nrrd - -o noisy.nrrd
+	#_ junk yramp.nrrd noisy.nrrd
 
 and then re-run the isocontouring and display on the new data.
 
 	./iso2d -cmin -4 -4 -cmax 4 4 -size 100 -img noisy.nrrd -o pos2.nrrd
-	unu jhisto -i pos2.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos2.png
+	#_ junk pos2.nrrd
+	#^ unu jhisto -i pos2.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float |
+	#^ unu 2op gt - 0 |
+	#^ unu quantize -b 8 -o pos2.png
+	#_ unu jhisto -i pos2.nrrd -b 300 300 -min -4 4 -max 4 -4 -t float |
+	#_ unu resample -s x1 x1 -k gauss:3,4 -o jhisto2.nrrd
+	#> jhisto2.nrrd 0
 
 Make sure your pos2.png looks like [`pos2-ref.png`](pos2-ref.png).
 

@@ -80,6 +80,7 @@ respectively), some examples usages are:
 * Colormapped field, with cyan minima:  
    `./vimg -cent 290 414 -fov 45 -which 9 -cmin -500 -cmax 1900 -th 0.25 -sthr 25 -fcol 0 1 1`
 
+
 Each command can be followed by `unu quantize -b 8 -i rgb.nrrd -o rgb.png` to create
 an 8-bit image version of the output.  The `-which 3` and `-which 4` commands
 show an important comparison, demonstrating how knowing the gradient permits
