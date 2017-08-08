@@ -44,7 +44,7 @@ echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 SZ=200
 OV=2
 export NRRD_STATE_VERBOSE_IO=0
-for PIIN in pos-????.nrrd; do
+for PIIN in pos-0{000,050,100,150}.nrrd; do
   IIN=${PIIN#*-}; II=${IIN%.*}
   echo "post-processing $PIIN to pos-$II.png ... "
   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
@@ -56,5 +56,6 @@ for PIIN in pos-????.nrrd; do
     unu resample -s $((SZ*2)) = -k box |
     unu join -i - pos-$II.png -a 1 -o hp-$II.png
 done
+unu cksum pos-????.nrrd
 junk hp-0{000,050,100}.png pos-????.{png,nrrd}
 #> hp-0150.png 0
