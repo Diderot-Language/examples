@@ -130,7 +130,7 @@ parallel=args.p[0] if args.p else 0
 _refroot=args.r[0]
 _tests=[]
 if args.test:
-    _tests=args.test
+    _tests=[t.rstrip('/') for t in args.test]
     for T in _tests:
         if not T in TESTS:
             print("%s: warning: possible prerequisites of test \"%s\" unknown" % (me, T))
