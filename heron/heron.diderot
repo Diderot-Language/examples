@@ -24,7 +24,7 @@ The output stores four numbers for each value processed (by index along fast axi
 To see the output (four numbers per line):
 
 	#R
-	echo == vrie.nrrd ==
+	unu save -f text -i vrie.nrrd
 
 You can see that with the defaults, it took at most 7 iterations to converge:
 
