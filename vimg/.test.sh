@@ -7,18 +7,21 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
+DFLG=
+if [ ! -z ${DDRO_FLAG+x} ]; then
+    DFLG="$DDRO_FLAG"
+fi
 if [ ! -z ${DDRO_TARG+x} ]; then
     if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
     elif [ $DDRO_TARG == pthread ]; then
-        alias diderotc="diderotc --target=pthread"
+        DFLG="$DFLG --target=pthread"
     fi
 fi
 
+PRFX=
 if [ ! -z ${DDRO_PRFX+x} ]; then
     PRFX=$DDRO_PRFX
-else
-    PRFX=
 fi
 
 
@@ -26,7 +29,7 @@ unu resample -i ../data/sscand.nrrd -s /2 /2 -o img.nrrd
 junk img.nrrd
 cp ../cmap/spiral.nrrd cmap.nrrd
 junk cmap.nrrd
-diderotc  --exec vimg.diderot
+diderotc $DFLG --exec vimg.diderot
 #prog vimg.diderot
 
 PARM="-cent 290 414 -fov 80"

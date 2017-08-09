@@ -7,18 +7,21 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
+DFLG=
+if [ ! -z ${DDRO_FLAG+x} ]; then
+    DFLG="$DDRO_FLAG"
+fi
 if [ ! -z ${DDRO_TARG+x} ]; then
     if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
     elif [ $DDRO_TARG == pthread ]; then
-        alias diderotc="diderotc --target=pthread"
+        DFLG="$DFLG --target=pthread"
     fi
 fi
 
+PRFX=
 if [ ! -z ${DDRO_PRFX+x} ]; then
     PRFX=$DDRO_PRFX
-else
-    PRFX=
 fi
 
 
@@ -30,7 +33,7 @@ fi
 rm -f out.nrrd
 junk img.nrrd
 
-diderotc --snapshot --exec halftone.diderot
+diderotc $DFLG --snapshot --exec halftone.diderot
 #prog halftone.diderot
 
 NN=300

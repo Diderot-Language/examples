@@ -7,24 +7,27 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
+DFLG=
+if [ ! -z ${DDRO_FLAG+x} ]; then
+    DFLG="$DDRO_FLAG"
+fi
 if [ ! -z ${DDRO_TARG+x} ]; then
     if [ $DDRO_TARG == noop ]; then
         alias diderotc=:
     elif [ $DDRO_TARG == pthread ]; then
-        alias diderotc="diderotc --target=pthread"
+        DFLG="$DFLG --target=pthread"
     fi
 fi
 
+PRFX=
 if [ ! -z ${DDRO_PRFX+x} ]; then
     PRFX=$DDRO_PRFX
-else
-    PRFX=
 fi
 
 
 ../fs2d/fs2d-scl -size0 50 -size1 50 -which 3 -width 8 | unu save -f nrrd -o cubic.nrrd
 rm out.nrrd
-diderotc  --exec iso2d.diderot
+diderotc $DFLG --exec iso2d.diderot
 #prog iso2d.diderot
 junk cubic.nrrd
 

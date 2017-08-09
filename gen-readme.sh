@@ -138,7 +138,7 @@ for exdir in $examples; do
                 if [[ $testing -eq 1 ]]; then
                     totest=${line#$tab}
                     if [[ $line =~ ^$tabCompile ]]; then
-                        totest="diderotc ${line#$tabCompile} --exec $progddro
+                        totest="diderotc --exec $progddro
 $progName $progddro"
                     elif [[ $totest =~ ^$forTestLine ]]; then
                         totest=${totest#$forTestLine}
@@ -181,6 +181,8 @@ $progName $progddro"
                         fi
                         # add prefix PRFX to anything starting with "./"
                         totest=$(echo "$totest" | sed 's|^\( *\)./|\1$PRFX ./|g')
+                        # add diderotc flags (may also modify comments)
+                        totest=$(echo "$totest" | sed 's|diderotc|diderotc $DFLG|g')
                         echo $totest >> $TEST
                     fi
                 fi
@@ -215,18 +217,21 @@ set -o errexit
 set -o nounset
 shopt -s expand_aliases
 
+DFLG=
+if [ ! -z \${DDRO_FLAG+x} ]; then
+    DFLG=\"\$DDRO_FLAG\"
+fi
 if [ ! -z \${DDRO_TARG+x} ]; then
     if [ \$DDRO_TARG == noop ]; then
         alias diderotc=:
     elif [ \$DDRO_TARG == pthread ]; then
-        alias diderotc=\"diderotc --target=pthread\"
+        DFLG=\"\$DFLG --target=pthread\"
     fi
 fi
 
+PRFX=
 if [ ! -z \${DDRO_PRFX+x} ]; then
     PRFX=\$DDRO_PRFX
-else
-    PRFX=""
 fi
 
 $(cat $TEST)" > $TEST
