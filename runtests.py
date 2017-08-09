@@ -151,6 +151,10 @@ def stop(why):
     eprint('%s: %s; stopping' % (me, why))
     sys.exit(1)
 
+if parallel:
+    if not 0 < parallel < 100:
+        stop('parallel runs (from -p) %d not in range [1,99]' % parallel)
+
 def _addpreq(tlist):
     plist=[]
     for T in tlist:
