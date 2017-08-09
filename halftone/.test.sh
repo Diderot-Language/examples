@@ -44,6 +44,7 @@ echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 junk vec2.nrrd
 
 rm -f pos-????.{png,nrrd} pos.nrrd
+if true; then  # (begin possible block comment)
 echo "##### FIRST (smaller, faster) TEST; should converge within -l limit"
 $PRFX ./halftone -s 0 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
 
@@ -68,7 +69,9 @@ unu slice -i pos.nrrd -a 0 -p 0 |
   unu histo -min -1 -max 1 -b 100 -t float |
   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
 #> pos-?histo.nrrd 1.8
+fi  # (end possible block comment)
 
+if true; then  # (begin possible block comment)
 rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 NN=30000
 RNG=5
@@ -99,3 +102,4 @@ done
 junk hp-0{000,050,100}.png pos-????.{png,nrrd}
 # TODO: add histogram-based tests of correctness, once compiler bug is fixed
 #> hp-0150.png 0
+fi  # (end possible block comment)
