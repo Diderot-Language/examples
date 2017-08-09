@@ -50,6 +50,7 @@ to 800 iterations (`-l 800`), as well as cleaning results from previous run:
 
 	rm -f pos-????.{png,nrrd} pos.nrrd
 	#^ ./halftone -s 2 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
+	#_ # FIRST (smaller, faster) TEST; should converge within -l limit
 	#_ ./halftone -s 0 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
 
 Running with this large value (0.04) of minimum radius (considering the image domain)
@@ -91,13 +92,13 @@ above the rasterized image of the particle positions, provides visual confirmati
 horizontal (X position) particle density approaches the linear ramp expected from the
 linear ramp of the underlying image.
 
-	#R
 	rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 	#_ NN=30000
 	#_ RNG=5
 	#_ echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
 	#_   unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	#_ echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
+	#_ # SECOND (bigger, slower) TEST (will not converge) within -l limit
 	#||:
 	#_ ./halftone -s 50 -l 150 -radmm 0.006 1 -eps 0.00004 -pcp 1
 	#^ ./halftone -s 10 -l 800 -radmm 0.004 1 -eps 0.00004 -pcp 2

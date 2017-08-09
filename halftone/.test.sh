@@ -44,6 +44,7 @@ echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
 junk vec2.nrrd
 
 rm -f pos-????.{png,nrrd} pos.nrrd
+# FIRST (smaller, faster) TEST; should converge within -l limit
 $PRFX ./halftone -s 0 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
 
 SZ=200
@@ -67,3 +68,29 @@ unu slice -i pos.nrrd -a 0 -p 0 |
   unu histo -min -1 -max 1 -b 100 -t float |
   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
 #> pos-?histo.nrrd 1.8
+
+rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
+NN=30000
+RNG=5
+echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
+  unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
+echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
+# SECOND (bigger, slower) TEST (will not converge) within -l limit
+$PRFX ./halftone -s 50 -l 150 -radmm 0.006 1 -eps 0.00004 -pcp 1 ||:
+SZ=200
+OV=2
+export NRRD_STATE_VERBOSE_IO=0
+for PIIN in pos-0{000,050,100,150}.nrrd; do
+  IIN=${PIIN#*-}; II=${IIN%.*}
+  echo "post-processing $PIIN to pos-$II.png ... "
+  unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
+    unu resample -s /$OV /$OV -k bspln3 -t float |
+    unu quantize -b 8 -min 0 -max $(echo "1 / ($OV * $OV)" | bc -l) -o pos-$II.png
+  unu slice -i $PIIN -a 0 -p 0 |
+    unu histo -min -1 -max 1 -b $((SZ/3)) |
+    unu dhisto -h $((SZ/3)) -nolog |
+    unu resample -s $((SZ*2)) = -k box |
+    unu join -i - pos-$II.png -a 1 -o hp-$II.png
+done
+junk hp-0{000,050,100}.png pos-????.{png,nrrd}
+#> hp-0150.png 0
