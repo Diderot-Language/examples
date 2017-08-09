@@ -73,6 +73,14 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 	#_ # with a tolerance of 256 we're saying "anything goes" but the reason
 	#_ # is still to generate some way of looking at how the system ended up
 	#> pos-lores.png 256
+	#_ # lo-res and blurred versions histograms of x and y positions
+	#_ unu slice -i pos.nrrd -a 0 -p 1 |
+	#_   unu histo -min -0.5 -max 0.5 -b 50 -t float |
+	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-yhisto.nrrd
+	#_ unu slice -i pos.nrrd -a 0 -p 0 |
+	#_   unu histo -min -1 -max 1 -b 100 -t float |
+	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
+	#> pos-?histo.nrrd 1
 
 On the other hand, to quantitatively check that the particle density is as it should be,
 we run with many more particles (which can take a few minutes to finish). The following

@@ -59,3 +59,11 @@ done
 # with a tolerance of 256 we're saying "anything goes" but the reason
 # is still to generate some way of looking at how the system ended up
 #> pos-lores.png 256
+# lo-res and blurred versions histograms of x and y positions
+unu slice -i pos.nrrd -a 0 -p 1 |
+  unu histo -min -0.5 -max 0.5 -b 50 -t float |
+  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-yhisto.nrrd
+unu slice -i pos.nrrd -a 0 -p 0 |
+  unu histo -min -1 -max 1 -b 100 -t float |
+  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
+#> pos-?histo.nrrd 1
