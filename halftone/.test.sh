@@ -22,7 +22,7 @@ else
 fi
 
 
-#I due to non-deterministic parallelism
+#I due to non-deterministic parallelism and FP sensitivity
 ../fs2d/fs2d-scl -which 0 -width 2 -size0 401 -size1 401 |
 unu crop -min 0 100 -max M M-100 |
 unu affine -1 - 1 0 1 |
@@ -53,7 +53,9 @@ for PIIN in pos.nrrd; do
     unu resample -s /$OV /$OV -k bspln5 -t float |
     unu quantize -b 8 -min 0 -max $(echo "0.15 / ($OV * $OV)" | bc -l) -o pos-$II.png
 done
-#> pos-lores.png 0
+# with a tolerance of 256 we're saying "anything goes" but the reason
+# is still to generate some way of looking at how the system ended up
+#> pos-lores.png 256
 
 rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 NN=30000

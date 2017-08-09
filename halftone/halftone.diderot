@@ -19,7 +19,7 @@ The standard test for this kind of program is a linear ramp, which is
 available via:
 
 	#!
-	#I due to non-deterministic parallelism
+	#I due to non-deterministic parallelism and FP sensitivity
 	../fs2d/fs2d-scl -which 0 -width 2 -size0 401 -size1 401 |
 	unu crop -min 0 100 -max M M-100 |
 	unu affine -1 - 1 0 1 |
@@ -69,8 +69,10 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 	     unu resample -s /$OV /$OV -k bspln5 -t float |
 	     unu quantize -b 8 -min 0 -max $(echo "0.15 / ($OV * $OV)" | bc -l) -o pos-$II.png
 	done
-	#> pos-lores.png 0
 	#^ convert -delay 6 pos-*.png ramp.gif
+	#_ # with a tolerance of 256 we're saying "anything goes" but the reason
+	#_ # is still to generate some way of looking at how the system ended up
+	#> pos-lores.png 256
 
 On the other hand, to quantitatively check that the particle density is as it should be,
 we run with many more particles (which can take a few minutes to finish). The following
@@ -103,9 +105,9 @@ to ensure position along X approaches a linear ramp:
 	     unu resample -s $((SZ*2)) = -k box |
 	     unu join -i - pos-$II.png -a 1 -o hp-$II.png
 	done
+	#^ convert -delay 6 hp-*.png hp.gif
 	#_ junk hp-0{000,050,100}.png pos-????.{png,nrrd}
 	#> hp-0150.png 0
-	#^ convert -delay 6 hp-*.png hp.gif
 
 The top part of the resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
 expected convergence to a linear variation in particle density, even though there are
