@@ -312,8 +312,8 @@ for TT in tests:
     if createref:
         (ret,out)=runsave(refdir + '/out.txt')
         if ret:
-            eprint('%s: PANIC: failed to run test script; %s records:\n%s'
-                   % (me, refdir + '/out.txt', str(out.stdout,'utf-8')))
+            eprint('%s: (for test "%s") couldn\'t create reference output because test script failed; %s records:\n%s'
+                   % (me, TT, refdir + '/out.txt', str(out.stdout,'utf-8')))
             sys.exit(1)
         # done running script, now move outputs
         for ot in outtols:
@@ -332,9 +332,9 @@ for TT in tests:
             ggout=glob.glob(ot['out'])
             if not ggout:
                 stop('(for test "%s") filename glob "%s" didn\'t match any files via glob.glob (which NOTE does not do brace expansion)' % (TT, ot['out']))
-            if lsout != ggout:
-                stop('(for test "%s") filename glob "%s produced different file lists via shell expansion (%s) versus glob.glob (%s), which is confusing'
-                     % (me, ot['out'], lsout, ggout))
+            if sorted(lsout) != sorted(ggout):
+                stop('(for test "%s") filename glob "%s" produced different file lists via shell expansion (%d in %s) versus glob.glob (%d in %s), which is confusing'
+                     % (me, ot['out'], len(lsout), lsout, len(ggout), ggout))
             cmd='mv ' + ot['out'] + ' ' + refdir
             try: run(cmd)
             except subprocess.CalledProcessError as e:
