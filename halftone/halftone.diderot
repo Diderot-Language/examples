@@ -50,7 +50,7 @@ to 800 iterations (`-l 800`), as well as cleaning results from previous run:
 
 	rm -f pos-????.{png,nrrd} pos.nrrd
 	#^ ./halftone -s 2 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
-	#_ # FIRST (smaller, faster) TEST; should converge within -l limit
+	#_ echo "##### FIRST (smaller, faster) TEST; should converge within -l limit"
 	#_ ./halftone -s 0 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
 
 Running with this large value (0.04) of minimum radius (considering the image domain)
@@ -98,7 +98,7 @@ linear ramp of the underlying image.
 	#_ echo 0 0 | unu pad -min 0 0 -max M $((NN-1)) |
 	#_   unu 1op rand -s $RNG | unu affine 0 - 1 -1 1 -o vec2.nrrd
 	#_ echo 1 0.5 | unu 2op x vec2.nrrd - -o vec2.nrrd
-	#_ # SECOND (bigger, slower) TEST (will not converge) within -l limit
+	#_ echo "##### SECOND (bigger, slower) TEST (will not converge) within -l limit"
 	#||:
 	#_ ./halftone -s 50 -l 150 -radmm 0.006 1 -eps 0.00004 -pcp 1
 	#^ ./halftone -s 10 -l 800 -radmm 0.004 1 -eps 0.00004 -pcp 2
@@ -107,6 +107,10 @@ linear ramp of the underlying image.
 	export NRRD_STATE_VERBOSE_IO=0
 	#^ for PIIN in pos-????.nrrd; do
 	#_ for PIIN in pos-0{000,050,100,150}.nrrd; do
+	#_   if [[ ! -e $PIIN ]]; then
+	#_     echo "$0: expected file $PIIN does not exist, skipping"
+	#_     continue;
+	#_   fi
 	   IIN=${PIIN#*-}; II=${IIN%.*}
 	   echo "post-processing $PIIN to pos-$II.png ... "
 	   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
@@ -121,6 +125,7 @@ linear ramp of the underlying image.
 	done
 	#^ convert -delay 6 hp-*.png hp.gif
 	#_ junk hp-0{000,050,100}.png pos-????.{png,nrrd}
+	#_ # TODO: add histogram-based tests of correctness, once compiler bug is fixed
 	#> hp-0150.png 0
 
 The top part of the resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the
