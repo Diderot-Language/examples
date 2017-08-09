@@ -19,10 +19,13 @@
 <!-- THUS: you can ignore all the \t# lines, and read ./README.md -->
 <!-- for the program documentation as it was intended to be seen. -->
 
-After compiling `hello.diderot`, you run it with:
+You can compile `hello.diderot` with:
 
 	#!
-	#=diderotc
+	diderotc --exec hello.diderot
+	#prog hello.diderot
+and then run it with:
+
 	./hello
 	#_junk out.nrrd
 After the `hello` executable prints `hello, world`, it saves a single-element

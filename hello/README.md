@@ -1,7 +1,10 @@
 ## hello.diderot: The usual greeting, in Diderot
 
 
-After compiling `hello.diderot`, you run it with:
+You can compile `hello.diderot` with:
+
+	diderotc --exec hello.diderot
+and then run it with:
 
 	./hello
 After the `hello` executable prints `hello, world`, it saves a single-element
