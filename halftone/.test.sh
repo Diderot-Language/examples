@@ -66,4 +66,4 @@ unu slice -i pos.nrrd -a 0 -p 1 |
 unu slice -i pos.nrrd -a 0 -p 0 |
   unu histo -min -1 -max 1 -b 100 -t float |
   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
-#> pos-?histo.nrrd 1
+#> pos-?histo.nrrd 1.8
