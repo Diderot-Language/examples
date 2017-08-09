@@ -81,6 +81,10 @@ SZ=200
 OV=2
 export NRRD_STATE_VERBOSE_IO=0
 for PIIN in pos-0{000,050,100,150}.nrrd; do
+if [ ! -e $PIIN ]; then
+   echo "expected output file $PIIN does not exist; skipping"
+   continue
+fi
   IIN=${PIIN#*-}; II=${IIN%.*}
   echo "post-processing $PIIN to pos-$II.png ... "
   unu jhisto -i $PIIN -min -1 -0.5 -max 1 0.5 -b $((OV*SZ*2)) $((SZ*OV)) |
