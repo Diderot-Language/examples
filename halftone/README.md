@@ -17,9 +17,9 @@ The standard test for this kind of program is a linear ramp, which is
 available via:
 
 	../fs2d/fs2d-scl -which 0 -width 2 -size0 401 -size1 401 |
-	unu crop -min 0 100 -max M M-100 |
-	unu affine -1 - 1 0 1 |
-	unu pad -min -2 -2 -max M+2 M+2 -o img.nrrd
+	  unu crop -min 0 100 -max M M-100 |
+	  unu affine -1 - 1 0 1 |
+	  unu pad -min -2 -2 -max M+2 M+2 -o img.nrrd
 	rm -f out.nrrd
 
 The domain of this `img.nrrd` is [-1,1] along X, and [-0.5,0.5] along Y, and
@@ -42,9 +42,9 @@ Then to run with snapshots saved every iteration (`-s 1`), but limiting the prog
 to 800 iterations (`-l 800`), as well as cleaning results from previous run:
 
 	rm -f pos-????.{png,nrrd} pos.nrrd
-	./halftone -s 2 -l 800 -radmm 0.03 1.0 -eps 0.0001 -pcp 2
+	./halftone -s 2 -l 800 -radmm 0.04 1 -eps 0.0001 -pcp 2
 
-Running with this large value (0.03) of minimum radius (considering the image domain)
+Running with this large value (0.04) of minimum radius (considering the image domain)
 is good for giving a visual impression of how the particle system populates the
 domain. Next, some `unu` hacking makes images of the evolving system, which
 are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref.gif)).
@@ -63,8 +63,12 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 
 On the other hand, to quantitatively check that the particle density is as it should be,
 we run with many more particles (which can take a few minutes to finish). The following
-creates a histogram of the X positions, above the rasterized image of the particle positions,
-to ensure position along X approaches a linear ramp:
+uses `-radmm 0.004 1` (versus `-radmm 0.04 1` above) for the particle computation,
+so that inter-particle distance may be a tenth of what it was previously (resulting in
+up to 100 times greater particle density).  A histogram of the X positions, plotted
+above the rasterized image of the particle positions, provides visual confirmation that
+horizontal (X position) particle density approaches the linear ramp expected from the
+linear ramp of the underlying image.
 
 	rm -f {hp,pos}-????.{png,nrrd} pos.nrrd
 	./halftone -s 10 -l 800 -radmm 0.004 1 -eps 0.00004 -pcp 2
