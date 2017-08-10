@@ -54,6 +54,17 @@ import glob
 import shutil
 import copy
 
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
+
+def stop(why):
+    eprint('%s: %s; stopping' % (me, why))
+    sys.exit(1)
+
+# subprocess.run is from version 3.5
+if sys.version_info < (3,5):
+    stop('need python3 version >= 3.5')
+
 # TESTS are all the tests we know about. Explicitly listing these, rather
 # than discovering which directories have .test.sh scripts, to document the
 # tests for which we know dependencies (see PREREQ below), which for now
@@ -101,9 +112,10 @@ ddrcwre=re.compile('^\[.*\.diderot.*\] Warning: ')
 #################################
 parser = argparse.ArgumentParser(description='Run tests generated from Diderot examples')
 parser.add_argument('-v', action='store_true', help='verbose mode')
+parser.add_argument('-l', action='store_true', help='list known tests and exit')
 parser.add_argument('-r', metavar='refdir',
                     help='directory containing all reference outputs, in one subdirectory per test',
-                    nargs=1, required=True)
+                    nargs=1)
 parser.add_argument('-c', action='store_true',
                     help='create reference results, rather than compare against them')
 parser.add_argument('-g', action='store_true',
@@ -124,6 +136,12 @@ parser.add_argument('test', nargs='*')
 me=sys.argv[0]
 tsh='.test.sh'
 args = parser.parse_args()
+if (args.l):
+    print("%s: available tests:\n%s" % (me, ' '.join(TESTS)))
+    sys.exit(0)
+# else they need to have used -r
+if not args.r:
+    stop("need to identify reference output directory with -r")
 verbose=args.v
 createref=args.c
 debug=args.g
@@ -144,16 +162,6 @@ else:
 #################################
 ################################# checking validity of command-line invocation and path
 #################################
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-
-def stop(why):
-    eprint('%s: %s; stopping' % (me, why))
-    sys.exit(1)
-
-# subprocess.run is from version 3.5
-if sys.version_info < (3,5):
-    stop('need python3 version >= 3.5')
 
 if parallel:
     if not 0 < parallel < 100:
