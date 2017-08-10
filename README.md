@@ -4,8 +4,8 @@ These example programs demonstrate the [Diderot
 language](http://diderot-language.cs.uchicago.edu), recently described in a
 [VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).  An
 earlier version of the language was described in a [PLDI 2012
-paper](http://people.cs.uchicago.edu/~glk/pubs/#PLDI-2012).  These example
-programs have been written to help you learn how to use
+paper](http://diderot-language.cs.uchicago.edu/papers/pldi12-preprint.pdf).
+These example programs have been written to help you learn how to use
 Diderot, and to provide starting points for writing your own Diderot programs.
 
 Diderot is a new language, and you can help improve it.
@@ -135,18 +135,19 @@ Note: **All shell commands used here assume sh/bash syntax (rather than csh/tcsh
 [GNU autoconf](http://www.gnu.org/software/autoconf/manual/autoconf.html)
 is need to configure the compilation of Diderot.
 These utilities can be obtained via `apt-get` on Ubuntu/Debian Linux,
-or via [Homebrew `brew`](http://brew.sh) on OSX.
+or via [Homebrew `brew`](http://brew.sh) or [MacPorts](https://www.macports.org)
+on macOS.
 
 To get Cmake:
 * Linux: `sudo apt-get install cmake`
-* OSX: `brew install cmake`
+* macOS: `brew install cmake` or `port install cmake`
 * In any case, the [CMake download](https://cmake.org/download/)
 page includes "Binary distributions" that have the executable
 `cmake` you'll need.
 
 To get the autoconf tools (specifically `autoconf` and `autoheader`):
 * Linux: `sudo apt-get install autoconf`
-* OSX: `brew install autoconf`
+* macOS: `brew install autoconf` or `port install autoconf`
 You will need autoconf version 2.64 or higher.
 
 The Diderot runtime system is written in C++11 and the code generator
@@ -154,17 +155,23 @@ also produces C++ code, so you will need to have a modern C++ compiler
 installed.
 
 #### (2) Get Standard ML of New Jersey
-The Diderot compiler is written in [SML/NJ](http://smlnj.org), so you'll
-need to install that first.  **You need at least version 110.80 to build
-the current version of Diderot.**
+The Diderot compiler is written in *Standard ML*, so you will need an SML
+implementation to compile it.  We recommend [SML/NJ](http://smlnj.org), so
+you should install that first.  
+
+The latest version of SML/NJ for macOS or Linux can be obtained from the
+[SML/NJ website](http://smlnj.org) or from some common package managers (see
+below). **You need at least version 110.81 to build the current version of Diderot.**
+
 You can learn the version of the executable `sml` by running
 
 	sml @SMLversion
 
 There are different ways of getting `sml`.
 
-**On OSX**, (using [Homebrew](https://brew.sh)). Assuming that `brew info smlnj`
-mentions version 110.80 or higher, then
+**On macOS** you can download a macOS installer from <http://smlnj.org>
+or you can install it from [Homebrew](https://brew.sh). Assuming that `brew info smlnj`
+mentions version 110.81 or higher, then
 
 	brew install smlnj
 
@@ -172,38 +179,45 @@ mentions version 110.80 or higher, then
 
 **On Ubuntu or Debian Linux**, `apt-get` may work to install a sufficiently recent
 version.  `apt-cache policy smlnj` reports what version you can get;
-if that's at or above version 110.80, you can:
+if that's at or above version 110.81, you can:
 
 	sudo apt-get install smlnj
 	sudo apt-get install ml-lpt
+
 The second `apt-get` to get `ml-lpt` is required because without it, the later compilation
 of the Diderot compiler (with the `sml` from `apt-get`) will stop with an error message
 like `driver/sources.cm:16.3-16.18 Error: anchor $ml-lpt-lib.cm not defined`.
 
-**To install from files at http://smlnj.org**:
+**To install from http://smlnj.org**:
 On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
-(currently 110.80) to get files needed to install SML/NJ on your platform.
-On OSX there is an installer package to get executables.
+(currently 110.81) to get files needed to install SML/NJ on your platform.
 
-Or, you can compile `sml` from its source yourself. Doing this on a 64-bit
-Linux machine requires support for 32-bit executables, since
-`sml` is itself a 32-bit program. You will know you're missing
-32-bit support if the `config/install.sh` command below fails
+On macOS there is an installer package to get executables,
+which installs the `sml` command in `/usr/local/smlnj/bin`.
+You can also follow the instructions for Linux below.
+
+To build SML/NJ on Linux requires downloading and unzipping one file
+and then running an install script.  The script will download additional
+source and precompiled binary files to build the system
+Installing SML/NJ on a 64-bit Linux machine requires support for
+32-bit executables, since `sml` is itself a 32-bit program. You will know
+you're missing 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you fix this will vary between different versions of Linux.
 This is documented
-[at the very bottom of the SML/NJ Installation Instructions](http://www.smlnj.org/dist/working/110.80/INSTALL).
+[at the very bottom of the SML/NJ Installation Instructions](http://www.smlnj.org/dist/working/110.81/INSTALL).
 
 Then, to compile `sml` from source files at http://smlnj.org (the `wget` command
-is specific to version 110.80; there may now be a newer version):
+is specific to version 110.81; there may now be a newer version):
 
 	mkdir $DDRO_ROOT/smlnj
 	cd $DDRO_ROOT/smlnj
-	wget http://smlnj.cs.uchicago.edu/dist/working/110.80/config.tgz
+	wget http://smlnj.cs.uchicago.edu/dist/working/110.81/config.tgz
 	tar xzf config.tgz
 	config/install.sh
 	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
+
 Once you believe you have `sml` installed, it should either be in your path
 (test this with `which sml`), or, if you didn't do this when compiling `sml`
 with the steps immediately above:
@@ -306,10 +320,10 @@ The source for any Diderot branch should be within `$DDRO_ROOT`:
 An `svn co` command gets the source for a branch; the only difference
 in the `svn co` commands below is the branch name at the end of the URL.
 
-The **vis15** branch contains functionality from other branches listed below, and is the
-focus of ongoing merge work. Pthread support is coming soon. The source is available via:
+The **vis15** branch contains features from other branches listed below, and is the
+focus of ongoing merge work. The source is available via:
 
-	svn co -r4933 --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
+	svn co -r5273 --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
 
 Before the vis15 branch, the vis12 branch (created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
@@ -325,7 +339,7 @@ The **vis12-cl** branch is the only one with a working OpenCL backend.  The vis1
 
 The **lamont** and **charisee** branches were created to support strand communication
 (for particle systems) and tensor field operators (based on the EIN internal representation),
-respectively, but these functionalities have been merged into the vis15 branch.
+respectively, but these mechanisms have since been merged into the vis15 branch.
 
 **To configure and build** any of these branches, the steps are the same. First go into
 the source directory for the branch, for example:
@@ -355,7 +369,7 @@ it means that your Teem source checkout is not recent enough; `nrrdMetaDataNorma
 was added with Teem revision r6294.
 If the build fails with an error message `anchor $ml-lpt-lib.cm not defined`, it means
 the ml-lpt library is missing. This is availble through your package manager (such as `sudo apt-get install ml-lpt`)
-or from the [SML/NJ Distribution Files page](http://smlnj.org/dist/working/110.80/index.html).
+or from the [SML/NJ Distribution Files page](http://smlnj.org/dist/working/110.81/index.html).
 
 Once the configure and build is finished, you can check that it worked by trying:
 
