@@ -151,6 +151,10 @@ def stop(why):
     eprint('%s: %s; stopping' % (me, why))
     sys.exit(1)
 
+# subprocess.run is from version 3.5
+if sys.version_info < (3,5):
+    stop('need python3 version >= 3.5')
+
 if parallel:
     if not 0 < parallel < 100:
         stop('parallel runs (from -p) %d not in range [1,99]' % parallel)
@@ -195,6 +199,8 @@ def checkpath():
     formats=[l for l in lines if 'Formats available' in l][0]
     if not ' png ' in formats:
         stop("\"unu\" in path doesn't support PNG images; test scripts won't work (\"unu about\" reports %s)" % formats)
+    print('%s: using %s' % (me, shutil.which('diderotc')))
+    print('%s: using %s' % (me, shutil.which('unu')))
 checkpath()
 
 if parallel and createref:
