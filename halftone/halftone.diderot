@@ -78,11 +78,11 @@ are then turned into an animated `ramp.gif` (compare to `[ramp-ref.gif](ramp-ref
 	#_ # lo-res and blurred versions histograms of x and y positions
 	#_ unu slice -i pos.nrrd -a 0 -p 1 |
 	#_   unu histo -min -0.5 -max 0.5 -b 50 -t float |
-	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-yhisto.nrrd
+	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-lores-yhisto.nrrd
 	#_ unu slice -i pos.nrrd -a 0 -p 0 |
 	#_   unu histo -min -1 -max 1 -b 100 -t float |
-	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
-	#> pos-?histo.nrrd 1.8
+	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-lores-xhisto.nrrd
+	#> pos-lores-?histo.nrrd 1.8
 	#_ fi  # (end possible block comment)
 
 On the other hand, to quantitatively check that the particle density is as it should be,
@@ -124,12 +124,21 @@ linear ramp of the underlying image.
 	     unu histo -min -1 -max 1 -b $((SZ/3)) |
 	     unu dhisto -h $((SZ/3)) -nolog |
 	     unu resample -s $((SZ*2)) = -k box |
-	     unu join -i - pos-$II.png -a 1 -o hp-$II.png
+	     unu join -i - pos-$II.png -a 1 -o hp-$II.png # combine histogram and position image
 	done
 	#^ convert -delay 6 hp-*.png hp.gif
-	#_ junk hp-0{000,050,100}.png pos-????.{png,nrrd}
-	#_ # TODO: add histogram-based tests of correctness, once compiler bug is fixed
-	#> hp-0150.png 0
+	#_
+	#_ mv hp-0150.png histo-pos-hires.png
+	#_ # like above; tolerance 256 says "anything goes; may be informative"
+	#> histo-pos-hires.png 256
+	#_ junk hp-0{000,050,100}.png pos-0{000,050,100,150}.{png,nrrd}
+	#_ unu slice -i pos-0150.nrrd -a 0 -p 1 |
+	#_   unu histo -min -0.5 -max 0.5 -b 100 -t float |
+	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-hires-yhisto.nrrd
+	#_ unu slice -i pos-0150.nrrd -a 0 -p 0 |
+	#_   unu histo -min -1 -max 1 -b 200 -t float |
+	#_   unu resample -s x1 -k gauss:4,3 -b mirror -o pos-hires-xhisto.nrrd
+	#> pos-hires-?histo.nrrd 4.5
 	#_ fi  # (end possible block comment)
 
 The top part of the resulting `hp.gif` (compare to [`hp-ref.gif`](hp-ref.gif)) shows the

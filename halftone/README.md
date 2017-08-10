@@ -85,7 +85,7 @@ linear ramp of the underlying image.
 	     unu histo -min -1 -max 1 -b $((SZ/3)) |
 	     unu dhisto -h $((SZ/3)) -nolog |
 	     unu resample -s $((SZ*2)) = -k box |
-	     unu join -i - pos-$II.png -a 1 -o hp-$II.png
+	     unu join -i - pos-$II.png -a 1 -o hp-$II.png # combine histogram and position image
 	done
 	convert -delay 6 hp-*.png hp.gif
 

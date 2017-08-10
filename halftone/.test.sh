@@ -64,11 +64,11 @@ done
 # lo-res and blurred versions histograms of x and y positions
 unu slice -i pos.nrrd -a 0 -p 1 |
   unu histo -min -0.5 -max 0.5 -b 50 -t float |
-  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-yhisto.nrrd
+  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-lores-yhisto.nrrd
 unu slice -i pos.nrrd -a 0 -p 0 |
   unu histo -min -1 -max 1 -b 100 -t float |
-  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-xhisto.nrrd
-#> pos-?histo.nrrd 1.8
+  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-lores-xhisto.nrrd
+#> pos-lores-?histo.nrrd 1.8
 fi  # (end possible block comment)
 
 if true; then  # (begin possible block comment)
@@ -97,9 +97,18 @@ for PIIN in pos-0{000,050,100,150}.nrrd; do
     unu histo -min -1 -max 1 -b $((SZ/3)) |
     unu dhisto -h $((SZ/3)) -nolog |
     unu resample -s $((SZ*2)) = -k box |
-    unu join -i - pos-$II.png -a 1 -o hp-$II.png
+    unu join -i - pos-$II.png -a 1 -o hp-$II.png # combine histogram and position image
 done
-junk hp-0{000,050,100}.png pos-????.{png,nrrd}
-# TODO: add histogram-based tests of correctness, once compiler bug is fixed
-#> hp-0150.png 0
+
+mv hp-0150.png histo-pos-hires.png
+# like above; tolerance 256 says "anything goes; may be informative"
+#> histo-pos-hires.png 256
+junk hp-0{000,050,100}.png pos-0{000,050,100,150}.{png,nrrd}
+unu slice -i pos-0150.nrrd -a 0 -p 1 |
+  unu histo -min -0.5 -max 0.5 -b 100 -t float |
+  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-hires-yhisto.nrrd
+unu slice -i pos-0150.nrrd -a 0 -p 0 |
+  unu histo -min -1 -max 1 -b 200 -t float |
+  unu resample -s x1 -k gauss:4,3 -b mirror -o pos-hires-xhisto.nrrd
+#> pos-hires-?histo.nrrd 4.5
 fi  # (end possible block comment)
