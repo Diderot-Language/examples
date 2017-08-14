@@ -406,7 +406,7 @@ for TT in tests:
                         eprint('%s: "%s" FAIL; "%s" returned:' % (me, TT, cmd))
                         eprint(str(e.output,'utf-8'))
                         thispass=False
-                        break
+                        # break # by not breaking, all differences are reported
         # end loop over (parallel) runs
     # end else comparing (not generating)
     if thispass:
