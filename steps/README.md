@@ -95,8 +95,8 @@ the line) calls "die", and hence is removed from the strands visible
 in the global update phase of step 1 (which logically comes after the
 per-strand updates). **In general `state-NNNN.nrrd` documents things
 after NNNN steps (with normal 1-based counting) have finished, and
-before (0-based index) step `NNNN` runs**  This subtle point bears
-some contemplation: it **not** the case that state-NNNN.nrrd` documents
+before (0-based index) step `NNNN` runs**.  This subtle point bears
+some contemplation: it **not** the case that `state-NNNN.nrrd` documents
 things at the end (0-based index) step `NNNN`. The chronology of steps
 and snapshots is also demonstrated in the [`life.diderot`](../life) example.
 Continuing with this example:
@@ -134,9 +134,10 @@ in the summary of strand states (that is, in these logs we never
 see value 3 for strand 5, even though its `update` was executed).
 **This highlights what is currently a limit on what you can learn about
 the program execution from within Diderot or by looking at snapshots:
-there is no enduring record of what strands died when, and you can only
-learn that a strand's `update` method was called if it does not immediately die**
-(except if you've used `print` messages to explicitly document this as it happens).
+there is no enduring record of what strands died when or why**.  That means
+you can only learn that a strand's `update` method was called if it does not
+immediately die, unless you've used `print` messages to explicitly document
+the execution of `update` as it happens.
 The `99-Snap` line shows the final saved program output
 `state.nrrd`, which is the same as the final snapshot.
 
