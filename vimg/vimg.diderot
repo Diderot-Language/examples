@@ -5,11 +5,10 @@
 This program needs a dataset to render, and a colormap, for example:
 
 	#!
-	#^ ln -s ../data/sscand.nrrd img.nrrd
+	#^ cp ../data/sscand.nrrd img.nrrd
 	#_ unu resample -i ../data/sscand.nrrd -s /2 /2 -o img.nrrd
 	#_ junk img.nrrd
-	#^ ln -s ../cmap/spiral.nrrd cmap.nrrd
-	#_ cp ../cmap/spiral.nrrd cmap.nrrd
+	cp ../cmap/spiral.nrrd cmap.nrrd
 	#_ junk cmap.nrrd
 	#=diderotc
 
@@ -193,85 +192,89 @@ strand sample(int ui, int vi) {
    real ll = 0;
    update {
       vec2 x = orig + ui*dir0 + vi*dir1;
-      if (inside(x, F)) {
-         if (0 == which) {
-            // the image value itself
-            real y = F(x);
-            rgb = [y,y,y];
-         } else if (1 == which) {
-            // the gradient magnitude
-            real y = |∇F(x)|;
-            rgb = [y,y,y];
-         } else if (2 == which) {
-            // the gradient vector, saved in
-            // first two components of output
-            vec2 gg = ∇F(x);
-            rgb = [gg[0],gg[1],0];
-         } else if (3 == which) {
-            /* Colormapped, with simple value-based isocontour. Note that
-            there isn't (currently) a way to learn within the language what
-            the domain of colormap (or of any field) is, so rescaling the
-            function range to [0,1] here reflects either prior knowledge
-            or an assumption about the orientation meta-data in whatever
-            cmap.nrrd links to. There is no need to clamp before evaluating
-            cmap(); that is handled by the clamp in cmap's declaration */
-            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            ll = bump(F(x) - iso);
-         } else if (4 == which) {
-            // colormapped, with Newton-based isocontour
-            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            ll = bump((F(x) - iso)/|∇F(x)|);
-         } else if (5 == which) {
-            // colormapped, with Newton-based ridge line
-            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            /* In the eigensystems returned from evecs() and evals(), the
-               eigenvalues from evals() will always be sorted in *descending*
-               order eval{0} >= eval{1}, and the corresponding eigenvectors
-               will have the same order */
-            vec2{2} evec = evecs(∇⊗∇F(x));
-            real{2} eval = evals(∇⊗∇F(x));
-            real strn = -eval{1}/(|∇F(x)| + seps);
-            if (eval{1} < 0 && strn > sthr) {
-               vec2 delta = (evec{1}⊗evec{1}/eval{1})•∇F(x);
-               ll = bump(|delta|);
-            }
-         } else if (6 == which) {
-            // colormapped, with Newton-based valley line
-            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            vec2{2} evec = evecs(∇⊗∇F(x));
-            real{2} eval = evals(∇⊗∇F(x));
-            real strn = eval{0}/(|∇F(x)| + seps);
-            if (eval{0} > 0 && strn > sthr) {
-               vec2 delta = (evec{0}⊗evec{0}/eval{0})•∇F(x);
-               ll = bump(|delta|);
-            }
-         } else if (7 == which || 8 == which || 9 == which) {
-            // colormapped, with critical points
-            rgb = cmap(lerp(0,1,cmin,F(x),cmax));
-            // Like in matlab and numpy, "inv" is matrix inverse
-            vec2 delta = inv(∇⊗∇F(x))•∇F(x);
-            real{2} eval = evals(∇⊗∇F(x));
-            // eigenvalue tests here assume sorting eval{0} >= eval{1}
-            if (7 == which) {        // maxima
-               if (eval{0} < 0 && eval{0} < -sthr) {
-                  ll = bump(|delta|);
-               }
-            } else if (8 == which) { // saddle
-               if (eval{0} > 0 && eval{1} < 0) {
-                  ll = bump(|delta|);
-               }
-            } else {  // 9 == which:  minima
-               if (eval{1} > 0 && eval{1} > sthr) {
-                  ll = bump(|delta|);
-               }
-            }
-         } else {
-            // update "input int which" annotation above as cases are added
-            print("Sorry, no function defined for which = ", which, "\n");
+      if (!inside(x, F)) {
+         // leave rgb as background color bkgd
+         stabilize;
+      }
+      if (0 == which) {
+         // the image value itself
+         real y = F(x);
+         rgb = [y,y,y];
+      } else if (1 == which) {
+         // the gradient magnitude
+         real y = |∇F(x)|;
+         rgb = [y,y,y];
+      } else if (2 == which) {
+         // the gradient vector, saved in
+         // first two components of output
+         vec2 gg = ∇F(x);
+         rgb = [gg[0],gg[1],0];
+      } else if (3 == which) {
+         /* Colormapped, with simple value-based isocontour. Note that
+         there isn't (currently) a way to learn within the language what
+         the domain of colormap (or of any field) is, so rescaling the
+         function range to [0,1] here reflects either prior knowledge
+         or an assumption about the orientation meta-data in whatever
+         cmap.nrrd links to. There is no need to clamp before evaluating
+         cmap(); that is handled by the clamp in cmap's declaration */
+         rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+         ll = bump(F(x) - iso);
+      } else if (4 == which) {
+         // colormapped, with Newton-based isocontour
+         rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+         ll = bump((F(x) - iso)/|∇F(x)|);
+      } else if (5 == which) {
+         // colormapped, with Newton-based ridge line
+         rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+         /* In the eigensystems returned from evecs() and evals(), the
+            eigenvalues from evals() will always be sorted in *descending*
+            order eval{0} >= eval{1}, and the corresponding eigenvectors
+            will have the same order */
+         vec2{2} evec = evecs(∇⊗∇F(x));
+         real{2} eval = evals(∇⊗∇F(x));
+         real strn = -eval{1}/(|∇F(x)| + seps);
+         if (eval{1} < 0 && strn > sthr) {
+            vec2 delta = (evec{1}⊗evec{1}/eval{1})•∇F(x);
+            ll = bump(|delta|);
          }
-         rgb = lerp(rgb, fcol, ll);
+      } else if (6 == which) {
+         // colormapped, with Newton-based valley line
+         rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+         vec2{2} evec = evecs(∇⊗∇F(x));
+         real{2} eval = evals(∇⊗∇F(x));
+         real strn = eval{0}/(|∇F(x)| + seps);
+         if (eval{0} > 0 && strn > sthr) {
+            vec2 delta = (evec{0}⊗evec{0}/eval{0})•∇F(x);
+            ll = bump(|delta|);
+         }
+      } else if (7 == which || 8 == which || 9 == which) {
+         // colormapped, with critical points
+         rgb = cmap(lerp(0,1,cmin,F(x),cmax));
+         // Like in matlab and numpy, "inv" is matrix inverse
+         vec2 delta = inv(∇⊗∇F(x))•∇F(x);
+         real{2} eval = evals(∇⊗∇F(x));
+         // eigenvalue tests here assume sorting eval{0} >= eval{1}
+         if (7 == which) {        // maxima
+            if (eval{0} < 0 && eval{0} < -sthr) {
+               ll = bump(|delta|);
+            }
+         } else if (8 == which) { // saddle
+            if (eval{0} > 0 && eval{1} < 0) {
+               ll = bump(|delta|);
+            }
+         } else {  // 9 == which:  minima
+            if (eval{1} > 0 && eval{1} > sthr) {
+               ll = bump(|delta|);
+            }
+         }
+      } else {
+         // update "input int which" annotation above as cases are added
+         print("Sorry, no function defined for which = ", which, "\n");
       }
       stabilize;
+   }
+   stabilize {
+      rgb = lerp(rgb, fcol, ll);
    }
 }
 

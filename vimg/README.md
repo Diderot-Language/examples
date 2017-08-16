@@ -2,8 +2,8 @@
 
 This program needs a dataset to render, and a colormap, for example:
 
-	ln -s ../data/sscand.nrrd img.nrrd
-	ln -s ../cmap/spiral.nrrd cmap.nrrd
+	cp ../data/sscand.nrrd img.nrrd
+	cp ../cmap/spiral.nrrd cmap.nrrd
 
 When you compile this program (with `diderotc --exec vimg.diderot`)
 the compiler will see that specific datafiles are named in the declaration
