@@ -209,7 +209,7 @@ function real func(vec3 pos0) {
       real rad = 1 + parm[0];
       real sharp = 7 + parm[1];
       real ramp = 2 + parm[2];
-      ret = ramp*pos[0] + erf(sharp*(rad-|pos|));
+      ret = erf(sharp*(rad-|pos|)) - ramp*pos[0];
    } else if (12 == which) { // 12: little coordinate frame
       /* this is useful for debugging cameras in volume rendering;
          it assumes width >= 3, though much of it is constant zero
