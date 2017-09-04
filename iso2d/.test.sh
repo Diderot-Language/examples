@@ -25,7 +25,7 @@ if [ ! -z ${DDRO_PRFX+x} ]; then
 fi
 
 
-../fs2d/fs2d-scl -size0 50 -size1 50 -which 3 -width 8 | unu save -f nrrd -o cubic.nrrd
+../fs2d/fs2d-scl -size0 50 -size1 50 -which tcubic -width 8 | unu save -f nrrd -o cubic.nrrd
 rm out.nrrd
 diderotc $DFLG --exec iso2d.diderot
 #prog iso2d.diderot
@@ -39,7 +39,7 @@ unu resample -s x1 x1 -k gauss:3,4 -o jhisto.nrrd
 #> jhisto.nrrd 0.1
 
 unu 2op nrand cubic.nrrd 0.5 -s 42 -o noisy.nrrd
-../fs2d/fs2d-scl -size0 50 -size1 50 -which 1 -width 8 | unu save -f nrrd -o yramp.nrrd
+../fs2d/fs2d-scl -size0 50 -size1 50 -which y -width 8 | unu save -f nrrd -o yramp.nrrd
 rm out.nrrd
 unu 2op x yramp.nrrd 3 | unu 2op + noisy.nrrd - -o noisy.nrrd
 junk yramp.nrrd noisy.nrrd
