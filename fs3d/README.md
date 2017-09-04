@@ -15,7 +15,7 @@ grids.  Grid orientation is specified by the angle and axis of
 rotation.
 
 The `-which` option will determine which function is sampled; look for
-`(0 == which)` in the code to see the start of the function
+`("x" == which)` in the code to see the start of the function
 definitions, this includes 3D functions used to make datasets for
 [some](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2003)
 [previous](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2009)
@@ -26,7 +26,7 @@ in order to have a NRRD header that records the orientation of the
 sampling grid, so using the program involves redirection.  To
 get a self-contained parab.nrrd containing a parabola function
 
-	./fs3d-scl -which 3 | unu save -f nrrd -o parab.nrrd
+	./fs3d-scl -which parab | unu save -f nrrd -o parab.nrrd
 	rm out.nrrd
 
 Note that like in [`fs2d-scl.diderot`](../fs2d), the NRRD header

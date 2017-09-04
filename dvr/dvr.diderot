@@ -9,9 +9,9 @@ some of the variables and code are better documented there.
 This program needs a dataset `vol.nrrd` to render; [`fs3d-scl`](../fs3d) is one
 way to generate this.  Some examples:
 * Sphere:  
-   `../fs3d/fs3d-scl -which 4 -width 5 -sz0 30 -sz1 32 -sz2 35 | unu save -f nrrd -o vol.nrrd`
+   `../fs3d/fs3d-scl -which dparab -width 5 -sz0 30 -sz1 32 -sz2 35 | unu save -f nrrd -o vol.nrrd`
 * XYZ axes indicator:  
-   `../fs3d/fs3d-scl -which 12 -width 3.5 -sz0 93 -sz1 94 -sz2 95 | unu crop -min 30 30 30 -max M M M -o vol.nrrd`
+   `../fs3d/fs3d-scl -which frame -width 3.5 -sz0 93 -sz1 94 -sz2 95 | unu crop -min 30 30 30 -max M M M -o vol.nrrd`
 
 The program also uses a univariate colormap `cmap.nrrd` (not for any
 important purpose, just to show how it could be used). This can be created
@@ -39,9 +39,9 @@ viewed with another Teem utility (peer to `unu`) called `overrgb`:
 
 	overrgb -i rgba.nrrd -b 1 1 1 -g 1.2 -o out.png
 
-For the sphere dataset (via `fs3d-scl -which 4`), this should produce
+For the sphere dataset (via `fs3d-scl -which dparab`), this should produce
 [sphere.png](sphere.png).  For the
-XYZ axes indicator dataset (via `fs3d-scl -which 12`) this should produce
+XYZ axes indicator dataset (via `fs3d-scl -which frame`) this should produce
 [axes.png](axes.png); make sure you get the same.
 
 Volume rendering is one setting in which we can make sure Diderot is
@@ -57,9 +57,9 @@ comment out `field#2(3)[] V = bspln3 ⊛ vol;` and uncomment
 `field#1(3)[] V = ctmr ⊛ vol;`: the Catmull-Rom accurately
 reconstructs quadratic functions, but the cubic B-spline does not.
 
-	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 20 -sz1 22 -sz2 25 | unu save -f nrrd -o sphere-0.nrrd
-	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 55 -sz1 29 -sz2 12 -angle -30 | unu save -f nrrd -o sphere-1.nrrd
-	../fs3d/fs3d-scl -which 4 -width 3.8 -sz0 30 -sz1 80 -sz2 19 -angle -30 -axis 1 -1 1 -shear 0.5 -0.6 0.9 | unu save -f nrrd -o sphere-2.nrrd
+	../fs3d/fs3d-scl -which dparab -width 3.8 -sz0 20 -sz1 22 -sz2 25 | unu save -f nrrd -o sphere-0.nrrd
+	../fs3d/fs3d-scl -which dparab -width 3.8 -sz0 55 -sz1 29 -sz2 12 -angle -30 | unu save -f nrrd -o sphere-1.nrrd
+	../fs3d/fs3d-scl -which dparab -width 3.8 -sz0 30 -sz1 80 -sz2 19 -angle -30 -axis 1 -1 1 -shear 0.5 -0.6 0.9 | unu save -f nrrd -o sphere-2.nrrd
 	for I in 0 1 2; do
 	   cp sphere-$I.nrrd vol.nrrd
 	   echo "compiling with sphere-$I.nrrd ..."

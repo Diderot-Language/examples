@@ -16,10 +16,10 @@ Just like [`iso2d`](../iso2d) depends on first creating a dataset with
 [`fs2d-scl`](../fs2d), we need to create a volume dataset with [`fs3d-scl`](../fs3d)
 in order to compile this program `mip.diderot`:
 
-	../fs3d/fs3d-scl -which 13 -width 3 -sz0 73 -sz1 73 -sz2 73 | unu save -f nrrd -o cube.nrrd
+	../fs3d/fs3d-scl -which cube -width 3 -sz0 73 -sz1 73 -sz2 73 | unu save -f nrrd -o cube.nrrd
 
 In this case the volume size is chosen to ensure that the local maxima of
-this -which 13 synthetic function, a cube frame with maxima at
+this -which cube synthetic function, a cube frame with maxima at
 (x,y,z)=(+-1,+1,+1), are actually hit by grid sample points, which helps
 reason about subsequent debugging.  We can inspect the volume by tiled slicing
 in `unu` to make [cube-tile.png](cube-tile.png):
@@ -73,10 +73,10 @@ sampling grid. We first sample a quadratic function in a few different ways
 on a very low resolution grid (which is translating and rotating across these
 four datasets):
 
-	../fs3d/fs3d-scl -which 4 -sz0 10 -sz1 10 -sz2 10 | unu save -f nrrd -o parab0.nrrd
-	../fs3d/fs3d-scl -which 4 -sz0 10 -sz1 10 -sz2 10 -angle 30 -off 0.25 0.25 0.25 | unu save -f nrrd -o parab1.nrrd
-	../fs3d/fs3d-scl -which 4 -sz0 10 -sz1 10 -sz2 10 -angle 60 -off 0.05 0.50 0.50 | unu save -f nrrd -o parab2.nrrd
-	../fs3d/fs3d-scl -which 4 -sz0 10 -sz1 10 -sz2 10 -angle 90 -off 0.75 0.75 0.75 | unu save -f nrrd -o parab3.nrrd
+	../fs3d/fs3d-scl -which dparab -sz0 10 -sz1 10 -sz2 10 | unu save -f nrrd -o parab0.nrrd
+	../fs3d/fs3d-scl -which dparab -sz0 10 -sz1 10 -sz2 10 -angle 30 -off 0.25 0.25 0.25 | unu save -f nrrd -o parab1.nrrd
+	../fs3d/fs3d-scl -which dparab -sz0 10 -sz1 10 -sz2 10 -angle 60 -off 0.05 0.50 0.50 | unu save -f nrrd -o parab2.nrrd
+	../fs3d/fs3d-scl -which dparab -sz0 10 -sz1 10 -sz2 10 -angle 90 -off 0.75 0.75 0.75 | unu save -f nrrd -o parab3.nrrd
 
 Then, using `mip.diderot` as it is, with the
 
@@ -103,7 +103,7 @@ images that reveal the underlying sampling grid:
 [parab3-tent.png](parab3-tent.png).
 
 The fact that these images differ means that the quadratic function sampled
-by `fs3d-scl -which 4` is not exactly reconstructed by the `tent`
+by `fs3d-scl -which dparab` is not exactly reconstructed by the `tent`
 reconstruction kernel.  If the reconstruction had been exact, then the
 rendering would have been entirely determined by the underlying quadratic
 function, rather than the particulars of the sampling grid.  Note that the
