@@ -9,8 +9,8 @@ With each character we give the Unicode code point and name, the LaTeX equivalen
 useful for Diderot programs in LaTeX documents), and other comments.
 
 Our basic philosophy behind indicating mathematical values and operators
-in the most idiomatic way possible is similar to principles previously
-articulated by other computer scientists.
+in an idiomatic and convenient way is similar to principles previously
+articulated by other computer scientists:
 
 > First, we want to establish the idea that a computer language is not
 > just a way of getting a computer to perform operations but rather that
