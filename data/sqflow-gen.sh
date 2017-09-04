@@ -10,14 +10,14 @@ trap cleanup err exit int term
 # get dataset linked to from https://people.mpi-inf.mpg.de/~weinkauf/notes/squarecylinder.html
 echo === getting SquareCylinder.7z
 curl -O http://people.mpi-inf.mpg.de/~weinkauf/datasets/SquareCylinder.7z
-junk SquareCylinder.7z
+#junk SquareCylinder.7z
 
 echo === opening SquareCylinder.7z
 ## There are various different utilities for opening 7z archives, each with
 ## different ways for invoking them.  Find one that works for you, run it,
 ## and make sure that all the files within SquareCylinder.7z end up in a new
 ## directory called "SquareCylinder"
-junk SquareCylinder
+#junk SquareCylinder
 
 # We want to make NRRD headers for the available timesteps. Based on the
 # "Technical Details" on Dr. Weinkauf's page about the data, we specify the
