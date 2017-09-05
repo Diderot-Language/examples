@@ -137,7 +137,7 @@ function real func(vec3 pos0) {
    real y = pos[1];
    real z = pos[2];
    real ret = 0;
-   /* paranthesized numbers in comments are the integers
+   /* parenthesized numbers in comments are the integers
       previously used to identify the case */
    if ("x" == which) {        // x ramp (0)
       ret = x;

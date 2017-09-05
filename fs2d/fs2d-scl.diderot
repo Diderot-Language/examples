@@ -69,10 +69,10 @@ vec2 orig = -(edge0*(size0-1) + edge1*(size1-1))/2 + off;
 function real gauss(real stdv, real x) =
    exp(-(x*x)/(2*stdv^2))/(stdv*sqrt(2*π));
 
-/* The function to evaluate at each grid point. The usage of the parm[] vector
-   elements is just as a tuple of numbers, rather than a geometric vector, and
-   is made somewhat confusing by the intent that the function be useful with
-   the default all-zero parm */
+/* The function to evaluate at each grid point. The parm[] vector is just a
+   tuple of numbers, rather than a geometric vector, and is made somewhat
+   confusing by the intent that the function be useful with the default
+   all-zero parm */
 function real func(vec2 pos0) {
    vec2 pos = wrot•pos0;
    real xx = pos[0];
@@ -80,7 +80,7 @@ function real func(vec2 pos0) {
    real tt = atan2(yy,xx);
    real rr = |pos|;
    real ret = 0;
-   /* paranthesized numbers in comments are the integers
+   /* parenthesized numbers in comments are the integers
       previously used to identify the case */
    if ("x" == which) {        // x ramp (formerly 0)
       ret = xx;

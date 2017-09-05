@@ -3,8 +3,8 @@
 
 This is based on fs3d-scl.diderot in this same directory, after much
 copy-and-pasting (with fewer comments).  As with that program, the
-`-which` option will determine which function is sampled; look for `(0
-== which)` in the code to see the start of the function definitions.
+`-which` option will determine which function is sampled; look for
+`("x" == which)` in the code to see the start of the function definitions.
 
 This program's printed output needs to be captured to generate
 NRRD header with full orientation info. A vector-valued identity
@@ -76,10 +76,10 @@ function vec3 func(vec3 pos0) {
    real y = pos[1];
    real z = pos[2];
    vec3 ret = [0,0,0];
-   /* paranthesized numbers in comments are the integers
+   /* parenthesized numbers in comments are the integers
       previously used to identify the case */
    if ("ident" == which) {        // identity (0)
-      ret = [x,y,z];
+      ret = pos;
    } else if ("jac" == which) { // with Jacobian [parm0, parm1, parm2] (1)
       tensor[3,3] jac = [parm0, parm1, parm2];
       ret = jac•pos;
