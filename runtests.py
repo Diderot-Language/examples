@@ -278,7 +278,7 @@ for TT in tests:
     if not createref:
         want=refdir + '/out.txt'
         if not os.path.isfile(want):
-            stop("missing reference output \"%s\"; need to first run with -g" % want)
+            stop("missing reference output \"%s\"; need to first run with -c" % want)
 
 #################################
 ################################# the testing itself
