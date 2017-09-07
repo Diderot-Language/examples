@@ -16,7 +16,10 @@ inter-particle distances, as the basis of a geometric test of convergence.
 Like the [`life.diderot`](../life) example, we use snapshots to inspect
 the system state as it progresses, so we compile with:
 
+<!--(ignore lines starting with "\tab#"; for testing with ../runtests.py)-->
+	#!
 	diderotc --snapshot --double --exec circle.diderot
+	#prog circle.diderot
 
 When compiling with `--double`, Diderot represents the `real` type
 as a `double` in C++, instead of the default `float`, which produces
@@ -27,33 +30,32 @@ The following creates a list of `N` randomly oriented unit-length 2-vectors in
 of `unu 1op nrand` with `-s RNG` ensures reproducible results, or you can
 leave that out to give different results each time.
 
-	N=60
+	#^ N=60
+	#_ N=120
 	RNG=42
 	eval echo {1..$((2*N))} | unu reshape -s 2 $N | unu 1op nrand -s $RNG -o vec2.nrrd
 	unu project -i vec2.nrrd -a 0 -m l2 | unu axinsert -a 0 -s 2 | unu 2op / vec2.nrrd - -o vec2.nrrd
+	#_ junk vec2.nrrd
 
 Then to run with snapshots saved every iteration (`-s 1`), but limiting the program
 to 500 iterations (`-l 500`), as well as cleaning results from previous run:
 
 	rm -f pos-????.nrrd pos.nrrd
-	./circle -s 1 -l 500
+	#I   # because particle motions can change with any FP changes
+	#^ ./circle -s 1 -l 500
+	#_ ./circle -s 1 -l 900  # experience shows converges around iter 811
+	#_ junk pos-????.nrrd pos.nrrd
 
 If this fails with `ERROR: unexpected arg (or unrecognized flag): "-s"`, it means that
 `circle` wasn't compiled with `--snapshot`, as above.  It should converge in under
 500 iterations, producing many `pos-????.nrrd` files, which we can post-process with:
 
-	export NRRD_STATE_VERBOSE_IO=0
-	for PIIN in pos-????.nrrd; do
-	   IIN=${PIIN#*-}
-	   II=${IIN%.*}
-	   echo "post-processing snapshot $II ... "
-	   unu dice -i $PIIN -a 0 -o ./
-	   unu 2op atan2 0.nrrd 1.nrrd | unu histax -a 0 -min -pi -max pi -b 800 -t float -o angle-$II.nrrd
-	done
-	rm -f 0.nrrd 1.nrrd
-	unu join -i angle-*.nrrd -a 1 |
-	   unu quantize -b 8 -min 0 -max 1 -o angles.png
-	rm -f angle-????.nrrd
+	#R
+	unu join -i pos-????.nrrd -a 2 | # stack snapshots along new axis
+	  unu dice -a 0 -o ./ # get all x,y values in {0,1}.nrrd
+	unu 2op atan2 0.nrrd 1.nrrd | # scanlines are lists of per-particle angles
+	  unu histax -a 0 -min -pi -max pi -b 800 | # scanlines are angle histograms
+	  unu quantize -b 8 -min 0 -max 1 -o angles.png
 
 This produces `angles.png` by unrolling (with atan2) positions along the circle,
 and laying these out along horizontal scanlines, one per iteration. The result
@@ -67,10 +69,24 @@ energy decrease), or because they had no other particles to interact with.
 Some experiments that can be tried with this example:
 * If `--double` is removed from the compilation, the system may not converge to the default `eps` before the iteration limit, due to the decrease in numerical accuracy.
 * There are different possible inter-particle potentials `phi` (uncomment one at a time), which can lead to different dynamics and different convergence speed towards a uniform distribution.
-* If the interaction radius `rad` is decreased while maintining the number of particles, gaps may form.
+* If the interaction radius `rad` is decreased while maintaining the number of particles, gaps may form.
 * Increasing radius `rad` will tend to force convergence faster, at the expense of computing more particle interactions.
 * There are constants associated with Armijo line search, changing them may lead to faster convergence.
 
+	#T
+	export NRRD_STATE_VERBOSE_IO=0
+	# N is still number of particles
+	unu join -i pos-????.nrrd -a 2 | # axes=(x,y), N, history
+	  unu axinsert -a 2 -s $N -o pos2.nrrd # axes=(x,y), N, N, history
+	  unu swap -i pos2.nrrd -a 1 2 | # transpose
+	  unu 2op - - pos2.nrrd |  # all pair-wise differences
+	  unu project -a 0 -m l2 | # axes= N, N, history
+	  unu axmerge -a 0 | # axes= N*N, history
+	  unu histax -a 0 -b 500 -min 0 -max 0.2 | # axes= histo, history
+	  unu crop -min 1 0 -max M M | # lose spike for differences w/ self
+	  unu resample -s x1 = -k gauss:2,4 -t float -o dhisto.nrrd # blur a bunch
+	junk pos2.nrrd
+	#> dhisto.nrrd 0
 ========================================== */
 
 /* The file containing a sequence (read via "load") currently undergoes no

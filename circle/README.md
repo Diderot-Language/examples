@@ -40,18 +40,11 @@ If this fails with `ERROR: unexpected arg (or unrecognized flag): "-s"`, it mean
 `circle` wasn't compiled with `--snapshot`, as above.  It should converge in under
 500 iterations, producing many `pos-????.nrrd` files, which we can post-process with:
 
-	export NRRD_STATE_VERBOSE_IO=0
-	for PIIN in pos-????.nrrd; do
-	   IIN=${PIIN#*-}
-	   II=${IIN%.*}
-	   echo "post-processing snapshot $II ... "
-	   unu dice -i $PIIN -a 0 -o ./
-	   unu 2op atan2 0.nrrd 1.nrrd | unu histax -a 0 -min -pi -max pi -b 800 -t float -o angle-$II.nrrd
-	done
-	rm -f 0.nrrd 1.nrrd
-	unu join -i angle-*.nrrd -a 1 |
-	   unu quantize -b 8 -min 0 -max 1 -o angles.png
-	rm -f angle-????.nrrd
+	unu join -i pos-????.nrrd -a 2 | # stack snapshots along new axis
+	  unu dice -a 0 -o ./ # get all x,y values in {0,1}.nrrd
+	unu 2op atan2 0.nrrd 1.nrrd | # scanlines are lists of per-particle angles
+	  unu histax -a 0 -min -pi -max pi -b 800 | # scanlines are angle histograms
+	  unu quantize -b 8 -min 0 -max 1 -o angles.png
 
 This produces `angles.png` by unrolling (with atan2) positions along the circle,
 and laying these out along horizontal scanlines, one per iteration. The result
@@ -65,7 +58,7 @@ energy decrease), or because they had no other particles to interact with.
 Some experiments that can be tried with this example:
 * If `--double` is removed from the compilation, the system may not converge to the default `eps` before the iteration limit, due to the decrease in numerical accuracy.
 * There are different possible inter-particle potentials `phi` (uncomment one at a time), which can lead to different dynamics and different convergence speed towards a uniform distribution.
-* If the interaction radius `rad` is decreased while maintining the number of particles, gaps may form.
+* If the interaction radius `rad` is decreased while maintaining the number of particles, gaps may form.
 * Increasing radius `rad` will tend to force convergence faster, at the expense of computing more particle interactions.
 * There are constants associated with Armijo line search, changing them may lead to faster convergence.
 
