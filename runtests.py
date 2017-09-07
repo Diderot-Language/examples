@@ -25,8 +25,8 @@
 # \t#||: == suffix command on following line with "||:" to avoid stopping from error
 # \t#> OUT EPS == compare output file(s) OUT with reference, with tolerance EPS
 #         OUT can be a glob that expands to multiple filenames, which will
-#         be compared individually, but unfortunately python's glob.glob does
-#         NOT do brace expansion
+#         be compared individually, but *NOTE* unfortunately python's
+#         glob.glob does *NOT* do brace expansion
 #
 # Assumptions and limitations of gen-readme.sh and this testing:
 # * any command line starting with "./" (to run an executable
@@ -78,10 +78,12 @@ TESTS=[
 'unicode',
 'plot1d',
 'tensor',
-'sphere',
 'vimg',
 'fs2d',
 'iso2d',
+# TODO: lic, fs3d, tensor2, mip, dvr
+'circle',
+'sphere',
 'halftone'
 ]
 PREREQ={
