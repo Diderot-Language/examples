@@ -41,9 +41,9 @@ junk pos.nrrd  # the #T block below tests pos.nrrd
 
 NP=$(unu head pos.nrrd | grep sizes | cut -d' ' -f 3)
 unu axinsert -i pos.nrrd -a 2 -s $NP -o pos2.nrrd
-unu swap -i pos2.nrrd -a 1 2 -o pos1.nrrd
-junk pos{1,2}.nrrd
-unu 2op - pos1.nrrd pos2.nrrd |  # all pair-wise differences
+junk pos2.nrrd
+unu swap -i pos2.nrrd -a 1 2 | # transpose
+ unu 2op - - pos2.nrrd |  # all pair-wise differences
  unu project -a 0 -m l2 | # lengths of diffs
  unu histo -b 400 -min 0 -max 0.24 | # HEY 0.24 depends on -rad 0.15 in execution
  unu crop -min 1 -max M | # lose spike for differences w/ self
