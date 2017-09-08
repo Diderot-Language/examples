@@ -207,12 +207,16 @@ strand particle (vec2 pos0) {
          should predict the change in potential (energy - energyLast), which
          should be negative. If the potential change is too large (not
          negative enough), decrease step size and try again on the next
-         iteration. */
-      if (energy - energyLast > 0.5*(pos - posLast)•(-force)) {
-         hh *= 0.5; // backtrack
+         iteration. The parameter scaling on (pos - posLast)•(-force) should
+         be optimized depending on setting, but the right way to do this is
+         not obvious */
+      if (energy - energyLast > 0.1*(pos - posLast)•(-force)) {
+         /* the backtrack and opportunistic increase parameters should
+            also optimized, somehow */
+         hh *= 0.51; // backtrack
          pos = posLast;
       } else {
-         hh *= 1.02; // opportunistically increase step size
+         hh *= 1.03; // opportunistically increase step size
       }
    }
 }
