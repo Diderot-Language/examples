@@ -123,13 +123,9 @@ function vec3 perp3(vec3 v) {
    /* First find the component c with the largest absolute value,
       to increase accuracy and avoid NaNs */
    int c = 0;
-   if (|v[0]| < |v[1]|) {
-      c = 1;
-   }
-   // not v[c] because tensors can only be indexed by constants
-   if (|v[1] if 1==c else v[0]| < |v[2]|) {
-      c = 2;
-   }
+   if (|v[0]| < |v[1]|) { c = 1; }
+   // not v[c] because currently tensors can only be indexed by constants
+   if (|v[1] if 1==c else v[0]| < |v[2]|) { c = 2; }
    // use c to express a necessarily non-zero vector ret
    vec3 ret = ([v[1] - v[2], -v[0], v[0]] if (c == 0) else
                [-v[1], v[0] - v[2], v[1]] if (c == 1) else
@@ -219,7 +215,7 @@ strand particle (vec3 pos0, real hh0) {
       }
 
       // Armijo-Goldstein sufficient decrease condition
-      if (energy - energyLast > 0.4*(pos - posLast)•(-force)) {
+      if (energy - energyLast > 0.5*(pos - posLast)•(-force)) {
          hh *= 0.5;  // energy didn't decrease as expected: backtrack
          pos = posLast;  // try again next iteration
          // no progress, so decrease of undone
