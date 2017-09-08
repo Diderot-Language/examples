@@ -219,7 +219,7 @@ strand particle (vec3 pos0, real hh0) {
       }
 
       // Armijo-Goldstein sufficient decrease condition
-      if (energy - energyLast > 0.5*(pos - posLast)•(-force)) {
+      if (energy - energyLast > 0.4*(pos - posLast)•(-force)) {
          hh *= 0.5;  // energy didn't decrease as expected: backtrack
          pos = posLast;  // try again next iteration
          // no progress, so decrease of undone
