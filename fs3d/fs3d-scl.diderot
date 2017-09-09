@@ -273,7 +273,7 @@ function real func(vec3 pos0) {
    } else if ("cos" == which) { // cosine waves (15)
       ret = cos((1 + parm[0])*|pos|)*(1 + parm[1]) + parm[2];
    } else if ("mobeads" == which) { // Möbius strip with beads (c.f. "mobius" above) (16)
-      real dd = parm[2] + 0.85;
+      real dd = parm[2] + 0.95;
       real Rbig = sqrt(x*x + y*y);
       real Rlit = sqrt(z*z + (Rbig-dd)^2);
       real phi = atan2(Rbig-dd, z) - atan2(x, y)/2;

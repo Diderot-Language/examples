@@ -72,14 +72,15 @@ input vec2 xymin ("X,Y at lower corner of bounding box") = [-11.9167,-3.9375];
 input vec2 xymax ("X,Y at upper corner of bounding box") = [19.917,3.9375];
 /* The defaults for the variables above are based on the image size,
    pixel size, and bounding box of rand.nrrd, as prepared above.
-   Being unable to learn this information about an image from within a
-   Diderot program is unfortunate.  Hopefully it will be fixed in a
-   future version. */
+   The inability to learn this information about an image from within a
+   Diderot program is a current limitation. Even if it were overcome, it may
+   also be challenging to put computed information into the default value
+   for an input parameter */
 input real vortmax ("vorticity to map to ends of colormap") = 4;
 input real velomax ("velocity that produces maximal contrast") = 1;
 /* The defaults for the previous two variables depend on the contents
-   of the flow field; it is less likely that these kinds of per-image
-   summaries would be part of the language */
+   of the flow field; it is unlikely that these kinds of per-image
+   summaries could be part of Diderot itself */
 input int ovsmp ("amount of image oversampling (for anti-aliasing)") = 1;
 input int stepnum ("# steps in each streamline half") = 30;
 
