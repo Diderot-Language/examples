@@ -18,6 +18,6 @@ elements and properties of Diderot programs must be known at compile time
 
 While later versions of Diderot may permit learning some of the things at
 run-time, the more fundamental things (like whether to run as a collection versus a grid
-of strands) will likely always require different programs to compile.
+of strands) will likely always need to be known at compile-time.
 
 (... dprobe still being written/tested ...)
