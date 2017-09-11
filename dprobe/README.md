@@ -13,7 +13,7 @@ elements and properties of Diderot programs must be known at compile time
 * The reconstruction kernel
 * The differentiability requirement of a field for some expression involving that field
 (e.g. `field#0` if no derivatives needed, vs `field#2` if two derivatives are needed)
-* The tensor shape output values
+* The (tensor) shape of output values
 * Whether output should a list (from a strand collection) or an array (from a strand grid)
 
 While later versions of Diderot may permit learning some of the things at
