@@ -9,10 +9,10 @@ elements and properties of Diderot programs must be known at compile time
 
 * The input image dimension
 * (Tensor) shape of values in input image (e.g. `[]` for `real` or `[3]` for `vec3`)
+* Whether to use any border control on an image, or which one one to use (e.g. `clamp`, `wrap`, `mirror`)
 * The reconstruction kernel
 * The differentiability requirement of a field for some expression involving that field
 (e.g. `field#0` if no derivatives needed, vs `field#2` if two derivatives are needed)
-* Whether to use any border control, or which one one to use (e.g. `clamp`, `wrap`, `mirror`)
 * The tensor shape output values
 * Whether output should a list (from a strand collection) or an array (from a strand grid)
 
