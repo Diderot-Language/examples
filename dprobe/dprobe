@@ -21,7 +21,9 @@ if sys.version_info < (3,5):
 parser = argparse.ArgumentParser(
     description='Use Diderot to probe image to learn something, like the '
     +'vprobe and gprobe utilities in Teem (upon which many of the '
-    +'command-line options here were based).',
+    +'command-line options here were based), but generalized to 1-D '
+    +'and 2-D images as well as probing anything (not just the known answers '
+    +'inside a gageKind).',
     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-i', metavar='nin', required=True,
                     help='input sampled image',
@@ -35,7 +37,7 @@ parser.add_argument('-kern', metavar='kernel',
                     +'(one of tent, ctmr, bspln3, bpsln5, c4hexic). The '
                     +'field produced by convolution will be called \"F\", '
                     +'and this kernel is differentiated to get derivatives. '
-                    +'This is like the -k00 option to Teem\'s vprobe, but '
+                    +'This is like the -k00 option to Teem\'s gprobe, but '
                     +'there\'s no ability here to supply different kernels '
                     +'for derivatives.',
                     nargs=1, default='tent')
@@ -62,11 +64,13 @@ parser.add_argument('-nt', metavar='#threads',
                     +'to pthread, and run with this number of threads',
                     nargs=1, type=int, default=os.cpu_count())
 parser.add_argument('-s', metavar='scl',
-                    help='Absent any of the "-p" options, sampling will '
-                    +'happen on a grid of equal dimension to the image '
-                    +'domain, with the # of samples on each axis being '
-                    +'the scaling by the input # samples by this (per-axis) '
-                    +'value', nargs='*'); # can't know nargs yet
+                    help='Absent any of the subsequent "-p" options, sampling '
+                    +'will happen on a grid of equal dimension to the image '
+                    +'domain, coinciding with image domain, but with the # of '
+                    +'samples on each axis the result of scaling the '
+                    +'input # samples by this (per-axis) scaling. Defaults to '
+                    +'scaling=1, i.e. output grid same as input grid',
+                    nargs='*'); # can't know nargs yet
 parser.add_argument('-pg', metavar='probe grid',
                     help='overrides "-s": filename of 2-D nrrd which '
                     +'specifies origin and direction vectors for sampling '
