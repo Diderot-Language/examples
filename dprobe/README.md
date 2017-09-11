@@ -4,7 +4,7 @@ This is a rather atypical Diderot example because it is not a single program,
 but a generator/compiler for a programs, based on the various command-line
 options to `dprobe`, which is a Python program. The variety of things that
 `dprobe` can do and act on require creating new programs, because various
-Diderot program must currently be known at compile time:
+elements and properties of Diderot programs must currently be known at compile time:
 
 * The input image dimension and value type (e.g. `real` vs `vec3`)
 * The reconstruction kernel
