@@ -6,7 +6,8 @@ options to `dprobe`, which is a Python program. The variety of things that
 `dprobe` can do and act on require creating new programs, because various
 elements and properties of Diderot programs must currently be known at compile time:
 
-* The input image dimension and value type (e.g. `real` vs `vec3`)
+* The input image dimension
+* (Tensor) shape of values in input image (e.g. `[]` for `real` or `[3]` for `vec3`)
 * The reconstruction kernel
 * Whether output should a list (from a strand collection) or an array (from a strand grid)
 * The differentiability requirement of a field for some expression involving that field
