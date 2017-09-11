@@ -16,7 +16,7 @@ elements and properties of Diderot programs must be known at compile time
 * The (tensor) shape of output values
 * Whether output should a list (from a strand collection) or an array (from a strand grid)
 
-While later versions of Diderot may permit learning some of the things at
+While later versions of Diderot may permit learning some of these things at
 run-time, the more fundamental things (like whether to run as a collection versus a grid
 of strands) will likely always need to be known at compile-time.
 
