@@ -142,6 +142,7 @@ if (args.l):
     print("%s: available tests:\n%s" % (me, ' '.join(TESTS)))
     sys.exit(0)
 # else they need to have used -r
+# (hence can't use required=True with parser.add_argument)
 if not args.r:
     stop("need to identify reference output directory with -r")
 verbose=args.v
