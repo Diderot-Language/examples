@@ -1,23 +1,24 @@
 #!/usr/bin/env python3 -Wdefault
 
+# NOTE: GLK welcomes help making this more pythonic
+
 import sys
 import argparse
 import os
 import subprocess
-import re
 import shutil
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
-
 def stop(why):
     eprint('%s: %s; stopping' % (me, why))
     sys.exit(1)
-
 # subprocess.run is from version 3.5
 if sys.version_info < (3,5):
     stop('need python3 version >= 3.5')
 
+######################################################################
+########### command-line parsing
 parser = argparse.ArgumentParser(
     description='Use Diderot to probe image to learn something, like the '
     +'vprobe and gprobe utilities in Teem (upon which many of the '
@@ -52,16 +53,13 @@ parser.add_argument('-q', metavar=('type','expr','deriv'), required=True,
                     +'isn\'t smart enough to infer the output type or the '
                     +'derivatives needed.',
                     nargs=3)
-parser.add_argument('-o', metavar='output', # required=True, no since maybe -pp
-                    help='where to save output',
-                    nargs=1)
 parser.add_argument('-bc', metavar='border control',
                     help='how to handle samples at edge of image '
                     +'(either "none", "mirror", "clamp", or "wrap")',
                     nargs=1, default='none')
 parser.add_argument('-nt', metavar='#threads',
-                    help='instead of compiling to sequential target, compile '
-                    +'to pthread, and run with this number of threads',
+                    help='compile to pthread target, and run with this number '
+                    +'of threads. Use "-nt 0" to compile to sequential target',
                     nargs=1, type=int, default=os.cpu_count())
 parser.add_argument('-s', metavar='scl',
                     help='Absent any of the subsequent "-p" options, sampling '
@@ -70,7 +68,7 @@ parser.add_argument('-s', metavar='scl',
                     +'samples on each axis the result of scaling the '
                     +'input # samples by this (per-axis) scaling. Defaults to '
                     +'scaling=1, i.e. output grid same as input grid',
-                    nargs='*'); # can't know nargs yet
+                    nargs='*'); # nargs==input img dimension
 parser.add_argument('-pg', metavar='probe grid',
                     help='overrides "-s": filename of 2-D nrrd which '
                     +'specifies origin and direction vectors for sampling '
@@ -81,7 +79,10 @@ parser.add_argument('-pi', metavar='probe locs',
 parser.add_argument('-pp', metavar='pos',
                     help='overrides "-pi": probe only at this one single '
                     +'location, and print query result there, rather than '
-                    +'save to file', nargs='*')  # can't know nargs yet
+                    +'save to file', nargs='*') # nargs==input img dimension
+parser.add_argument('-o', metavar='output',
+                    help='where to save output, required for all samplings '
+                    +'except -pp', nargs=1)
 parser.add_argument('-v', metavar='verbose', help='verbosity level',
                     nargs='?', type=int, const='1', default='0')
 parser.add_argument('-op', metavar='name', default='probe',
@@ -89,9 +90,16 @@ parser.add_argument('-op', metavar='name', default='probe',
                     +'option causes the Diderot source and compiled output '
                     +'to be saved, instead of cleaned up at completion. ',
                     nargs=1)
+parser.add_argument('-d', action='store_true',
+                    help='compile with --double instead of '
+                    +'default single-precision')
+parser.add_argument('-kg', action='store_true',
+                    help='keep generated .diderot, .o, and .cxx files, '
+                    +'instead of cleaning them up when done')
 me=sys.argv[0]
 args = parser.parse_args()
 
+######################################################################
 ########### check that diderotc and unu are available
 verbose=args.v
 def run(wut):
@@ -112,11 +120,18 @@ def checkpath():
         stop("\"diderotc --version\" says \"%s\" but expected vis15" % version)
     if not shutil.which('unu'):
         stop("need \"unu\" in path to learn about input image")
+    haspg=False
+    for line in [str(l,'utf-8') for l in run('unu grid').stdout.splitlines()]:
+        if "generate a 2D array that represents the sampling" in line:
+           haspg=True
+    if not haspg:
+       stop("%s grid doesn't seem to support the -pg option (new with r6325)" % shutil.which('unu'))
     if verbose:
         print('%s: using %s' % (me, shutil.which('diderotc')))
         print('%s: using %s' % (me, shutil.which('unu')))
 checkpath()
 
+######################################################################
 ########### transform dprobe._ddro with these substitutions:
 # _IMG_NAME_: filename of input image
 # _IMG_DIM_: dimension of input image's domain
@@ -143,35 +158,39 @@ subs['_IMG_NAME_'] = args.i[0]
 uhead = [str(l,'utf-8').rstrip() for l in run('unu dnorm -h -i ' + args.i[0]).stdout.splitlines()]
 for line in uhead:
     if line.startswith('space dimension: '): subs['_IMG_DIM_'] = line.replace('space dimension: ','')
-    if line.startswith('dimension: '): DIM = line.replace('dimension: ','')
+    if line.startswith('dimension: '): ARRAYDIM = line.replace('dimension: ','')
     if line.startswith('kinds: '): KIND = line.replace('kinds: ','').split(' ')
 subs['_IMG_VECN_'] = 'real' if '1' == subs['_IMG_DIM_'] else 'vec'+subs['_IMG_DIM_']
 subs['_QUERY_TYPE_'] = args.q[0]
-subs['_QUERY_EXPR_'] = args.q[1]
+# TODO: allow query to be user-defined function
+subs['_QUERY_EXPR_'] = args.q[1] if '(pos)' in args.q[1] else args.q[1]+'(pos)'
 subs['_QUERY_DERIV_'] = args.q[2]
 if 'real' == args.q[0]:
     subs['_QUERY_INIT_'] = 'nan'
 elif 'vec2' == args.q[0]:
-    subs['_QUERY_INIT_'] = 'nan[2]'
+    subs['_QUERY_INIT_'] = '[nan,nan]'  # HEY nan[2] should work
 elif 'vec3' == args.q[0]:
-    subs['_QUERY_INIT_'] = 'nan[3]'
+    subs['_QUERY_INIT_'] = '[nan,nan,nan]' # HEY nan[3] should work
 elif 'tensor[2,2]' == args.q[0]:
-    subs['_QUERY_INIT_'] = 'nan[2,2]'
+    subs['_QUERY_INIT_'] = '[[nan,nan],[nan,nan]]' # HEY nan[2,2] should work
 elif 'tensor[3,3]' == args.q[0]:
-    subs['_QUERY_INIT_'] = 'nan[3,3]'
+    subs['_QUERY_INIT_'] = '[[nan,nan,nan],[nan,nan,nan],[nan,nan,nan]]' # HEY nan[3,3] should work
 else:
         stop('Don\'t know how to NaN-initialize query output ' + args.q[0])
-subs['_KERN_'] = args.kern
-if 'none' == args.bc:
+subs['_KERN_'] = args.kern[0] if isinstance(args.kern, list) else args.kern
+
+if 'none' == args.bc or 'none' == args.bc[0]:
     subs['_BC_OPEN_'] = subs['_BC_CLOSE_'] = ''
     subs['_INSIDE_OPEN_'] = 'if (inside(pos, F)) {'
     subs['_INSIDE_INDENT_'] = '   '
-    subs['_INSIDE_CLOSE_'] = '}'
+    subs['_INSIDE_CLOSE_'] = '}' # possibly over-written below
 else:
     subs['_BC_OPEN_'] = args.bc[0] + '('
     subs['_BC_CLOSE_'] = ')'
     subs['_INSIDE_OPEN_'] = subs['_INSIDE_CLOSE_'] = subs['_INSIDE_INDENT_'] = ''
-if DIM == subs['_IMG_DIM_']:
+subs['_SINGLE_PRINT_'] = '' # possibly over-written below
+
+if ARRAYDIM == subs['_IMG_DIM_']:
     subs['_IMG_SHAPE_'] = '[]'
 else:
     if ('2-vector' == KIND[0]):
@@ -185,39 +204,110 @@ else:
     else:
         stop('Don\'t know how to interpret non-scalar kind[0] ' + KIND[0])
 
+if not args.pp and not args.o:
+   stop('need -o if not using -pp')
+
+if args.pp:  # used -pp to specify a single probe position
+   if len(args.pp) != int(subs['_IMG_DIM_']):
+      stop('got %d values via -pp but image domain is %d-dimensional' % (len(args.pp), int(subs['_IMG_DIM_'])))
+   if 'none' == args.bc or 'none' == args.bc[0]:
+      subs['_SINGLE_PRINT_'] = '   print(out, "\\n");'
+      subs['_INSIDE_CLOSE_'] = '} else { print(pos, " is not inside\\n"); }'
+   else:
+      subs['_SINGLE_PRINT_'] = 'print(out, "\\n");'
+   subs['_PROBE_HOW_'] = ('input %s pp ("single position at which to probe") = %s;' %
+                          (subs['_IMG_VECN_'], [float(v) for v in args.pp]))
+   subs['_INITIALLY_'] = 'initially { probe(pp) | ii in 0..0 };'
+   if args.o:
+      eprint('%s: ignoring given "-o %s"; output will go to stdout' % (me, args.o[0]))
+   DASHO="-o /dev/null"
+elif args.pi: # used -pi to specify list of probe positions
+   if '-' == args.pi[0]:
+      stop('sorry, can\'t use - as input probe positions (bug to fix)')
+   subs['_PROBE_HOW_'] = 'input %s{} pi ("list of positions at which to probe") = load(\"%s\");' % (subs['_IMG_VECN_'], args.pi[0])
+   subs['_INITIALLY_'] = 'initially { probe(pi{ii}) | ii in 0..length(pi)-1 };'
+   DASHO="-o %s" % args.o[0]
+else:
+   # either used -pg to specify probing grid (in which case args.pg)
+   # or using default grid or -s, in which case we need to generate a
+   # sampling grid on the fly
+   cmd = ('unu save -f nrrd -e ascii -i %s -o -' % args.pg[0]
+          if args.pg else
+          'unu grid -i %s -pg | unu save -f nrrd -e ascii -o -' % args.i[0])
+   grid=[]
+   skipping=True
+   for line in [str(l,'utf-8') for l in run(cmd).stdout.splitlines()]:
+      if not skipping: grid.append([float(v) for v in line.split(' ')])
+      if 0 == len(line): skipping=False
+   size=[]
+   sdir=[]
+   gridDim = int(grid[0][0])
+   sorig=grid[0][1:]
+   for gi in range(1,len(grid)):
+      size.append(int(grid[gi][0]))
+      sdir.append(grid[gi][1:])
+   subs['_PROBE_HOW_'] = ('input %s orig ("location of first sample in grid") = %s;'
+                          % (subs['_IMG_VECN_'], sorig))
+   for gi in range(0,len(grid)-1):
+      subs['_PROBE_HOW_'] += ('\ninput int sz%d ("# samples on axis %d") = %d;'
+                              % (gi, gi, size[gi]))
+      subs['_PROBE_HOW_'] += ('\ninput %s dir%d ("offset between samples on axis %d") = %s;'
+                              % (subs['_IMG_VECN_'], gi, gi, sdir[gi]))
+   if not args.o[0].endswith('.nhdr'):
+      #TODO: remove this limitation
+      stop('sorry, grid-based sampling currently requires .nhdr output (not %s) '
+           +'so that orientation information can be set quickly' % args.o[0])
+   DASHO="-o %s" % args.o[0]
+   subs['_INITIALLY_'] = 'initially [ probe(orig'
+   for gi in range(0,len(grid)-1):
+      subs['_INITIALLY_'] += ' + i%d*dir%d' % (gi, gi)
+   subs['_INITIALLY_'] += ') |\n                  '
+   for gi in reversed(range(0,len(grid)-1)):
+      subs['_INITIALLY_'] += 'i%d in 0..sz%d-1%s' % (gi, gi, ', ' if gi else '')
+   subs['_INITIALLY_'] += '];'
+
 if verbose:
     print('%s: will apply substitutions:' % me)
     for k in sorted(subs.keys()):
         print('subs[%s] = %s' % (k, subs[k]))
 
-# _PROBE_HOW_: specification of how probing happens       
-# _SINGLE_PRINT_: if probing at only one location, the print statement
-# _INITIALLY_: the strand initialization for the program
-
-
+# actually do the program transformation
 # TODO: make it so that we find 'dprobe._ddro' in whatever path dprobe is in
 # because it may be that user is calling dprobe from elsewhere
 with open('dprobe._ddro', 'r') as insrc:
     lines = insrc.readlines()
-
 outprog=args.op[0] if isinstance(args.op, list) else args.op
-# TODO: die if outprog+'.diderot' already exists
+# TODO: die if outprog+'.diderot' already exists?
 with open(outprog+'.diderot', 'w') as outsrc:
     for line in lines:
         if '/'==line[0] and '/'==line[1]: continue
-        for A, B in subs.items():
+        for A, B in subs.items(): # apply known substitutions
             line = line.replace(A,B)
         outsrc.write(line)
 
+######################################################################
+########### compile and run
+numthread=args.nt[0] if isinstance(args.nt, list) else args.nt
+cmd='diderotc %s --target=%s --exec %s.diderot' % ('--double' if args.d else '', 'sequential' if 0==numthread else 'pthread', outprog)
+run(cmd)
+cmd='./%s %s' % (outprog, DASHO)
+run(cmd)
+# this will hopefully be nothing, except for -pp
+[print(str(l,'utf-8')) for l in run(cmd).stdout.splitlines()]
+#if args.pp: used -pp to specify a single probe position; output was just printed
+#elif args.pi: used -pi to specify list of probe positions; output has been saved and is done
+#else args.pg or not, need to massage output
+if not args.pp and not args.pi:
+   # TODO: add orienation information to args.o[0]
+   print('cat %s' % args.o[0])
 
-# compile         
-# run             
-
-if not isinstance(args.op, list):
+######################################################################
+########### clean up generated output
+# if didn't explicitly use "-op" option, and didn't use "-kg"
+if not isinstance(args.op, list) and not args.kg:
     if verbose:
         print('%s: removing generated files %s{,.diderot,.o,.cxx}' % (me, outprog))
     os.remove(outprog+'.diderot')
-    #os.remove(outprog+'.o')
-    #os.remove(outprog+'.cxx')
-    #os.remove(outprog)
-
+    os.remove(outprog+'.o')
+    os.remove(outprog+'.cxx')
+    os.remove(outprog)

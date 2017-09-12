@@ -2,19 +2,19 @@
 // This is NOT a valid Diderot program; all the _FOO_ strings will be replaced
 // by dprobe.py prior to compilation
 
-input image(_IMG_DIM_)_IMG_SHAPE_ img = _BC_OPEN_image("_IMG_NAME_")_BC_CLOSE_;
+input image(_IMG_DIM_)_IMG_SHAPE_ img ("input image") = image("_IMG_NAME_");
 
 _PROBE_HOW_
 
-field#_QUERY_DERIV_(_IMG_DIM_)[] F = _KERN_ ⊛ img;
+field#_QUERY_DERIV_(_IMG_DIM_)[] F = _KERN_ ⊛ _BC_OPEN_img_BC_CLOSE_;
 
 strand probe(_IMG_VECN_ pos) {
    output _QUERY_TYPE_ out = _QUERY_INIT_;
    update {
       _INSIDE_OPEN_
-      _INSIDE_INDENT_out = _QUERY_EXPR_(pos);
-      _INSIDE_CLOSE_
+      _INSIDE_INDENT_out = _QUERY_EXPR_;
       _SINGLE_PRINT_
+      _INSIDE_CLOSE_
       stabilize;
    }
 }
