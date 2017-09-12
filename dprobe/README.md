@@ -1,8 +1,17 @@
 # dprobe: image probing utility
 
+This utility is a conceptual peer to the `vprobe` and `gprobe` utilities in
+Teem (which probe various quantities on 3-D fields reconstructed by
+convolution), except that `dprobe` works on 1-D and 2-D data, and permits
+probing any expression in the field that Diderot knows how to compute.  Run:
+
+	./dprobe --help
+
+to get the extensive usage information.
+
 This is an atypical Diderot example because it is not a single program, but a
 generator/compiler for a programs, based on the various command-line options
-to `dprobe`, which is a `python3` program. The variety of things that
+to `dprobe`, which is a `python3` program.  The variety of things that
 `dprobe` can do and act on require creating new programs, because currently
 various elements and properties of Diderot programs must be known at compile
 time (rather than being learned at run-time):
