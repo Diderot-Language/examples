@@ -90,7 +90,7 @@ parser.add_argument('-s', metavar='scl',
                     help='Absent any of the subsequent "-pX" options, sampling '
                     +'will happen on a grid of equal dimension to the image '
                     +'domain, coinciding with image domain, but with the # of '
-                    +'samples on each axis determined by this vector of '
+                    +'samples determined by this vector of '
                     +'per-axis scalings. If M is the original # samples on an axis, '
                     +'"xF" means new # samples is round(M*F), '
                     +'"/F" means new # samples is round(M/F), and '
