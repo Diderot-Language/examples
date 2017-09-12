@@ -82,6 +82,9 @@ Also demonstrates the `inside` and `normalize` functions.
 similar to but more complicated than [`fs2d`](fs2d/).
 Demonstrates a user-defined function for doing quaternion to
 rotation matrix conversion, and nested conditional expressions.
+* [`dprobe`](dprobe/): Not a single Diderot program, but a utility for generating
+and running programs that probe different things in different ways from fields
+(conceptually a peer to the `vprobe` or `gprobe` utilities in Teem).
 * [`tensor2`](tensor2/): Details how differentiation adds indices
 to the **end** of tensor shape.
 * [`mip`](mip/): For maximum-intensity projections through 3D volumes;
