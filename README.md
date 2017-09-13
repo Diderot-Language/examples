@@ -56,8 +56,9 @@ which can compute on globals and strand states between per-strand updates.
 and snapshots for watching how strand state changes.
 * [`steps`](steps/): Documents interaction of strand communication, strand
 updates, global updates, and snapshots, in a strand collection.
-* [`unicode`](unicode/): Computes nothing, but comments include a Diderot Unicode cheatsheet,
-with information about the operators that they represent.
+* [`unicode`](unicode/): Computes nothing (kind of a no-op program),
+but the comments include a Diderot Unicode cheatsheet,
+with information about the operators they represent.
 * [`plot1d`](plot1d/): Plots a univariate function reconstructed by convolution
 of 1-D, possibly with border control, and transformed by lifted functions.
 * [`tensor`](tensor/): Describes tensor shape, and demonstrates printing, indexing, and
