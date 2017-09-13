@@ -42,25 +42,64 @@ generated files.
 
 A simple example of using `dprobe` on 2-D data:
 
+	./dprobe -i ../data/ddro-100.nrrd -k real -kern bspln5 -bc clamp -q real F 0 -d -pp 0.2 0.4
+
+This convolves the scalar (`-k real`) 100x100 Diderot portrait (`-i
+../data/ddro-100.nrrd `) by with quintic B-spline kernel (`-kern bspln5`) to
+make a field (which is always called `F`), with `clamp` border control.  At
+the single position `[0.2,0.4]`, the program evaluates the `real`-valued `F`,
+which requires 0 derivatives (`-q real F 0`), and prints the results
+(`0.5355935654392312`).  You can run the above command with `-v` to get
+information about what was actually done, or with `-v 2` to see how the
+template program was transformed.
+
+To sample at some list of locations saved in a file (`pi.txt`). We print
+results to terminal below, but could also give a filename for `-o`):
+
+	printf "0 0\n-0.3 0.5\n0.2 -0.8\n1.2 0.7\n0.1 -3" > pi.txt
+	cat pi.txt
+	./dprobe -i ../data/ddro-100.nrrd -k real -kern bspln5 -bc clamp -q real F 0 -d -pi pi.txt -o - | unu save -f text
+
+To take a 1-D slice of the data, we set up a sampling grid for `-pg`:
+
+	printf "1 -1 -0.5\n501 0.004 0.002\n" > pg.txt
+	cat pg.txt
+	./dprobe -i ../data/ddro-100.nrrd -k real -kern bspln5 -bc clamp -q real F 0 -d -pg pg.txt -o line.nrrd
+
+The `pg.txt` file specifies a sampling grid (in a 2-D array) the same as is
+used by Teem's `gprobe`. On the first row, the first number (interpreted as
+an int) is the grid dimension, and the next numbers are the location of the
+first sample. Each subsequent row specifies one axis of the grid, from fast
+to slow raster order: the first number in the row (again interpreted as an
+int) is the number of samples on that axis, and the remaining numbers are the
+increment in space between adjacent samples on that axis.  The `pg.txt` file
+above specifies a diagonal line that cuts through the center of the image.
+We can plot the values sampled along it:
+
+	unu dhisto -i line.nrrd -h 200 -nolog |
+	  unu pad -min -1 -1 -max M+1 M+1 -b pad -v 0 -o line-plot.png
+
+![](ref/line-plot.png "line-plot.png")  
+[line-plot.png](ref/line-plot.png)
+
+To sample on same 2-D grid as the image:
+
 	./dprobe -i ../data/ddro-100.nrrd -k real -kern bspln5 -bc clamp -q real F 0 -d -o ddro-bsp5.nrrd
 
-This convolves the scalar (`-k real`) 100x100 Diderot portrait (`-i ../data/ddro-100.nrrd `)
-by with quintic B-spline kernel (`-kern bspln5`) to make a field
-(which is always called `F`), with `clamp` border control.  Sampling on the
-same grid as the image data itself, the program evaluates the `real`-valued `F`,
-which requires 0 derivatives (`-q real F 0`), and saves the output to `ddro-bsp5.nrrd`.
-The computations, and the output, are in double-precision (`-d`).
-You can run the above command with `-v` to get information about what was actually
-done, or with `-v 2` to see how the template program was transformed.  To compare the two images:
+To compare the original image and the resampling, we upsample (with `unu`) just to make
+the individual pixels clearer:
 
 	unu join -i ../data/ddro-100.nrrd ddro-bsp5.nrrd -a 0 |
-	unu resample -s x5 x5 -k box |
-	unu quantize -b 8 -o compare.png
+	  unu resample -s x4 x4 -k box |
+	  unu quantize -b 8 -o compare.png
 
-Note that the location in space of the output is the same (modulo some
-floating point roundoff) as the input image (this capability is currently due
-more to how `dprobe` sets up the sampling, rather than some functionality in
-Diderot itself):
+![](ref/compare.png "compare.png")  
+[compare.png](ref/compare.png)
+
+The `bspln5` kernel has done some smoothing; other kernels (like `tent` and `ctmr`)
+are interpolating.
+Note that the location in space of the output `ddro-bsp5.nrrd` is the same (modulo some
+floating point roundoff) as the input image:
 
 	unu head ../data/ddro-100.nrrd ddro-bsp5.nrrd
 
