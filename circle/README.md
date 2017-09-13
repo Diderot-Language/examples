@@ -22,8 +22,8 @@ more accurate results.
 
 The following creates a list of `N` randomly oriented unit-length 2-vectors in
 `vec2.nrrd` which will be the initial input.  Setting the random number seed
-of `unu 1op nrand` with `-s RNG` ensures reproducible results, or you can
-leave that out to give different results each time.
+of `unu 1op nrand` with `-s $RNG` ensures reproducible results (or you can
+leave that out to give different results each time).
 
 	N=60
 	RNG=42
@@ -46,9 +46,11 @@ If this fails with `ERROR: unexpected arg (or unrecognized flag): "-s"`, it mean
 	  unu histax -a 0 -min -pi -max pi -b 800 | # scanlines are angle histograms
 	  unu quantize -b 8 -min 0 -max 1 -o angles.png
 
+![](ref/angles.png "angles.png")  
+[angles.png](ref/angles.png)
+
 This produces `angles.png` by unrolling (with atan2) positions along the circle,
-and laying these out along horizontal scanlines, one per iteration. The result
-should look something like [angles-ref.png](angles-ref.png). It is clear that the
+and laying these out along horizontal scanlines, one per iteration. It is clear that the
 particle interactions made a roughly uniform distribution early on, but
 subsequent refinements took longer. Scrutinizing the top of the image shows
 where strands were stationary either because they repeatedly backtracked in the
