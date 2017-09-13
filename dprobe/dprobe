@@ -200,8 +200,8 @@ for line in uhead:
     if line.startswith('space dimension: '): subs['_IMG_DIM_'] = line.replace('space dimension: ','')
     if line.startswith('dimension: '): ARRAYDIM = line.replace('dimension: ','')
     if line.startswith('kinds: '): KIND = line.replace('kinds: ','').split(' ')
-iddim = int(subs['_IMG_DIM_']) # image domain dimension
-vecn = subs['_IMG_VECN_'] = 'real' if 1 == iddim else ('vec%d' % iddim)
+domDim = int(subs['_IMG_DIM_']) # image domain dimension
+vecn = subs['_IMG_VECN_'] = 'real' if 1 == domDim else ('vec%d' % domDim)
 subs['_QUERY_TYPE_'] = args.q[0]
 # TODO: allow query to be user-defined function
 subs['_QUERY_EXPR_'] = args.q[1] if 'xx' in args.q[1] else args.q[1]+'(xx)'
@@ -265,8 +265,8 @@ if not args.pp and not args.o:
     stop('need -o if not using -pp')
 
 if args.pp:  # used -pp to specify a single probe position
-    if len(args.pp) != iddim:
-        stop('got %d values via -pp but image domain is %d-dimensional' % (len(args.pp), iddim))
+    if len(args.pp) != domDim:
+        stop('got %d values via -pp but image domain is %d-dimensional' % (len(args.pp), domDim))
     if 'none' == args.bc or 'none' == args.bc[0]:
         subs['_SINGLE_PRINT_'] = '   print(out, "\\n");'
         subs['_INSIDE_CLOSE_'] = '} else { print(xx, " is not inside\\n"); }'
@@ -311,6 +311,8 @@ else: # not args.pp and not args.pi
     gridDim = int(grid[0][0])
     if args.s and len(args.s) != gridDim:
         stop('got %d values via -s but sampling grid is %d-dimensional' % (len(args.s), gridDim))
+    if gridDim+1 != len(grid):
+        stop('sampling grid said it was %d-D, but got %d rows in its spec (not %d+1=%d)' % (gridDim, len(grid), gridDim, gridDim+1))
     sorig=grid[0][1:]
     oldSize=[]
     sdir=[]
@@ -350,8 +352,8 @@ else: # not args.pp and not args.pi
     probeHow += '// utility for printing vectors in parentheses\n'
     probeHow += 'function real pvec(%s v) {\n' % vecn
     probeHow += '   print(" ("'
-    for ii in range(0,iddim):
-       probeHow += ', v[%d], %s' % (ii, '","' if ii<iddim-1 else '")");\n')
+    for ii in range(0,domDim):
+       probeHow += ', v[%d], %s' % (ii, '","' if ii<domDim-1 else '")");\n')
     probeHow += '   return 1;\n'
     probeHow += '}'
     subs['_PROBE_HOW_'] = probeHow
@@ -380,7 +382,7 @@ else: # not args.pp and not args.pi
     firstprint += '\\n");\n'
     firstprint += ('         print("endian: little\\n");\n'
                    +'         print("encoding: raw\\n");\n'
-                   +'         print("space dimension: %d\\n");\n' % gridDim)
+                   +'         print("space dimension: %d\\n");\n' % domDim)
     firstprint += '         print("space directions:")' #-------------
     if ax0len: firstprint += '; print(" none")'
     for ii in range(0,gridDim):
