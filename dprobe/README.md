@@ -32,15 +32,15 @@ While future versions of Diderot may permit learning some of these things at
 run-time, fundamental things (like whether to run as a collection
 versus a grid of strands) will probably always need to be set at compile-time.
 This isn't a big limitation: real-world uses of Diderot **should** be specialized
-on the particular kinds of data it reads and writes.
-There is a single template program (look for the definition of `TEMPLATE` at
+on the forms of data to be processed and generated. `dprobe` does include
+a single template program (see `TEMPLATE` at
 the top of `dprobe`), which is transformed according to the arguments to
 `dprobe`, but it is so heavily transformed that it doesn't really look like a
 Diderot program. You can see the final generated program by specifying its
 basename with the `-op` option, or otherwise using the `-kg` option to keep
 generated files.
 
-A simple example of using `dprobe` on 2-D data:
+A simple example of using `dprobe` to probe 2-D data at a single point:
 
 	./dprobe -i ../data/ddro-100.nrrd -k real -kern bspln5 -bc clamp -q real F 0 -d -pp 0.2 0.4
 
@@ -53,8 +53,8 @@ which requires 0 derivatives (`-q real F 0`), and prints the results
 information about what was actually done, or with `-v 2` to see how the
 template program was transformed.
 
-To sample at some list of locations saved in a file (`pi.txt`). We print
-results to terminal below, but could also give a filename for `-o`):
+We can also sample at some list of locations saved in a file (`pi.txt`). We print
+results to terminal below, but could also give a filename for `-o`:
 
 	printf "0 0\n-0.3 0.5\n0.2 -0.8\n1.2 0.7\n0.1 -3" > pi.txt
 	cat pi.txt
@@ -121,7 +121,7 @@ measured are described in comments (`uq8` and `wpad` aliases help with brevity).
 	./dprobe $PARM -q real     "|∇⊗∇F|"     2 | uq8 -g 1.5 -o ddro-hnrm.png # Frobenius norm of Hessian
 	./dprobe $PARM -q real  "|∇(|∇⊗∇F|)|"   3 | uq8 -g 2 -o ddro-hngm.png   # mag of grad of Frob norm of Hessian
 
-The third example (`-q real "(-1)*F 0`) warns of an [annoyance in python's
+The third example (`-q real "(-1)*F 0`) illustrates an [annoyance in python's
 `argparse`](https://docs.python.org/3/library/argparse.html#arguments-containing),
 involving option arguments starting with `-`. Using `-q real -F 0`
 would lead to an error `dprobe: error: argument -q: expected 3 arguments`, because
@@ -196,10 +196,10 @@ further highlights how poorly ridge detection works on a per-pixel basis.  Compo
 [ddro-ridge.png](ref/ddro-ridge.png)
 
 If we transform the `RIDGE` expression above by replacing `F` with `(|∇F|)`,
-we have an expression for the ridges of gradient magnitude, which produces a kind
+we can look at **ridges of gradient magnitude**, a kind
 of [edge
-detection](https://en.wikipedia.org/wiki/Ridge_detection#Relations_between_edge_detection_and_ridge_detection),
-seen in the `GMRIDGE` expression below.  For comparison, `CANNY` expresses Canny edge detection:
+detection](https://en.wikipedia.org/wiki/Ridge_detection#Relations_between_edge_detection_and_ridge_detection)
+expressed in `GMRIDGE` below.  For comparison, `CANNY` expresses Canny edge detection:
 the gradient magnitude is at a maximum with respect to motion along gradient direction.  For visual
 clarity, both expressions are weighted by the gradient magnitude to suppress edges in the background.
 
@@ -226,5 +226,5 @@ Putting these side-by-side (first |∇F| ridges, then Canny edges):
 ![](ref/ddro-edge-sm.png "ddro-edge.png preview")  
 [ddro-edge.png](ref/ddro-edge.png)
 
-The `RIDGE`, `GMRIDGE`, and `CANNY` expressions above could be expressed more clearly with new field definitions
-(e.g. `G = |∇F|`) and variables (e.g. `n = normalize(∇F(xx))`). Making this improvement is a high-priority.
+The `RIDGE`, `GMRIDGE`, and `CANNY` expressions above could be expressed more concisely with new field definitions
+(e.g. `G = |∇F|`) and variables (e.g. `n = normalize(∇F(xx))`). GLK hopes to do this soon.
