@@ -15,7 +15,10 @@ The program as distributed here plots the reconstruction of data with the
 	./plot1d -img data.nrrd -ymm -0.3 1.3
 	unu quantize -b 8 -i rgb.nrrd -o ctmr.png
 
-(See [ctmr.png](ctmr.png)). To learn more, try
+![](ref/ctmr.png "ctmr.png")  
+[ctmr.png](ref/ctmr.png)
+
+To learn more, try
 changing the program in all the places noted with "Choose ONE by
 uncommenting", then recompiling, running, and looking at the results.
 
