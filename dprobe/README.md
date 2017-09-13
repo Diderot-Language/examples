@@ -176,7 +176,7 @@ clarity, both expressions are weighted by the gradient magnitude to suppress edg
 	done
 	rm -f green gray.png lerp.nrrd
 
-Putting these side-by-side (first |∇F| ridge, then Canny edge):
+Putting these side-by-side (first |∇F| ridges, then Canny edges):
 
 	unu join -i lo-{box,val}.png -a 0 |
 	  unu axinsert -a 0 -s 3 |
