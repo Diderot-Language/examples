@@ -29,7 +29,7 @@ periodicity of snapshots being saved, i.e. `-s 1` means save at every iteration,
 `-s 10` means save at every tenth iteration. The default `-s 0` means that no
 snapshots are saved.
 
-We can run Life with one of the supplied initial patterns in the `patterns`
+We can run Life with one of the supplied initial patterns in the [`patterns`](patterns/)
 subdirectory, like the [Gosper glider
 gun](http://www.conwaylife.com/w/index.php?title=Gosper_glider_gun) (as well
 as clean up any results from a previous run):
@@ -52,6 +52,6 @@ they are being used above. Finally,
 [ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
 
 	convert -delay 2 state*.png gosperglidergun.gif
-The resulting `gosperglidergun.gif` should look the same as the
-reference [gosperglidergun-ref.gif](gosperglidergun-ref.gif)
+The resulting [`gosperglidergun.gif`](ref/gosperglidergun-ref.gif) shows the
+expected evolution of the pattern.
 
