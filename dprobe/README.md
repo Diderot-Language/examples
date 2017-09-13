@@ -20,19 +20,19 @@ programs must be known at compile time (rather than run-time):
 
 * The input image dimension
 * (Tensor) shape of values in input image (e.g. `[]` for `real` or `[3]` for `vec3`)
-* Whether to use any border control on an image, or which one one to use (e.g. `clamp`, `wrap`, `mirror`)
+* Whether to use any border control on an image, or which one to use (e.g. `clamp`, `wrap`, `mirror`)
 * The reconstruction kernel
-* The mathematical expressions involving fields that will be evaluated (e.g. `F(x)` vs `|∇F(x)|`)
+* The mathematical expressions involving fields that must be evaluated (e.g. `F(x)` vs `|∇F(x)|`)
 * The differentiability requirement of a field for some expression involving that field
 (e.g. `field#0` if no derivatives needed, vs `field#2` if two derivatives are needed)
-* The (tensor) shape of output values
+* The (tensor) shape of the program's output values
 * Whether output should a list (from a strand collection) or an array (from a strand grid)
 
 While future versions of Diderot may permit learning some of these things at
-run-time, more fundamental things (like whether to run as a collection
+run-time, fundamental things (like whether to run as a collection
 versus a grid of strands) will probably always need to be set at compile-time.
-This isn't a big limitation: a real-world use of Diderot **should** be specialized
-on the kinds of data it reads and writes.
+This isn't a big limitation: real-world uses of Diderot **should** be specialized
+on the particular kinds of data it reads and writes.
 There is a single template program (look for the definition of `TEMPLATE` at
 the top of `dprobe`), which is transformed according to the arguments to
 `dprobe`, but it is so heavily transformed that it doesn't really look like a
@@ -160,7 +160,7 @@ If we transform the `RIDGE` expression above by replacing `F` with `(|∇F|)`,
 we have an expression for the ridges of gradient magnitude, which produces a kind
 of [edge
 detection](https://en.wikipedia.org/wiki/Ridge_detection#Relations_between_edge_detection_and_ridge_detection),
-which is captured in the `GMRIDGE` expression.  For comparison, the `CANNY` expresses Canny edge detection:
+seen in the `GMRIDGE` expression below.  For comparison, `CANNY` expresses Canny edge detection:
 the gradient magnitude is at a maximum with respect to motion along gradient direction.  For visual
 clarity, both expressions are weighted by the gradient magnitude to suppress edges in the background.
 
