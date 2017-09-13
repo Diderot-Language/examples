@@ -1,23 +1,22 @@
 # dprobe: image probing utility
 
-This utility is a conceptual peer to the `vprobe` and `gprobe` utilities in
+This is a conceptual peer to the `vprobe` and `gprobe` utilities in
 Teem (which probe various quantities on 3-D fields reconstructed by
 convolution), except that `dprobe` works on 1-D and 2-D data, and permits
-probing any expression in the field that Diderot knows how to compute.  Run
+probing any expression in a field Diderot knows how to compute.  Run
 
 	./dprobe --help
 
-to get the extensive usage information.
+to get the detailed usage information.
 
 This is an atypical Diderot example because it is not a single program, but a
-generator/compiler for programs, based on the various command-line options to
-`dprobe`, which is a `python3` program.  The other example most similar to
+generator/compiler (written in Python) for Diderot programs, according to the
+various command-line options to `dprobe`.  The other example most similar to
 this is [`vimg`](../vimg), but that only knows about 2-D scalar data, and
-only knows how to compute one of a preset number of expressions on it.  The
-variety of things that `dprobe` can do and act on require generating new
+only knows how to compute one of a preset number of expressions.  The
+variety of things that `dprobe` can do requires generating new
 programs, because currently various elements and properties of Diderot
-programs must be known at compile time (rather than being learned at
-run-time):
+programs must be known at compile time (rather than run-time):
 
 * The input image dimension
 * (Tensor) shape of values in input image (e.g. `[]` for `real` or `[3]` for `vec3`)
@@ -30,8 +29,10 @@ run-time):
 * Whether output should a list (from a strand collection) or an array (from a strand grid)
 
 While future versions of Diderot may permit learning some of these things at
-run-time, the more fundamental things (like whether to run as a collection
+run-time, more fundamental things (like whether to run as a collection
 versus a grid of strands) will probably always need to be set at compile-time.
+This isn't a big limitation: a real-world use of Diderot **should** be specialized
+on the kinds of data it reads and writes.
 There is a single template program (look for the definition of `TEMPLATE` at
 the top of `dprobe`), which is transformed according to the arguments to
 `dprobe`, but it is so heavily transformed that it doesn't really look like a
@@ -64,9 +65,9 @@ Diderot itself):
 	unu head ../data/ddro-100.nrrd ddro-bsp5.nrrd
 
 The sampling of the field can be on a higher-resolution grid, allowing us to
-see structure in between pixels.  In the following examples, the query expression
+see structure between pixels.  In the following examples, the query expression
 is often quoted, to avoid confusing the shell with `|` or `(`.  The quantities
-measured are described in comments (`uq8` and `wpad` aliases helps with brevity).
+measured are described in comments (`uq8` and `wpad` aliases help with brevity).
 
 	PARM="-i ../data/ddro-100.nrrd -k real -kern bspln5 -bc clamp -s x4 x4 -d -o -"
 	alias uq8="unu quantize -b 8"; alias wpad="unu pad -min -1 0 0 -max M M M -b wrap"
@@ -88,7 +89,7 @@ would lead to an error `dprobe: error: argument -q: expected 3 arguments`, becau
 the `-F` is interpreted as starting a new option.  Even though `-F` is valid field
 operation in Diderot, `(-1)*F` is used to avoid the `argparse` annoyance.
 
-This makes [an image](ref/ddro-probes.png) that shows the 10 results above in scan-line order
+This makes [an image](ref/ddro-probes.png) showing the 10 results above in scan-line order
 (some awkwardness from first making gray-scale images into RGB):
 
 	unu join -i ddro-{val,sin,neg,gmag,htrc,hdet,hnrm,hngm}.png -a 2 |
@@ -107,7 +108,7 @@ field `F` that works because of how Diderot "lifts" tensor operators (`det`,
 the field is evaluated at position `xx` by suffixing the field with `(xx)`.
 Currently, however, not all tensor operations have been lifted to fields,
 such as learning eigensystems (`evals` and `evecs`).  When using these
-operations (or when the field `F` is used more than once in the query), we
+operations, we
 need to explicitly include `(xx)` in the query expression to indicate field
 evaluation, and then operate on the (non-field) result:
 
@@ -187,4 +188,4 @@ Putting these side-by-side (first |∇F| ridges, then Canny edges):
 [ddro-edge.png](ref/ddro-edge.png)
 
 The `RIDGE`, `GMRIDGE`, and `CANNY` expressions above could be expressed more clearly with new field definitions
-(e.g. `G = |∇F|`) and variables (e.g. `n = normalize(∇F(xx))`). This improvement to `dprobe` is pending.
+(e.g. `G = |∇F|`) and variables (e.g. `n = normalize(∇F(xx))`). Making this improvement is a high-priority.
