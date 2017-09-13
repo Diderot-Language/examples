@@ -146,7 +146,7 @@ in the summary of strand states (that is, in these logs we never
 see value 3 for strand 5, even though its `update` was executed).
 **This highlights what is currently a limit on what you can learn about
 the program execution from within Diderot or by looking at snapshots:
-there is no enduring record of what strands died when or why**.  That means
+there is no enduring record of what strands died when or why**.  In particular,
 you can only learn that a strand's `update` method was called if it does not
 immediately die, unless you've used `print` messages to explicitly document
 the execution of `update` as it happens.
