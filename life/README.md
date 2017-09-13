@@ -52,6 +52,8 @@ they are being used above. Finally,
 [ImageMagick](http://www.imagemagick.org)'s `convert` can then make an animated GIF:
 
 	convert -delay 2 state*.png gosperglidergun.gif
-The resulting [`gosperglidergun.gif`](ref/gosperglidergun-ref.gif) shows the
-expected evolution of the pattern.
+
+![](ref/gosperglidergun.gif "gosperglidergun.gif")  
+The resulting [`gosperglidergun.gif`](ref/gosperglidergun.gif) shows the
+expected pattern evolution.
 

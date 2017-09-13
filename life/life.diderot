@@ -61,8 +61,10 @@ they are being used above. Finally,
 
 	#R
 	convert -delay 2 state*.png gosperglidergun.gif
-The resulting [`gosperglidergun.gif`](ref/gosperglidergun-ref.gif) shows the
-expected evolution of the pattern.
+
+![](ref/gosperglidergun.gif "gosperglidergun.gif")  
+The resulting [`gosperglidergun.gif`](ref/gosperglidergun.gif) shows the
+expected pattern evolution.
 
 	#T
 	unu join -i state-*.nrrd -a 0 -incr |
