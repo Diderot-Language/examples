@@ -11,7 +11,7 @@ _PROBE_HOW_
 
 field#_QUERY_DERIV_(_IMG_DIM_)[] F = _KERN_ ⊛ _BC_OPEN_img_BC_CLOSE_;
 
-strand probe(_FIRST_PARM_ _IMG_VECN_ pos) {
+strand probe(_FIRST_PARM_ _IMG_VECN_ xx) {
    output _QUERY_TYPE_ out = _QUERY_INIT_;
    update {
       _DUMMY_DECL_
@@ -58,7 +58,7 @@ parser.add_argument('-k', metavar='kind', required=True,
                     help='"kind" of image: currently either '
                     +'"real", "vec3", or "tensor[3,3]"',
                     nargs=1)
-parser.add_argument('-kern', metavar='kernel',
+parser.add_argument('-kern', metavar='kernel', required=True,
                     help='kernel to use to reconstruct image values '
                     +'(one of tent, ctmr, bspln3, bpsln5, c4hexic). The '
                     +'field produced by convolution will be called \"F\", '
@@ -66,26 +66,23 @@ parser.add_argument('-kern', metavar='kernel',
                     +'This is like the -k00 option to Teem\'s gprobe, but '
                     +'there\'s no ability here to supply different kernels '
                     +'for derivatives.',
-                    nargs=1, default='tent')
+                    nargs=1)
 parser.add_argument('-q', metavar=('type','expr','deriv'), required=True,
                     help='(1) type of query (e.g. real, vec3), '
                     +'(2) the query expression itself, in terms of field F, '
                     +'and (3) the number of derivatives needed, '
-                    +'e.g. "vec3 ∇F 1". The query expression will be '
-                    +'suffixed with "(pos)" to evaluate at a probe position. '
-                    +'You may have to quote the query type and/or expression '
-                    +'to keep the shell from getting confused. This script '
-                    +'isn\'t smart enough to infer the output type or the '
-                    +'derivatives needed.',
+                    +'e.g. "vec3 ∇F 1" (this script isn\'t smart enough to '
+                    +'infer the output type or derivatives needed). '
+                    +'If query expression does not contain "xx", it will be '
+                    +'suffixed with "(xx)" to evaluate at the probe position; '
+                    +'you may need to include "(xx)" yourself with operations '
+                    +'not lifted to fields. Also, many query types an expressions '
+                    +'need to be quoted to keep the shell from getting confused.',
                     nargs=3)
 parser.add_argument('-bc', metavar='border control',
                     help='how to handle samples at edge of image '
                     +'(either "none", "mirror", "clamp", or "wrap")',
                     nargs=1, default='none')
-parser.add_argument('-nt', metavar='#threads',
-                    help='compile to pthread target, and run with this number '
-                    +'of threads. Use "-nt 0" to compile to sequential target',
-                    nargs=1, type=int, default=os.cpu_count())
 parser.add_argument('-s', metavar='scl',
                     help='Absent any of the subsequent "-pX" options, sampling '
                     +'will happen on a grid of equal dimension to the image '
@@ -126,7 +123,14 @@ parser.add_argument('-d', action='store_true',
 parser.add_argument('-kg', action='store_true',
                     help='keep generated .diderot, .o, and .cxx files, '
                     +'instead of cleaning them up when done')
+parser.add_argument('-nt', metavar='#threads',
+                    help='compile to pthread target, and run with this number '
+                    +'of threads. The default "-nt 0" means compile to the '
+                    +('sequential target (running %d cpus here).' % os.cpu_count()),
+                    nargs=1, type=int, default=0)
 me=sys.argv[0]
+# linewrap based on current terminal
+os.environ['COLUMNS'] = str(shutil.get_terminal_size((80, 40)).columns)
 args = parser.parse_args()
 
 ######################################################################
@@ -185,6 +189,8 @@ checkpath()
 # _DUMMY_MULT_: if grid probing, include "dummy*" scaling to use dummy (to avoid warning about unused variable)
 # _INITIALLY_: the strand initialization for the program
 
+# TODO: allow "-q real -F 0": the - in -F confuses the command-line parser
+
 subs={}
 if '-' == args.i[0]:
     stop('sorry, currently can\'t read input from stdin')
@@ -198,7 +204,7 @@ iddim = int(subs['_IMG_DIM_']) # image domain dimension
 vecn = subs['_IMG_VECN_'] = 'real' if 1 == iddim else ('vec%d' % iddim)
 subs['_QUERY_TYPE_'] = args.q[0]
 # TODO: allow query to be user-defined function
-subs['_QUERY_EXPR_'] = args.q[1] if '(pos)' in args.q[1] else args.q[1]+'(pos)'
+subs['_QUERY_EXPR_'] = args.q[1] if 'xx' in args.q[1] else args.q[1]+'(xx)'
 subs['_QUERY_DERIV_'] = args.q[2]
 if 'real' == args.q[0]:
     subs['_QUERY_INIT_'] = 'nan'
@@ -230,7 +236,7 @@ subs['_KERN_'] = args.kern[0] if isinstance(args.kern, list) else args.kern
 
 if 'none' == args.bc or 'none' == args.bc[0]:
     subs['_BC_OPEN_'] = subs['_BC_CLOSE_'] = ''
-    subs['_INSIDE_OPEN_'] = 'if (inside(pos, F)) {'
+    subs['_INSIDE_OPEN_'] = 'if (inside(xx, F)) {'
     subs['_INSIDE_INDENT_'] = '   '
     subs['_INSIDE_CLOSE_'] = '}' # possibly over-written below
 else:
@@ -263,7 +269,7 @@ if args.pp:  # used -pp to specify a single probe position
         stop('got %d values via -pp but image domain is %d-dimensional' % (len(args.pp), iddim))
     if 'none' == args.bc or 'none' == args.bc[0]:
         subs['_SINGLE_PRINT_'] = '   print(out, "\\n");'
-        subs['_INSIDE_CLOSE_'] = '} else { print(pos, " is not inside\\n"); }'
+        subs['_INSIDE_CLOSE_'] = '} else { print(xx, " is not inside\\n"); }'
     else:
         subs['_SINGLE_PRINT_'] = 'print(out, "\\n");'
     subs['_PROBE_HOW_'] = ('input %s pp ("single position at which to probe") = %s;' %
@@ -281,7 +287,7 @@ elif args.pi: # used -pi to specify list of probe positions
         # TODO: remove this limitation: should be able to connect our stdin to subprocess's stdin
         stop('sorry, can\'t use stdin \"-\" for input probe positions')
     subs['_PROBE_HOW_'] = 'input %s{} pi ("list of positions at which to probe") = load(\"%s\");' % (vecn, args.pi[0])
-    subs['_INITIALLY_'] = 'initially { probe(pi{ii}) | ii in 0..length(pi)-1 };'
+    subs['_INITIALLY_'] = 'initially { probe(pi[ii]) | ii in 0..length(pi)-1 };'
     subs['_FIRST_PARM_'] = ''
     subs['_FIRST_PRINT_'] = ''
     subs['_DUMMY_DECL_'] = ''
