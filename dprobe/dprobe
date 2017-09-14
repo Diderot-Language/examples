@@ -4,7 +4,7 @@
 
 # the template program that is (heavily) transformed to make the actual program
 TEMPLATE="""#version 1.0
-
+_CREATION_
 input image(_IMG_DIM_)_IMG_SHAPE_ img ("input image") = image("_IMG_NAME_");
 
 _PROBE_HOW_
@@ -195,6 +195,9 @@ checkpath()
 subs={}
 if '-' == args.i[0]:
     stop('sorry, currently can\'t read input from stdin')
+subs['_CREATION_'] = (  ('/*\nThis source was generated in %s by (approximately):\n' % os.getcwd())
+                      + ' '.join([('"'+a+'"' if any(c in a for c in ' ()[]*') else a) for a in sys.argv])
+                      + '\n*/\n')
 subs['_IMG_NAME_'] = args.i[0]
 uhead = [str(l,'utf-8').rstrip() for l in run('unu dnorm -h -i ' + args.i[0], True).stdout.splitlines()]
 for line in uhead:
