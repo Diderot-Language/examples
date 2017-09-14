@@ -211,24 +211,27 @@ if 'real' == args.q[0]:
     subs['_QUERY_INIT_'] = 'nan'
     ax0len = 0
     ax0kind = ''
+# that these are each being handled differently has less to do with
+# the generated Diderot code than with setting ax0kind.
+# TODO: look at output of things outside these types
 elif 'vec2' == args.q[0]:
-    subs['_QUERY_INIT_'] = '[nan,nan]'  # HEY nan[2] should work
+    subs['_QUERY_INIT_'] = 'nan*zeros[2]'  # HEY nan[2] should work
     ax0len = 2
     ax0kind = '2-vector'
 elif 'vec3' == args.q[0]:
-    subs['_QUERY_INIT_'] = '[nan,nan,nan]' # HEY nan[3] should work
+    subs['_QUERY_INIT_'] = 'nan*zeros[3]' # HEY nan[3] should work
     ax0len = 3
     ax0kind = '3-vector'
 elif 'vec4' == args.q[0]:
-    subs['_QUERY_INIT_'] = '[nan,nan,nan,nan]' # HEY nan[4] should work
+    subs['_QUERY_INIT_'] = 'nan*zeros[4]' # HEY nan[4] should work
     ax0len = 4
     ax0kind = '4-vector'
 elif 'tensor[2,2]' == args.q[0]:
-    subs['_QUERY_INIT_'] = '[[nan,nan],[nan,nan]]' # HEY nan[2,2] should work
+    subs['_QUERY_INIT_'] = 'nan*zeros[2,2]' # HEY nan[2,2] should work
     ax0len = 4
     ax0kind = '2D-matrix'
 elif 'tensor[3,3]' == args.q[0]:
-    subs['_QUERY_INIT_'] = '[[nan,nan,nan],[nan,nan,nan],[nan,nan,nan]]' # HEY nan[3,3] should work
+    subs['_QUERY_INIT_'] = 'nan*zeros[3,3]' # HEY nan[3,3] should work
     ax0len = 9
     ax0kind = '3D-matrix'
 else:
