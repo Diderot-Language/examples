@@ -279,7 +279,7 @@ function real func(vec3 pos0) {
       real phi = atan2(Rbig-dd, z) - atan2(x, y)/2;
       real a = Rlit*cos(phi);
       real b = Rlit*sin(phi);
-      ret = gauss(0.35+parm[0], a)*gauss(0.12+parm[1], b);
+      ret = gauss(0.3+parm[0], a)*gauss(0.1+parm[1], b);
       ret += 1.2*(gauss(0.15, |pos-[dd,0,0]|) + gauss(0.15, |pos-[-dd,0,0]|) +
                   gauss(0.15, |pos-[0,dd,0]|) + gauss(0.15, |pos-[0,-dd,0]|) +
                   gauss(0.15, |pos-[dd,dd,0]/sqrt(2)|) +
