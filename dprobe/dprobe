@@ -45,7 +45,7 @@ if sys.version_info < (3,5):
 ######################################################################
 ########### command-line parsing
 parser = argparse.ArgumentParser(
-    description='Use Diderot to probe image to learn something, like the '
+    description='Use Diderot to measure things in an image, like the '
     +'vprobe and gprobe utilities in Teem (upon which many of the '
     +'command-line options here were based), but generalized to 1-D '
     +'and 2-D images as well as probing anything (not just the known answers '
