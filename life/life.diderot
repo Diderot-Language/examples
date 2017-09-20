@@ -114,10 +114,7 @@ strand cell (vec2 pos0) {
          the 8 closest neighbors (use for Life) are either distance 1 away
          (up, down, left, right), or distance sqrt(2) away (the diagonals). A
          little extra is added to sqrt(2) for safety. */
-      int nn = 0;
-      foreach (cell c in sphere(sqrt(2)+0.001)) {
-         nn += c.state;
-      }
+      int nn = sum { c.state | c in sphere(sqrt(2)+0.001) };
       // Here are the rules of Life
       state = 1 if (3 == nn) else
               state if (2 == nn) else
