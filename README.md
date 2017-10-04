@@ -325,19 +325,18 @@ An `svn co` command gets the source for a branch; the only difference
 in the `svn co` commands below is the branch name at the end of the URL.
 
 The **vis15** branch contains features from other branches listed below, and is the
-focus of ongoing merge work. The source is available via:
+focus of ongoing merge work. It now supports pthreads. The source is available via:
 
-	svn co -r5273 --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
+	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis15
 
-Before the vis15 branch, the vis12 branch (created with a
+Prior to the vis15 branch, the vis12 branch (created with a
 [VIS'12](http://ieeevis.org/year/2012/info/call-participation/welcome)
-submission in mind) was the most reliable. It lacks some newer features
-in vis15, but it does have pthread support.
+submission in mind) was the most reliable.
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12
 
-The **vis12-cl** branch is the only one with a working OpenCL backend.  The vis12 branch's
-`diderotc` also advertises a `--target=cl` option, but it only works in the vis12-cl branch.
+The **vis12-cl** branch is the only one with a working OpenCL backend.  Other branch's
+`diderotc` may advertise a `--target=cl` option, but it only works in the vis12-cl branch.
 
 	svn co --username anonsvn --password=anonsvn https://svn.smlnj-gforge.cs.uchicago.edu/svn/diderot/branches/vis12-cl
 
