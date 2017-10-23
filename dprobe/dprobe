@@ -9,7 +9,7 @@ input image(_IMG_DIM_)_IMG_SHAPE_ img ("input image") = image("_IMG_NAME_");
 
 _PROBE_HOW_
 
-field#_QUERY_DERIV_(_IMG_DIM_)[] F = _KERN_ ⊛ _BC_OPEN_img_BC_CLOSE_;
+field#_QUERY_DERIV_(_IMG_DIM_)_IMG_SHAPE_ F = _KERN_ ⊛ _BC_OPEN_img_BC_CLOSE_;
 
 strand probe(_FIRST_PARM_ _IMG_VECN_ xx) {
    output _QUERY_TYPE_ out = _QUERY_INIT_;
@@ -172,8 +172,8 @@ checkpath()
 # _IMG_DIM_: dimension of input image's domain
 # _IMG_VECN_: type of variable for position in domain (e.g. vec3)
 # _IMG_SHAPE_: shape of (tensor) value in each sample of input image
-# _BC_OPEN_: either "" for no border control, or, e.g. "clamp("
-# _BC_CLOSE_: either "" for no border control, or ")"
+# _BC_OPEN_: either "" for no border control, else e.g. "clamp("
+# _BC_CLOSE_: either "" for no border control, else ")"
 # _PROBE_HOW_: specification of how probing happens
 # _KERN_: reconstruction kernel
 # _QUERY_DERIV_: differentiability requirement for field
