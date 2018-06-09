@@ -1,8 +1,9 @@
 # Diderot Examples
 
 These example programs demonstrate the [Diderot
-language](http://diderot-language.cs.uchicago.edu), recently described in a
-[VIS 2015 paper](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015).  An
+language](http://diderot-language.cs.uchicago.edu), described in
+[EuroVis 2018](http://people.cs.uchicago.edu/~glk/pubs/#EV-2018) and
+[VIS 2015](http://people.cs.uchicago.edu/~glk/pubs/#VIS-2015) papers.  An
 earlier version of the language was described in a [PLDI 2012
 paper](http://diderot-language.cs.uchicago.edu/papers/pldi12-preprint.pdf).
 These example programs have been written to help you learn how to use
