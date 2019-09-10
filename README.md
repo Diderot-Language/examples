@@ -166,7 +166,7 @@ installed.
 #### (2) Get Standard ML of New Jersey
 The Diderot compiler is written in *Standard ML*, so you will need an SML
 implementation to compile it.  We recommend [SML/NJ](http://smlnj.org), so
-you should install that first.  
+you should install that first.
 
 The latest version of SML/NJ for macOS or Linux can be obtained from the
 [SML/NJ website](http://smlnj.org) or from some common package managers (see
@@ -184,7 +184,10 @@ mentions version 110.81 or higher, then
 
 	brew install smlnj
 
-(possibly followed by `brew link smlnj`) should work.
+(possibly followed by `brew link smlnj`) should work. In case `smlnj` is only available
+as a cask, you may need to run
+
+	brew cask install smlnj
 
 **On Ubuntu or Debian Linux**, `apt-get` may work to install a sufficiently recent
 version.  `apt-cache policy smlnj` reports what version you can get;
@@ -200,7 +203,7 @@ like `driver/sources.cm:16.3-16.18 Error: anchor $ml-lpt-lib.cm not defined`.
 **To install from http://smlnj.org**:
 On the SML/NJ [Downloads](http://smlnj.org/dist/working/index.html)
 page, go to the topmost "Sofware links: files" link
-(currently 110.81) to get files needed to install SML/NJ on your platform.
+to get files needed to install SML/NJ on your platform.
 
 On macOS there is an installer package to get executables,
 which installs the `sml` command in `/usr/local/smlnj/bin`.
@@ -208,21 +211,25 @@ You can also follow the instructions for Linux below.
 
 To build SML/NJ on Linux requires downloading and unzipping one file
 and then running an install script.  The script will download additional
-source and precompiled binary files to build the system
+source and precompiled binary files to build the system.
+**(The following may be moot or wrong now that recent versions of SML/NJ
+have transitioned to 64-bit:**
 Installing SML/NJ on a 64-bit Linux machine requires support for
 32-bit executables, since `sml` is itself a 32-bit program. You will know
 you're missing 32-bit support if the `config/install.sh` command below fails
 with an error message like "`SML/NJ requires support for 32-bit executables`".
 How you fix this will vary between different versions of Linux.
-This is documented
-[at the very bottom of the SML/NJ Installation Instructions](http://www.smlnj.org/dist/working/110.81/INSTALL).
+This is documented at the very bottom of the SML/NJ Installation Instructions,
+for example [here](http://www.smlnj.org/dist/working/110.81/INSTALL) for version 110.81.
+**)**
+
 
 Then, to compile `sml` from source files at http://smlnj.org (the `wget` command
-is specific to version 110.81; there may now be a newer version):
+below is specific to version 110.91):
 
 	mkdir $DDRO_ROOT/smlnj
 	cd $DDRO_ROOT/smlnj
-	wget http://smlnj.cs.uchicago.edu/dist/working/110.81/config.tgz
+	wget http://smlnj.cs.uchicago.edu/dist/working/110.91/config.tgz
 	tar xzf config.tgz
 	config/install.sh
 	export SMLNJ_CMD=$DDRO_ROOT/smlnj/bin/sml
@@ -376,8 +383,9 @@ If `configure` fails with:
 it means that your Teem source checkout is not recent enough; `nrrdMetaDataNormalize`
 was added with Teem revision r6294.
 If the build fails with an error message `anchor $ml-lpt-lib.cm not defined`, it means
-the ml-lpt library is missing. This is availble through your package manager (such as `sudo apt-get install ml-lpt`)
-or from the [SML/NJ Distribution Files page](http://smlnj.org/dist/working/110.81/index.html).
+the ml-lpt library is missing. This is available through your package manager (such as `sudo apt-get install ml-lpt`)
+or by, [for the latest release version](http://smlnj.org/dist/working/index.html) following the
+"files" link.
 
 Once the configure and build is finished, you can check that it worked by trying:
 
