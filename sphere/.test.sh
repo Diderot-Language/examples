@@ -48,6 +48,7 @@ unu swap -i pos2.nrrd -a 1 2 | # transpose
  unu histo -b 400 -min 0 -max 0.24 | # HEY 0.24 depends on -rad 0.15 in execution
  unu crop -min 1 -max M | # lose spike for differences w/ self
  unu resample -s x1 -k gauss:4,4 -t float -o dhisto.nrrd # blur a bunch
-#> dhisto.nrrd 0
-# even with non-deterministic differences in parallel computation of pos.nrrd,
-# dhisto.nrrd will be exactly the same each time
+#> dhisto.nrrd 0.1
+# had thought that even with non-deterministic differences in parallel
+# computation of pos.nrrd, dhisto.nrrd would be exactly the same each time,
+# but this wasn't even true between two versions
