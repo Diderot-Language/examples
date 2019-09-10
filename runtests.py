@@ -116,7 +116,7 @@ parser = argparse.ArgumentParser(description='Run tests generated from Diderot e
 parser.add_argument('-v', action='store_true', help='verbose mode')
 parser.add_argument('-l', action='store_true', help='list known tests and exit')
 parser.add_argument('-r', metavar='refdir',
-                    help='directory containing all reference outputs, in one subdirectory per test',
+                    help='directory containing all reference outputs, in one subdirectory per test (may have to be created first with -c)',
                     nargs=1)
 parser.add_argument('-c', action='store_true',
                     help='create reference results, rather than compare against them')
