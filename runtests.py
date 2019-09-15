@@ -202,8 +202,9 @@ def checkpath():
     if not shutil.which('diderotc'):
         stop("don't have \"diderotc\" in path; test scripts won't work")
     version=[str(l,'utf-8') for l in run('diderotc --version').stdout.splitlines()][0]
-    if not 'vis15' in version:
-        stop("\"diderotc --version\" says \"%s\" but expected vis15" % version)
+    if verbose: print('%s: diderotc --version says %s' % (me, version))
+    if not ('master:2016-07-29' == version or 'vis15' in version):
+        stop("\"diderotc --version\" says \"%s\" but expected master:2016-07-29 or *vis15*" % version)
     if not shutil.which('unu'):
         stop("don't have \"unu\" in path; test scripts won't work")
     lines=[str(l,'utf-8') for l in run('unu about').stdout.splitlines()]
