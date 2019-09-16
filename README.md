@@ -264,7 +264,7 @@ Then, build Teem and install into `teem-ddro`:
 
 	mkdir $DDRO_ROOT/teem-ddro-build
 	cd $DDRO_ROOT/teem-ddro-build
-	cmake -Wno-dev \
+	cmake \
 	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
 	  -D BUILD_SHARED_LIBS=OFF -D BUILD_TESTING=OFF \
           -D CMAKE_BUILD_TYPE=Release \
@@ -287,7 +287,7 @@ want a **separate** Teem build that includes PNG and zlib. You get this with:
 	cd $DDRO_ROOT/teem-util; TEEMUTIL=`pwd`
 	mkdir $DDRO_ROOT/teem-util-build
 	cd $DDRO_ROOT/teem-util-build
-	cmake -Wno-dev \
+	cmake \
 	  -D BUILD_EXPERIMENTAL_APPS=OFF -D BUILD_EXPERIMENTAL_LIBS=OFF \
 	  -D BUILD_SHARED_LIBS=OFF -D BUILD_TESTING=OFF \
           -D CMAKE_BUILD_TYPE=Release \
